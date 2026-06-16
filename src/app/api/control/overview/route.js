@@ -25,10 +25,12 @@ export async function GET() {
         ORDER BY t.created_at DESC LIMIT 8
       `),
       query(`
-        SELECT sp.payment_id, sp.amount, sp.status, sp.created_at, t.name AS tenant_name
+        SELECT sp.payment_id, sp.amount, sp.status, sp.created_at, 
+               COALESCE(t.name, pur.requested_tenant_name, 'New Workspace') AS tenant_name
         FROM ress_subscription_payments sp
-        JOIN ress_subscriptions s ON s.subscription_id = sp.subscription_id
-        JOIN ress_tenants t ON t.tenant_id = s.tenant_id
+        LEFT JOIN ress_purchases pur ON pur.purchase_id = sp.purchase_id
+        LEFT JOIN ress_subscriptions s ON s.subscription_id = sp.subscription_id
+        LEFT JOIN ress_tenants t ON t.tenant_id = COALESCE(s.tenant_id, pur.tenant_id)
         ORDER BY sp.created_at DESC LIMIT 6
       `),
     ]);

@@ -18,11 +18,15 @@ export async function GET() {
       `),
       query(`
         SELECT p.payment_id, p.amount, p.status, p.created_at, p.provider AS payment_method,
-               t.name AS tenant_name, t.slug AS slug, pkg.name AS package_name
+               COALESCE(t.name, pur.requested_tenant_name, 'New Workspace') AS tenant_name, 
+               COALESCE(t.slug, pur.requested_tenant_slug, 'pending') AS slug, 
+               COALESCE(pkg.name, pur_pkg.name, 'Unknown') AS package_name
         FROM ress_subscription_payments p
-        JOIN ress_subscriptions s ON s.subscription_id = p.subscription_id
-        JOIN ress_tenants t ON t.tenant_id = s.tenant_id
-        JOIN ress_packages pkg ON pkg.package_id = s.package_id
+        LEFT JOIN ress_purchases pur ON pur.purchase_id = p.purchase_id
+        LEFT JOIN ress_subscriptions s ON s.subscription_id = p.subscription_id
+        LEFT JOIN ress_tenants t ON t.tenant_id = COALESCE(s.tenant_id, pur.tenant_id)
+        LEFT JOIN ress_packages pkg ON pkg.package_id = s.package_id
+        LEFT JOIN ress_packages pur_pkg ON pur_pkg.package_id = pur.package_id
         ORDER BY p.created_at DESC
       `)
     ]);
