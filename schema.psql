@@ -1,0 +1,321 @@
+-- ress_ preffix for restaurant saas and restaurant_ preffix for tenant websites --
+-- =====================================================
+-- TENANTS
+-- =====================================================
+
+CREATE TABLE ress_tenants (
+  tenant_id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+
+  status TEXT DEFAULT 'active'
+    CHECK (status IN ('active','development','suspended','deleted')),
+
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
+
+
+CREATE TABLE restaurant_websites (
+  website_id SERIAL PRIMARY KEY,
+  tenant_id INT UNIQUE REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
+
+  logo_url TEXT,
+  theme_color TEXT,
+
+  hero_title TEXT,
+  hero_subtitle TEXT,
+
+  name TEXT,
+  address TEXT,
+  tagline TEXT,
+  sociallink TEXT,
+  email TEXT,
+  phone TEXT,
+
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
+-- =====================================================
+-- DOMAINS
+-- =====================================================
+
+CREATE TABLE ress_domains (
+  domain_id SERIAL PRIMARY KEY,
+  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
+
+  domain TEXT UNIQUE NOT NULL,
+  is_primary BOOLEAN DEFAULT FALSE,
+  verified BOOLEAN DEFAULT FALSE,
+
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- =====================================================
+-- PACKAGES
+-- =====================================================
+
+CREATE TABLE ress_packages (
+  package_id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+
+  monthly_price NUMERIC(10,2),
+  yearly_price NUMERIC(10,2),
+  setup_fee NUMERIC(10,2),
+
+  max_menu_items INT,
+  max_orders_per_month INT,
+  max_tables INT,
+
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE ress_features (
+  feature_id SERIAL PRIMARY KEY,
+  key TEXT UNIQUE NOT NULL,  -- e.g. custom_domain
+  name TEXT NOT NULL
+);
+
+CREATE TABLE ress_package_features (
+  id SERIAL PRIMARY KEY,
+  package_id INT REFERENCES ress_packages(package_id) ON DELETE CASCADE,
+  feature_id INT REFERENCES ress_features(feature_id) ON DELETE CASCADE
+);
+
+-- =====================================================
+-- SUBSCRIPTIONS
+-- =====================================================
+
+CREATE TABLE ress_subscriptions (
+  subscription_id SERIAL PRIMARY KEY,
+
+  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
+  package_id INT REFERENCES ress_packages(package_id),
+
+  status TEXT DEFAULT 'active'
+    CHECK (status IN ('trial','active','expired','cancelled')),
+
+  start_date TIMESTAMP DEFAULT now(),
+  end_date TIMESTAMP,
+
+  auto_renew BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- =====================================================
+-- PURCHASES
+-- =====================================================
+
+CREATE TABLE ress_purchases (
+  purchase_id SERIAL PRIMARY KEY,
+
+  tenant_id INT
+    REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
+
+  package_id INT
+    REFERENCES ress_packages(package_id),
+
+  user_id INT
+    REFERENCES ress_users(user_id) ON DELETE SET NULL,
+
+  amount NUMERIC(10,2) NOT NULL,
+  metadata JSONB,
+  
+  requested_tenant_name TEXT,
+  requested_tenant_slug TEXT,
+  requested_custom_domain TEXT,
+  transaction_id TEXT,
+  payment_method TEXT,
+  duration_months INT DEFAULT 1,
+
+  status TEXT DEFAULT 'pending'
+    CHECK (
+      status IN (
+        'pending',
+        'paid',
+        'failed',
+        'cancelled',
+        'refunded'
+      )
+    ),
+
+  note TEXT,
+  
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- =====================================================
+-- INVOICES
+-- =====================================================
+
+CREATE TABLE ress_invoices (
+  invoice_id SERIAL PRIMARY KEY,
+
+  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
+
+  subscription_id INT REFERENCES ress_subscriptions(subscription_id),
+  purchase_id INT REFERENCES ress_purchases(purchase_id) ON DELETE CASCADE,
+
+  invoice_number TEXT UNIQUE NOT NULL,
+
+  amount NUMERIC(10,2) NOT NULL,
+
+  status TEXT DEFAULT 'unpaid'
+    CHECK (
+      status IN (
+        'unpaid',
+        'paid',
+        'overdue'
+      )
+    ),
+
+  due_date TIMESTAMP,
+
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- =====================================================
+-- SAAS PAYMENTS
+-- =====================================================
+
+CREATE TABLE ress_subscription_payments (
+  payment_id SERIAL PRIMARY KEY,
+
+  subscription_id INT
+    REFERENCES ress_subscriptions(subscription_id),
+  purchase_id INT
+    REFERENCES ress_purchases(purchase_id) ON DELETE CASCADE,
+
+  amount NUMERIC(10,2),
+
+  provider TEXT,
+  transaction_id TEXT UNIQUE,
+
+  status TEXT DEFAULT 'pending'
+    CHECK (
+      status IN (
+        'pending',
+        'success',
+        'failed',
+        'refunded'
+      )
+    ),
+
+  paid_at TIMESTAMP,
+
+  created_at TIMESTAMP DEFAULT now()
+);
+
+
+
+-- =====================================================
+-- SAAS USERS
+-- =====================================================
+
+CREATE TABLE ress_users (
+  user_id SERIAL PRIMARY KEY,
+
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  password TEXT NOT NULL,
+  phone TEXT,
+
+  is_verified BOOLEAN DEFAULT FALSE,
+  verification_token TEXT,
+  reset_password_token TEXT,
+  reset_password_expires TIMESTAMP,
+
+  role TEXT DEFAULT 'customer'
+    CHECK (
+      role IN (
+        'admin',
+        'manager',
+        'support',
+        'customer'
+      )
+    ),
+
+  created_at TIMESTAMP DEFAULT now()
+);
+
+
+
+
+create table ress_reviews (
+  review_id SERIAL PRIMARY KEY,
+  user_id integer null,
+  rating integer null,
+  comment text null,
+  reply text null,
+  is_approved boolean null default false,
+  created_at timestamp without time zone null default now(),
+  constraint ress_reviews_user_id_key unique (user_id),
+  constraint ress_reviews_user_id_fkey foreign KEY (user_id) references ress_users (user_id) on delete CASCADE,
+  constraint ress_reviews_rating_check check (
+    (
+      (rating >= 1)
+      and (rating <= 5)
+    )
+  )
+) TABLESPACE pg_default;
+-- =====================================================
+-- ANALYTICS
+-- =====================================================
+
+
+CREATE TABLE ress_support_tickets (
+  ticket_id SERIAL PRIMARY KEY,
+
+
+
+  user_id INT
+    REFERENCES ress_users(user_id)
+    ON DELETE CASCADE,
+
+  subject TEXT NOT NULL,
+  message TEXT NOT NULL,
+
+  priority TEXT DEFAULT 'normal'
+    CHECK (priority IN ('low', 'normal', 'high', 'urgent')),
+
+  status TEXT DEFAULT 'open'
+    CHECK (status IN ('open', 'in_progress', 'resolved', 'closed')),
+
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);
+
+CREATE TABLE ress_support_replies (
+  reply_id SERIAL PRIMARY KEY,
+
+  ticket_id INT NOT NULL
+    REFERENCES ress_support_tickets(ticket_id)
+    ON DELETE CASCADE,
+
+  user_id INT
+    REFERENCES ress_users(user_id)
+    ON DELETE SET NULL,
+
+  is_admin BOOLEAN DEFAULT FALSE,
+
+  message TEXT NOT NULL,
+
+  created_at TIMESTAMP DEFAULT now()
+);
+
+-- =====================================================
+-- CONTACT MESSAGES
+-- =====================================================
+
+CREATE TABLE ress_contact (
+  contact_id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT NOT NULL,
+  phone TEXT,
+  message TEXT NOT NULL,
+  status TEXT DEFAULT 'open' CHECK (status IN ('open', 'resolved')),
+  created_at TIMESTAMP DEFAULT now()
+);

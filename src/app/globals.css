@@ -1,26 +1,139 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Vibrant Pink Restaurant Palette */
+  --color-primary: #ec4899;       /* Pink 500 */
+  --color-primary-dark: #db2777;  /* Pink 600 */
+  --color-primary-light: #f472b6; /* Pink 400 */
+  
+  --color-secondary: #0f172a;     /* Slate 900 */
+  --color-accent: #f43f5e;        /* Rose 500 */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Neutral Backgrounds (Slate/Zinc vibe) */
+  --color-bg: #f8fafc;            /* Slate 50 */
+  --color-bg-2: #ffffff;          /* White */
+  --color-bg-3: #f1f5f9;          /* Slate 100 */
+  
+  --color-surface: #ffffff;
+  --color-border: #e2e8f0;        /* Slate 200 */
+  --color-border-hover: #cbd5e1;  /* Slate 300 */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Typography Colors */
+  --color-text: #0f172a;          /* Slate 900 */
+  --color-text-2: #475569;        /* Slate 600 */
+  --color-text-3: #94a3b8;        /* Slate 400 */
+
+  /* Status Colors */
+  --color-success: #10b981;       /* Emerald 500 */
+  --color-warning: #f59e0b;       /* Amber 500 */
+  --color-danger: #ef4444;        /* Red 500 */
+  --color-info: #db2777;          /* Pink 600 */
+
+  /* Refined Fonts */
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+
+  /* Enterprise Animations (Snappy, clean) */
+  --animate-fade-up: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in: fadeIn 0.4s ease both;
+  --animate-slide-in: slideIn 0.3s ease-out both;
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to   { opacity: 1; transform: translateX(0); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    @apply font-sans min-h-screen overflow-x-hidden selection:bg-primary/20 selection:text-primary-dark;
+  }
+  
+  /* Typography basics */
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-bold text-slate-900;
+  }
 }
+
+@layer utilities {
+  /* Subtle, professional gradients */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  }
+  
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary-dark) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Enterprise Card Styles */
+  .gradient-card {
+    background: #ffffff;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05), 0 10px 15px -3px rgba(15, 23, 42, 0.02);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  }
+  .gradient-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 20px 25px -5px rgba(15, 23, 42, 0.03);
+    border-color: var(--color-primary-light);
+  }
+
+  .card-glass {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05);
+  }
+  
+  .glass-navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  /* Form inputs - Enterprise look */
+  .input-custom {
+    @apply w-full px-3.5 py-2.5 rounded-lg bg-white border border-slate-300 text-slate-900 text-sm placeholder-slate-400 transition-all duration-200 outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-sm;
+  }
+
+  /* Buttons - Clean, crisp, functional */
+  .btn-custom-primary {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-primary text-white font-medium text-sm hover:bg-primary-dark transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow active:scale-[0.98];
+  }
+
+  .btn-custom-secondary {
+    @apply inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-white border border-slate-300 text-slate-700 font-medium text-sm hover:bg-slate-50 hover:text-slate-900 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm active:scale-[0.98];
+  }
+
+  /* Badges - Subtle */
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] uppercase tracking-wider font-semibold border transition-all;
+  }
+  .badge-primary {
+    @apply bg-pink-50 border-pink-200 text-pink-700;
+  }
+  .badge-success {
+    @apply bg-emerald-50 border-emerald-200 text-emerald-700;
+  }
+  .badge-neutral {
+    @apply bg-slate-100 border-slate-200 text-slate-600;
+  }
+}
+
