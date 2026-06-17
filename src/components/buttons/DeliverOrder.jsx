@@ -1,0 +1,23 @@
+'use client'
+import axios from 'axios';
+import React from 'react'
+import { CiDeliveryTruck } from "react-icons/ci";
+import toast from 'react-hot-toast'
+
+const DeliverOrder = ({id}) => {
+    const deliverOrder=async () => {
+        try {
+            const response= await axios.post('/api/order/deliver', {id},{withCredentials:true})
+            toast.success(response.data.message)
+        } catch (error) {
+            console.log(error)
+            toast.error(error?.response?.data?.message || 'Failed to deliver order')
+        }
+        
+    }
+  return (
+   <button onClick={deliverOrder} className='w-full px-2 rounded-lg hover:bg-pink-500/10 p-1 cursor-pointer flex flex-row items-center justify-center gap-4'><CiDeliveryTruck/> Deliver</button>
+  )
+}
+
+export default DeliverOrder
