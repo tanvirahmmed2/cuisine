@@ -51,9 +51,7 @@ const Footer = () => {
           <div className='lg:col-span-2 space-y-8'>
             <h4 className='text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400'>The Menu</h4>
             <div className='flex flex-col gap-4 text-sm'>
-              <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/menu'>Explore Flavors</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/flashsale'>Flash Offers</Link>
-              <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/offers'>Special Offers</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/reservation'>Book a Table</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/track-order'>Track Order</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/support'>Help & Support</Link>
@@ -64,7 +62,8 @@ const Footer = () => {
           <div className='lg:col-span-2 space-y-8'>
             <h4 className='text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400'>Concierge</h4>
             <div className='flex flex-col gap-4 text-sm'>
-              <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/'>Privacy Policy</Link>
+               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/menu'>Explore Flavors</Link>
+             <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/'>Privacy Policy</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/'>Terms of Service</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/'>Refund Policy</Link>
             </div>

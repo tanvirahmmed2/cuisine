@@ -52,7 +52,7 @@ const About = () => {
               
               <h1 className="text-6xl md:text-8xl font-serif text-gray-900 leading-[0.9] tracking-tight">
                 Crafting the <br />
-                <span className="italic font-normal text-gray-400">Perfect Moment</span>
+                <span className="font-normal text-gray-400">Perfect Moment</span>
               </h1>
             </motion.div>
 
@@ -76,12 +76,12 @@ const About = () => {
               variants={itemVariants}
               className="pt-10 border-t border-gray-100 flex items-center gap-6"
             >
-              <div className="w-16 h-16 rounded-full border border-pink-100 flex items-center justify-center text-pink-500 font-serif italic text-2xl uppercase">
+              <div className="w-16 h-16 rounded-full border border-pink-100 flex items-center justify-center text-pink-500 font-serif text-2xl uppercase">
                 {siteData?.name?.[0] || "S"}
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Our Philosophy</p>
-                <p className="text-lg font-serif italic text-gray-900">
+                <p className="text-lg font-serif text-gray-900">
                   &ldquo;{siteData?.tagline || "Simplicity is the ultimate sophistication."}&rdquo;
                 </p>
               </div>
@@ -115,7 +115,7 @@ const About = () => {
                   className="group p-8 bg-[#fafafa] rounded-2xl border border-gray-50 transition-all duration-300 hover:bg-white hover:shadow-2xl hover:shadow-gray-200/50"
                 >
                   <div className="flex items-start gap-6">
-                    <span className="text-3xl font-serif italic text-pink-100 group-hover:text-pink-500 transition-colors duration-500">
+                    <span className="text-3xl font-serif text-pink-100 group-hover:text-pink-500 transition-colors duration-500">
                       {feature.icon}
                     </span>
                     <div className="space-y-2">

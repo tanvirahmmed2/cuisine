@@ -84,7 +84,7 @@ const DeliveredOrder = () => {
                     </div>
                   ))}
                   {order.items && order.items.length > 2 && (
-                    <p className='text-[8px] text-gray-300 font-semibold italic'>+ {order.items.length - 2} more items</p>
+                    <p className='text-[8px] text-gray-300 font-semibold'>+ {order.items.length - 2} more items</p>
                   )}
                 </div>
                 <div className='col-span-1 text-center'>

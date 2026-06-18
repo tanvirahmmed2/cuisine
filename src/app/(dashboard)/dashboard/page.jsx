@@ -66,7 +66,7 @@ const Manage = () => {
         </div>
         <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 tracking-tight leading-tight">
           Welcome back, <br />
-          <span className="text-gray-400 italic">{userData?.name || 'Staff'}</span>
+          <span className="text-gray-400">{userData?.name || 'Staff'}</span>
         </h1>
         <p className="text-gray-500 font-medium max-w-md">
           Control <span className="text-gray-900">{siteData?.name || "your platform"}</span> with precision.
@@ -100,7 +100,7 @@ const Manage = () => {
           <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
           <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">System Online: {userData?.email}</p>
         </div>
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400 italic">
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-gray-400">
           Access Level: {role?.toUpperCase()}
         </p>
       </div>

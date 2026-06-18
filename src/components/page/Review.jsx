@@ -59,7 +59,7 @@ const Review = ({ initialReviews = [] }) => {
                             Testimonials
                         </div>
                         <h2 className='text-5xl md:text-6xl font-serif text-gray-900 tracking-tight'>
-                            Guest <span className='italic font-normal text-gray-400'>Voices</span>
+                            Guest <span className='font-normal text-gray-400'>Voices</span>
                         </h2>
                     </div>
                     
@@ -86,7 +86,7 @@ const Review = ({ initialReviews = [] }) => {
                         ))}
                     </div>
                 ) : (
-                    <div className='h-[200px] flex items-center justify-center text-gray-300 font-serif italic text-xl bg-gray-50 rounded-[2rem]'>
+                    <div className='h-[200px] flex items-center justify-center text-gray-300 font-serif text-xl bg-gray-50 rounded-[2rem]'>
                         Awaiting your first story...
                     </div>
                 )}

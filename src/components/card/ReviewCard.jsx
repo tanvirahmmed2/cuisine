@@ -25,7 +25,7 @@ const ReviewCard = ({ review }) => {
       </div>
 
       <div 
-        className='prose prose-sm prose-slate text-gray-600 italic leading-relaxed line-clamp-4 relative z-10'
+        className='prose prose-sm prose-slate text-gray-600 leading-relaxed line-clamp-4 relative z-10'
         dangerouslySetInnerHTML={{ __html: review.comment }}
       />
       

@@ -25,7 +25,7 @@ const RegistrationPage = () => {
                     </div>
                     <h1 className='text-6xl font-semibold text-gray-900 leading-[1.1] tracking-tight'>
                         Begin Your <br />
-                        <span className='text-gray-300 italic'>Culinary Journey</span>
+                        <span className='text-gray-300'>Culinary Journey</span>
                     </h1>
                     <p className='text-gray-500 text-lg font-medium max-w-sm leading-relaxed'>
                         Join our exclusive community and experience the finest flavors, hand-crafted with passion and precision.

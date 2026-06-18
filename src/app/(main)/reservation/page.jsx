@@ -60,7 +60,7 @@ const Reservation = () => {
               Reservations
             </div>
             <h1 className='text-5xl md:text-6xl font-semibold text-gray-900 tracking-tight leading-tight'>
-              Experience the Art of <span className='text-gray-400 italic'>Fine Dining</span>
+              Experience the Art of <span className='text-gray-400'>Fine Dining</span>
             </h1>
           </div>
           <p className='text-gray-500 text-lg leading-relaxed max-w-md font-medium'>

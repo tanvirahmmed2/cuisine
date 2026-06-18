@@ -36,7 +36,7 @@ const PrintOrder = ({ order }) => {
             .price { width: 30%; text-align: right; }
             .total-row { display: flex; justify-content: space-between; margin-bottom: 2px; }
             .grand-total { font-size: 16px; margin-top: 5px; border-top: 1px solid #000; padding-top: 5px; }
-            .footer-msg { margin-top: 15px; font-size: 11px; font-style: italic; }
+            .footer-msg { margin-top: 15px; font-size: 11px; }
           </style>
         </head>
         <body>

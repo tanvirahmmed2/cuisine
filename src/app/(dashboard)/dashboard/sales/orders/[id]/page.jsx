@@ -117,7 +117,7 @@ const SingleOrderPage = () => {
                         </div>
                         <div className="flex justify-between items-baseline pt-2 border-t border-slate-900 mt-2">
                             <span className="text-[12px] font-bold uppercase">Net Total</span>
-                            <span className="text-xl  font-bold italic">৳{Number(order.total_price).toFixed(2)}</span>
+                            <span className="text-xl  font-bold">৳{Number(order.total_price).toFixed(2)}</span>
                         </div>
                     </div>
 
@@ -138,7 +138,7 @@ const SingleOrderPage = () => {
                     </div>
 
                     <div className="mt-6 pt-4 border-t border-dashed border-gray-300 w-full text-center">
-                        <p className=" italic text-sm text-slate-700">Thank you for shopping!</p>
+                        <p className="text-sm text-slate-700">Thank you for shopping!</p>
                         <p className="text-[9px] text-gray-400 mt-1 uppercase tracking-tighter">Powered by Disibin</p>
                     </div>
                 </div>

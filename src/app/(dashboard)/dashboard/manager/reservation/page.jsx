@@ -57,7 +57,7 @@ const Reservation = async () => {
               {info.message && (
                 <div className='mt-1'>
                   <p className='text-[10px] font-semibold text-gray-400 uppercase tracking-widest'>Customer Note</p>
-                  <p className='text-xs text-gray-500 leading-relaxed italic'>"{info.message}"</p>
+                  <p className='text-xs text-gray-500 leading-relaxed'>"{info.message}"</p>
                 </div>
               )}
             </div>

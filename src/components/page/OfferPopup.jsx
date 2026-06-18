@@ -54,7 +54,7 @@ const OfferPopup = ({ initialOffers = [] }) => {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="bg-white w-full max-w-sm md:max-w-md rounded-[2rem] shadow-2xl relative overflow-hidden flex flex-col"
+            className="bg-white w-full max-w-sm md:max-w-md rounded-none shadow-2xl relative overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close Button */}
@@ -88,7 +88,7 @@ const OfferPopup = ({ initialOffers = [] }) => {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Slider Indicators */}
+           
               {offers.length > 1 && (
                 <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 z-10">
                   {offers.map((_, idx) => (
@@ -102,8 +102,7 @@ const OfferPopup = ({ initialOffers = [] }) => {
               )}
             </div>
 
-            {/* Content */}
-            <div className="p-6 md:p-8 flex flex-col gap-4 relative bg-white flex-1 overflow-y-auto">
+            <div className="p-2 flex flex-col gap-4 relative bg-white flex-1 overflow-y-auto">
               <div className="absolute -top-6 right-8 w-12 h-12 bg-pink-500 text-white rounded-2xl shadow-xl flex items-center justify-center rotate-6 shrink-0">
                 <MdLocalOffer size={24} />
               </div>
@@ -136,19 +135,13 @@ const OfferPopup = ({ initialOffers = [] }) => {
               </AnimatePresence>
 
               {currentOffer.end_date && (
-                <div className="bg-pink-50 text-pink-600 px-4 py-2 rounded-xl text-xs font-bold self-start flex items-center gap-2">
+                <div className="bg-pink-50 text-pink-600 px-4 py-2 text-xs font-bold self-start flex items-center gap-2">
                   <MdTimer size={16} className="animate-pulse" />
                   Valid until: {new Date(currentOffer.end_date).toLocaleDateString()}
                 </div>
               )}
 
-              <Link 
-                href="/offers" 
-                onClick={handleClose}
-                className="w-full mt-4 py-4 bg-gray-900 text-white rounded-2xl font-bold text-sm text-center uppercase tracking-widest hover:bg-pink-600 transition-colors shadow-lg shadow-gray-900/20 shrink-0"
-              >
-                View Details
-              </Link>
+             
             </div>
           </motion.div>
         </div>

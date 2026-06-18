@@ -28,16 +28,14 @@ const Menu = () => {
   }, [categoryId])
 
   return (
-    <div className="w-full min-h-screen bg-gray-50/50 pt-24 pb-20">
+    <div className="w-full min-h-screen bg-gray-50/50 pt-4 pb-20">
       <div className="max-w-7xl mx-auto px-6 flex flex-col gap-12">
         
-        {/* Header */}
         <div className="text-center space-y-4">
           <h1 className="text-5xl font-black text-gray-900 tracking-tight">Our Menu</h1>
           <p className="text-gray-500 max-w-lg mx-auto">Explore our curated selection of gourmet dishes, prepared with the finest ingredients.</p>
         </div>
 
-        {/* Category Filter */}
         <div className="w-full flex flex-wrap items-center justify-center gap-3">
           <button 
             onClick={() => setCategoryId('')}
@@ -78,7 +76,7 @@ const Menu = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.4 }}
-                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8"
+                className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
               >
                 {products.length > 0 ? (
                   products.map((item) => (

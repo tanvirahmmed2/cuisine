@@ -76,7 +76,7 @@ const ReviewsPage = () => {
                 </div>
 
                 <div className="bg-gray-50/50 p-4 rounded-xl relative border border-gray-50">
-                  <p className="text-gray-600 text-xs italic leading-relaxed">&quot;{review.comment}&quot;</p>
+                  <p className="text-gray-600 text-xs leading-relaxed">&quot;{review.comment}&quot;</p>
                 </div>
               </div>
 

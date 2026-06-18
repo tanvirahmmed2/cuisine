@@ -67,7 +67,7 @@ const FlashSale = ({ initialProducts = [] }) => {
               Limited Time Curations
             </div>
             <h2 className='text-5xl md:text-6xl font-serif text-gray-900 tracking-tight'>
-              Chef&apos;s <span className='italic font-normal text-gray-400'>Specials</span>
+              Chef&apos;s <span className='font-normal text-gray-400'>Specials</span>
             </h2>
           </div>
           <Link href='/flashsale' className='group flex items-center gap-2 font-sans font-bold text-[10px] uppercase tracking-widest text-gray-400 hover:text-pink-600 transition-colors'>
