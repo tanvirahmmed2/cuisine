@@ -128,12 +128,20 @@ const WebsiteDetails = () => {
                         <input type="text" name='sociallink' value={formData.sociallink} onChange={handleChange} className='p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-pink-500 transition-all'/>
                     </div>
                     
-                    <div className='flex flex-col gap-1 mt-4'>
+                    <div className='flex flex-col gap-4 mt-4'>
                         <h3 className='text-xs font-bold uppercase text-pink-600 tracking-wider'>Preferences</h3>
-                        <label className='text-xs font-bold text-gray-400 uppercase'>Theme Color</label>
-                        <div className='flex items-center gap-2'>
-                            <input type="color" name="theme_color" value={formData.theme_color} onChange={handleChange} className='w-10 h-10 border-0 rounded-lg cursor-pointer bg-transparent'/>
-                            <input type="text" name="theme_color" value={formData.theme_color} onChange={handleChange} className='flex-1 p-2 bg-gray-50 border border-gray-200 rounded-xl text-xs uppercase'/>
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                            <div className='flex flex-col gap-1'>
+                                <label className='text-xs font-bold text-gray-400 uppercase'>Theme Color</label>
+                                <div className='flex items-center gap-2'>
+                                    <input type="color" name="theme_color" value={formData.theme_color} onChange={handleChange} className='w-10 h-10 border-0 rounded-lg cursor-pointer bg-transparent'/>
+                                    <input type="text" name="theme_color" value={formData.theme_color} onChange={handleChange} className='flex-1 p-2 bg-gray-50 border border-gray-200 rounded-xl text-xs uppercase'/>
+                                </div>
+                            </div>
+                            <div className='flex flex-col gap-1'>
+                                <label className='text-xs font-bold text-gray-400 uppercase'>Logo URL</label>
+                                <input type="text" name='logo_url' value={formData.logo_url} onChange={handleChange} className='p-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-pink-500 transition-all'/>
+                            </div>
                         </div>
                     </div>
                 </div>

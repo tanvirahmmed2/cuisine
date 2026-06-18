@@ -22,7 +22,7 @@ const Footer = () => {
                 {siteData?.name || "GRAND KITCHEN"}
               </h1>
               <p className='text-gray-500 text-base leading-relaxed max-w-sm font-light'>
-                {siteData?.meta_description || "Crafting exceptional culinary experiences with passion and precision since 2010."}
+                {siteData?.tagline || siteData?.hero_subtitle || "Crafting exceptional culinary experiences with passion and precision since 2010."}
               </p>
             </div>
             
@@ -30,28 +30,20 @@ const Footer = () => {
               <div className='space-y-2'>
                 <p className='text-[10px] font-bold uppercase tracking-[0.3em] text-pink-600'>Our Sanctuary</p>
                 <div className='text-sm text-gray-600 space-y-1 font-medium'>
-                  <p>{siteData?.address || "123 Culinary Ave, Gourmet City"}</p>
-                  <p>{siteData?.city || "GK City"}, {siteData?.country || "Earth"}</p>
+                  <p>{siteData?.address || "123 Culinary Ave, Gourmet City, GK City, Earth"}</p>
                 </div>
               </div>
 
-              <div className='flex gap-4 pt-4'>
-                {siteData?.facebook && (
-                  <a href={siteData.facebook} target="_blank" rel="noopener noreferrer" className='w-11 h-11 border border-gray-100 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300'>
-                    <FaFacebook size={18} />
+              {siteData?.sociallink && (
+                <div className='flex gap-4 pt-4'>
+                  <a href={siteData.sociallink} target="_blank" rel="noopener noreferrer" className='w-11 h-11 border border-gray-100 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300'>
+                    {siteData.sociallink.includes('facebook') ? <FaFacebook size={18} /> :
+                     siteData.sociallink.includes('instagram') ? <FaInstagram size={18} /> :
+                     siteData.sociallink.includes('linkedin') ? <FaLinkedin size={18} /> :
+                     <FaTwitter size={18} />}
                   </a>
-                )}
-                {siteData?.instagram && (
-                  <a href={siteData.instagram} target="_blank" rel="noopener noreferrer" className='w-11 h-11 border border-gray-100 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300'>
-                    <FaInstagram size={18} />
-                  </a>
-                )}
-                {siteData?.linkedin && (
-                  <a href={siteData.linkedin} target="_blank" rel="noopener noreferrer" className='w-11 h-11 border border-gray-100 rounded-full flex items-center justify-center text-gray-400 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition-all duration-300'>
-                    <FaLinkedin size={18} />
-                  </a>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
 

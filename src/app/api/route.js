@@ -64,9 +64,8 @@ export async function PATCH(req) {
     const website_id = rows[0].website_id;
 
     const allowedFields = [
-      'name', 'business_name', 'logo', 'favicon',
-      'email', 'phone', 'address', 'city', 'country', 'meta_title', 'meta_description',
-      'facebook', 'instagram', 'linkedin', 'youtube', 'primary_color', 'secondary_color'
+      'logo_url', 'theme_color', 'hero_title', 'hero_subtitle',
+      'name', 'address', 'tagline', 'sociallink', 'email', 'phone'
     ];
 
     const updates = {};

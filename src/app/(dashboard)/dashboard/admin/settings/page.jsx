@@ -18,6 +18,7 @@ const AdminSettings = () => {
         hero_subtitle: '',
         sociallink: '',
         theme_color: '#000000',
+        logo_url: '',
         tenant_status: 'active',
         subscription_status: null,
         current_period_end: null,
@@ -166,12 +167,18 @@ const AdminSettings = () => {
                         <div className="px-6 py-4 border-b border-gray-100">
                             <h2 className="text-sm font-semibold text-gray-800">Appearance</h2>
                         </div>
-                        <div className="p-6 flex items-center gap-4">
-                            <div className="flex-1">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Theme Color</label>
-                                <p className="text-xs text-gray-500">{website.theme_color || '#000000'}</p>
+                        <div className="p-6 flex flex-col gap-4">
+                            <div className="flex items-center gap-4">
+                                <div className="flex-1">
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">Theme Color</label>
+                                    <p className="text-xs text-gray-500">{website.theme_color || '#000000'}</p>
+                                </div>
+                                <input type="color" name="theme_color" value={website.theme_color || '#000000'} onChange={handleChange} className="w-10 h-10 p-0 border-0 rounded cursor-pointer" />
                             </div>
-                            <input type="color" name="theme_color" value={website.theme_color || '#000000'} onChange={handleChange} className="w-10 h-10 p-0 border-0 rounded cursor-pointer" />
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
+                                <input name="logo_url" value={website.logo_url || ''} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none text-sm" />
+                            </div>
                         </div>
                     </div>
                 </div>

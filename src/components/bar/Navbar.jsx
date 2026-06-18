@@ -42,8 +42,15 @@ const Navbar = () => {
           onClick={() => setCartBar(false)} 
           className='text-xl font-bold tracking-tight text-gray-900 flex items-center gap-3'
         >
-         
-          {siteData?.name }
+          {siteData?.logo_url ? (
+            <img 
+              src={siteData.logo_url} 
+              alt={siteData.name || 'Logo'} 
+              className='h-8 w-auto object-contain'
+            />
+          ) : (
+            siteData?.name || 'EST. 2024'
+          )}
         </Link>
 
         <div className='hidden md:flex flex-row items-center gap-8'>

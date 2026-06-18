@@ -53,12 +53,23 @@ const Intro = () => {
             </div>
             
             <h1 className='text-6xl md:text-8xl font-serif text-gray-900 leading-[0.9] tracking-tight'>
-              Taste the <br />
-              <span className=' font-normal text-pink-500/80'>Extraordinary</span>
+              {siteData?.hero_title ? (
+                <>
+                  {siteData.hero_title.split(' ').slice(0, -1).join(' ')} <br />
+                  <span className=' font-normal text-pink-500/80'>
+                    {siteData.hero_title.split(' ').slice(-1)[0]}
+                  </span>
+                </>
+              ) : (
+                <>
+                  Taste the <br />
+                  <span className=' font-normal text-pink-500/80'>Extraordinary</span>
+                </>
+              )}
             </h1>
 
             <p className='text-gray-500 text-lg md:text-xl font-light max-w-md leading-relaxed'>
-              {siteData?.meta_description || "Experience culinary excellence with our curated selection of fine dishes and seasonal flavors."}
+              {siteData?.hero_subtitle || siteData?.tagline || "Experience culinary excellence with our curated selection of fine dishes and seasonal flavors."}
             </p>
           </motion.div>
 

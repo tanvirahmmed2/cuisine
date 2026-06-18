@@ -76,12 +76,14 @@ const About = () => {
               variants={itemVariants}
               className="pt-10 border-t border-gray-100 flex items-center gap-6"
             >
-              <div className="w-16 h-16 rounded-full border border-pink-100 flex items-center justify-center text-pink-500 font-serif italic text-2xl">
-                S
+              <div className="w-16 h-16 rounded-full border border-pink-100 flex items-center justify-center text-pink-500 font-serif italic text-2xl uppercase">
+                {siteData?.name?.[0] || "S"}
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 mb-1">Our Philosophy</p>
-                <p className="text-lg font-serif italic text-gray-900">"Simplicity is the ultimate sophistication."</p>
+                <p className="text-lg font-serif italic text-gray-900">
+                  &ldquo;{siteData?.tagline || "Simplicity is the ultimate sophistication."}&rdquo;
+                </p>
               </div>
             </motion.div>
           </div>
