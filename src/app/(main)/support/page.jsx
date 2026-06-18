@@ -4,6 +4,7 @@ import axios from 'axios'
 import React, { useContext, useState } from 'react'
 import toast from 'react-hot-toast'
 import { motion } from 'framer-motion'
+import TiptapEditor from '@/components/forms/TiptapEditor'
 import { FaHeadset, FaEnvelope, FaPenNib, FaMapMarkerAlt, FaArrowRight } from 'react-icons/fa'
 
 const Support = () => {
@@ -25,7 +26,7 @@ const Support = () => {
         e.preventDefault()
         setLoading(true)
         try {
-            const response = await axios.post('/api/support', formData, { withCredentials: true })
+            const response = await axios.post('/api/contact', formData, { withCredentials: true })
             toast.success(response.data.message)
             setFormData({ name: '', email: '', subject: '', message: '' })
         } catch (error) {
@@ -116,7 +117,11 @@ const Support = () => {
 
                         <div className='flex flex-col gap-1.5'>
                             <label className='text-[10px] font-black uppercase text-gray-400 tracking-widest ml-1'>Detailed Message</label>
-                            <textarea name="message" rows="4" required onChange={handleChange} value={formData.message} className='w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-emerald-500 transition-all text-sm resize-none' placeholder="Tell us more about your request..." />
+                            <TiptapEditor
+                                content={formData.message}
+                                onChange={(html) => setFormData(prev => ({ ...prev, message: html }))}
+                                placeholder="Tell us more about your request..."
+                            />
                         </div>
 
                         <button 

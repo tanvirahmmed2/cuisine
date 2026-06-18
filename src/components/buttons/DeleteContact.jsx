@@ -4,10 +4,10 @@ import React from 'react'
 import { MdDeleteOutline } from "react-icons/md";
 import toast from 'react-hot-toast'
 
-const DeleteSupport = ({id}) => {
+const DeleteContact = ({id}) => {
     const handleDelete=async () => {
         try {
-            const response= await axios.delete('/api/support', {data:{id}, withCredentials:true})
+            const response= await axios.delete('/api/contact', {data:{id}, withCredentials:true})
             toast.success(response.data.message)
         } catch (error) {
             console.log(error)
@@ -20,4 +20,4 @@ const DeleteSupport = ({id}) => {
   )
 }
 
-export default DeleteSupport
+export default DeleteContact

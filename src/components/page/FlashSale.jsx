@@ -156,12 +156,11 @@ const FlashSale = () => {
                     </h2>
                   </motion.div>
                   
-                  <motion.p 
+                  <motion.div 
                     variants={itemVariants}
-                    className='text-gray-500 text-lg leading-relaxed font-light max-w-lg mb-10'
-                  >
-                    {item.description || "A masterpiece of flavor, crafted with hand-picked seasonal ingredients and refined culinary techniques."}
-                  </motion.p>
+                    className='text-gray-500 text-lg leading-relaxed font-light max-w-lg mb-10 prose prose-sm prose-slate max-w-none'
+                    dangerouslySetInnerHTML={{ __html: item.description || "<p>A masterpiece of flavor, crafted with hand-picked seasonal ingredients and refined culinary techniques.</p>" }}
+                  />
 
                   <motion.div 
                     variants={itemVariants}

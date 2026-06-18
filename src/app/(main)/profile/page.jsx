@@ -138,6 +138,12 @@ const Profile = () => {
                 >
                   Edit Profile Details
                 </button>
+                <Link 
+                  href="/profile/support"
+                  className='w-full py-4 mt-3 bg-white border border-gray-200 text-gray-900 rounded-2xl font-bold text-sm hover:border-pink-500 hover:text-pink-600 flex items-center justify-center transition-all'
+                >
+                  Support Tickets
+                </Link>
               </div>
             </div>
           </div>

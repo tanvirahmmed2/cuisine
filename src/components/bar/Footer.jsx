@@ -61,6 +61,7 @@ const Footer = () => {
             <div className='flex flex-col gap-4 text-sm'>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/menu'>Explore Flavors</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/flashsale'>Flash Offers</Link>
+              <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/offers'>Special Offers</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/reservation'>Book a Table</Link>
               <Link className='text-gray-600 hover:text-pink-600 transition-colors w-fit' href='/support'>Help & Support</Link>
             </div>

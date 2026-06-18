@@ -1,12 +1,11 @@
 import React from 'react'
 import { getBaseUrl } from '@/lib/tenant/helper'
-import ChatInterface from './ChatInterface'
+import ClientSupport from './ClientSupport'
 import { cookies } from 'next/headers'
 
-const SupportDashboard = async () => {
+const ProfileSupportPage = async () => {
   const baseUrl = await getBaseUrl()
   
-  // We need to pass the cookie because fetch in server component doesn't forward cookies natively
   const cookieStore = await cookies()
   const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ')
 
@@ -28,15 +27,14 @@ const SupportDashboard = async () => {
   }
 
   return (
-    <div className='w-full max-w-7xl mx-auto p-4 flex flex-col gap-6'>
-      <div>
-        <h1 className='text-2xl font-bold text-slate-800'>Support Chat</h1>
-        <p className='text-slate-500 text-sm'>Manage customer support sessions in real-time.</p>
+    <div className='w-full pt-6 pb-20 px-6'>
+      <div className='max-w-6xl mx-auto mb-10'>
+        <h1 className='text-3xl font-black text-gray-900 tracking-tight'>Support Center</h1>
+        <p className='text-gray-500 font-medium mt-1'>We're here to help you.</p>
       </div>
-      
-      <ChatInterface initialTickets={initialTickets} />
+      <ClientSupport initialTickets={initialTickets} />
     </div>
   )
 }
 
-export default SupportDashboard
+export default ProfileSupportPage

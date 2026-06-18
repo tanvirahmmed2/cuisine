@@ -3,16 +3,18 @@ import FlashSale from '@/components/page/FlashSale'
 import Intro from '@/components/page/Intro'
 import Latest from '@/components/page/Latest'
 import Review from '@/components/page/Review'
+import OfferPopup from '@/components/page/OfferPopup'
 import React from 'react'
 
 const Main = () => {
   return (
-    <div className='w-full overflow-hidden min-h-screen flex flex-col items-center justify-center '>
+    <div className='w-full overflow-hidden min-h-screen flex flex-col items-center justify-center'>
       <Intro/>
       <FlashSale/>
       <Latest/>
       <Review/>
       <About/>
+      <OfferPopup/>
     </div>
   )
 }
