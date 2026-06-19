@@ -93,6 +93,7 @@ const TiptapEditor = ({ content, onChange, placeholder = 'Write here...' }) => {
             StarterKit,
         ],
         content: content,
+        immediatelyRender: false,
         onUpdate: ({ editor }) => {
             const html = editor.getHTML();
             onChange(html === '<p></p>' ? '' : html);

@@ -93,9 +93,9 @@ export async function PATCH(req) {
     }
 
     const authenticatedUser = auth.payload;
-    const { name, email, password } = await req.json();
+    const { name, email, password, phone } = await req.json();
 
-    if (!name && !email && !password) {
+    if (!name && !email && !password && !phone) {
       return NextResponse.json({ success: false, message: "Please provide data to update" }, { status: 400 });
     }
 
@@ -111,9 +111,11 @@ export async function PATCH(req) {
     const currentUser = currentUserRows[0];
     const newName = name || currentUser.name;
     const newEmail = email || currentUser.email;
+    const newPhone = phone || currentUser.phone;
 
     const isNameChanged = newName !== currentUser.name;
     const isEmailChanged = newEmail !== currentUser.email;
+    const isPhoneChanged = newPhone !== currentUser.phone;
 
     if (isEmailChanged) {
       const { rows: emailCheck } = await pool.query(
@@ -125,6 +127,19 @@ export async function PATCH(req) {
       }
     }
 
+    if (isPhoneChanged) {
+      if (newPhone && newPhone.length !== 11) {
+        return NextResponse.json({ success: false, message: "Please enter a valid 11-digit phone number" }, { status: 400 });
+      }
+      const { rows: phoneCheck } = await pool.query(
+        "SELECT id FROM restaurant_users WHERE phone = $1 AND tenant_id = $2 LIMIT 1",
+        [newPhone, tenant_id]
+      );
+      if (phoneCheck.length > 0) {
+        return NextResponse.json({ success: false, message: "Phone number is already in use by another account" }, { status: 400 });
+      }
+    }
+
     let isPasswordChanged = false;
     if (password && password.trim() !== "") {
       const isMatching = await bcrypt.compare(password, currentUser.password);
@@ -133,7 +148,7 @@ export async function PATCH(req) {
       }
     }
 
-    if (!isNameChanged && !isEmailChanged && !isPasswordChanged) {
+    if (!isNameChanged && !isEmailChanged && !isPasswordChanged && !isPhoneChanged) {
       return NextResponse.json({ success: false, message: "No changes detected" }, { status: 200 });
     }
 
@@ -143,8 +158,8 @@ export async function PATCH(req) {
     }
 
     const { rows: updatedUser } = await pool.query(
-      "UPDATE restaurant_users SET name = $1, email = $2, password = $3 WHERE id = $4 AND tenant_id = $5 RETURNING id, name, email, phone, role",
-      [newName, newEmail, finalPassword, authenticatedUser.id, tenant_id]
+      "UPDATE restaurant_users SET name = $1, email = $2, password = $3, phone = $4 WHERE id = $5 AND tenant_id = $6 RETURNING id, name, email, phone, role",
+      [newName, newEmail, finalPassword, newPhone, authenticatedUser.id, tenant_id]
     );
 
     return NextResponse.json({
