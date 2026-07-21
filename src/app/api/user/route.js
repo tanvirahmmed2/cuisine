@@ -1,4 +1,4 @@
-import { getTenantContext, getBaseUrl } from "@/lib/tenant/helper";
+import { getBaseUrl } from '@/lib/helper';
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -8,9 +8,7 @@ import { sendEmail } from "@/lib/email";
 
 export async function POST(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const { name, email, password, phone } = await req.json();
     if (!name || !email || !password || !phone) {
@@ -22,10 +20,7 @@ export async function POST(req) {
     }
 
     // Check if user exists
-    const { rows: existingUser } = await pool.query(
-      "SELECT * FROM restaurant_users WHERE (email = $1 OR phone = $2) AND tenant_id = $3 LIMIT 1",
-      [email, phone, tenant_id]
-    );
+    const { rows: existingUser } = await pool.query("SELECT * FROM restaurant_users WHERE (email = $1 OR phone = $2) LIMIT 1", [email, phone]);
 
     if (existingUser.length > 0) {
       return NextResponse.json({ success: false, message: "User already exists with this email/phone" }, { status: 400 });
@@ -35,10 +30,7 @@ export async function POST(req) {
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    const { rows: newUser } = await pool.query(
-      "INSERT INTO restaurant_users (tenant_id, name, email, password, phone, is_verified, verification_token, verification_token_expires) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name, email, phone, role",
-      [tenant_id, name, email, hashedPass, phone, false, verificationToken, verificationExpires]
-    );
+    const { rows: newUser } = await pool.query("INSERT INTO restaurant_users (name, email, password, phone, is_verified, verification_token, verification_token_expires) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, email, phone, role", [name, email, hashedPass, phone, false, verificationToken, verificationExpires]);
 
     const baseUrl = await getBaseUrl();
     const verificationLink = `${baseUrl}/verify?token=${verificationToken}`;
@@ -66,9 +58,7 @@ export async function POST(req) {
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isLogin();
     if (!auth.success) {
@@ -83,9 +73,7 @@ export async function GET(req) {
 
 export async function PATCH(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isLogin();
     if (!auth.success) {
@@ -99,10 +87,7 @@ export async function PATCH(req) {
       return NextResponse.json({ success: false, message: "Please provide data to update" }, { status: 400 });
     }
 
-    const { rows: currentUserRows } = await pool.query(
-      "SELECT * FROM restaurant_users WHERE id = $1 AND tenant_id = $2 LIMIT 1",
-      [authenticatedUser.id, tenant_id]
-    );
+    const { rows: currentUserRows } = await pool.query("SELECT * FROM restaurant_users WHERE id = $1 LIMIT 1", [authenticatedUser.id]);
 
     if (currentUserRows.length === 0) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
@@ -118,10 +103,7 @@ export async function PATCH(req) {
     const isPhoneChanged = newPhone !== currentUser.phone;
 
     if (isEmailChanged) {
-      const { rows: emailCheck } = await pool.query(
-        "SELECT id FROM restaurant_users WHERE email = $1 AND tenant_id = $2 LIMIT 1",
-        [newEmail, tenant_id]
-      );
+      const { rows: emailCheck } = await pool.query("SELECT id FROM restaurant_users WHERE email = $1 LIMIT 1", [newEmail]);
       if (emailCheck.length > 0) {
         return NextResponse.json({ success: false, message: "Email is already in use by another account" }, { status: 400 });
       }
@@ -131,10 +113,7 @@ export async function PATCH(req) {
       if (newPhone && newPhone.length !== 11) {
         return NextResponse.json({ success: false, message: "Please enter a valid 11-digit phone number" }, { status: 400 });
       }
-      const { rows: phoneCheck } = await pool.query(
-        "SELECT id FROM restaurant_users WHERE phone = $1 AND tenant_id = $2 LIMIT 1",
-        [newPhone, tenant_id]
-      );
+      const { rows: phoneCheck } = await pool.query("SELECT id FROM restaurant_users WHERE phone = $1 LIMIT 1", [newPhone]);
       if (phoneCheck.length > 0) {
         return NextResponse.json({ success: false, message: "Phone number is already in use by another account" }, { status: 400 });
       }
@@ -157,10 +136,7 @@ export async function PATCH(req) {
       finalPassword = await bcrypt.hash(password, 10);
     }
 
-    const { rows: updatedUser } = await pool.query(
-      "UPDATE restaurant_users SET name = $1, email = $2, password = $3, phone = $4 WHERE id = $5 AND tenant_id = $6 RETURNING id, name, email, phone, role",
-      [newName, newEmail, finalPassword, newPhone, authenticatedUser.id, tenant_id]
-    );
+    const { rows: updatedUser } = await pool.query("UPDATE restaurant_users SET name = $1, email = $2, password = $3, phone = $4 WHERE id = $5 RETURNING id, name, email, phone, role", [newName, newEmail, finalPassword, newPhone, authenticatedUser.id]);
 
     return NextResponse.json({
       success: true,
@@ -175,9 +151,7 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isLogin();
     if (!auth.success) {
@@ -187,10 +161,7 @@ export async function DELETE(req) {
     const user = auth.payload;
 
     if (user.role === "admin") {
-      const { rows: adminRows } = await pool.query(
-        "SELECT id FROM restaurant_users WHERE role = 'admin' AND tenant_id = $1",
-        [tenant_id]
-      );
+      const { rows: adminRows } = await pool.query("SELECT id FROM restaurant_users WHERE role = 'admin'");
 
       if (adminRows.length === 1) {
         return NextResponse.json({
@@ -200,7 +171,7 @@ export async function DELETE(req) {
       }
     }
 
-    await pool.query("DELETE FROM restaurant_users WHERE id = $1 AND tenant_id = $2", [user.id, tenant_id]);
+    await pool.query("DELETE FROM restaurant_users WHERE id = $1", [user.id]);
 
     const res = NextResponse.json({
       success: true,

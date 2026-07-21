@@ -1,6 +1,6 @@
 import ItemDetails from '@/components/page/ItemDetails'
 import SameCategoryProducts from '@/components/page/SameCategoryProducts'
-import { getBaseUrl } from '@/lib/tenant/helper'
+import { getBaseUrl } from '@/lib/helper';
 import React from 'react'
 
 const SingleProduct = async ({ params }) => {

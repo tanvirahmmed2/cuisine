@@ -1,18 +1,13 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import { isManager } from "@/lib/auth/middleware";
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
-    const { rows } = await pool.query(
-      "SELECT * FROM restaurant_reviews WHERE tenant_id = $1 ORDER BY id DESC",
-      [tenant_id]
-    );
+    const { rows } = await pool.query("SELECT * FROM restaurant_reviews ORDER BY id DESC");
 
     return NextResponse.json({
       success: true,
@@ -27,9 +22,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const { name, email, comment, rating } = await req.json();
     if (!name || !email || !comment || !rating) {
@@ -37,19 +30,13 @@ export async function POST(req) {
     }
 
     // Enforce one review per email
-    const { rows: existing } = await pool.query(
-      "SELECT id FROM restaurant_reviews WHERE email = $1 AND tenant_id = $2 LIMIT 1",
-      [email, tenant_id]
-    );
+    const { rows: existing } = await pool.query("SELECT id FROM restaurant_reviews WHERE email = $1 LIMIT 1", [email]);
 
     if (existing.length > 0) {
       return NextResponse.json({ success: false, message: "Review already submitted with this email" }, { status: 400 });
     }
 
-    const { rows: newReview } = await pool.query(
-      "INSERT INTO restaurant_reviews (tenant_id, name, email, comment, rating) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [tenant_id, name, email, comment, rating]
-    );
+    const { rows: newReview } = await pool.query("INSERT INTO restaurant_reviews (name, email, comment, rating) VALUES ($1, $2, $3, $4) RETURNING *", [name, email, comment, rating]);
 
     return NextResponse.json({
       success: true,
@@ -64,9 +51,7 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isManager();
     if (!auth.success) {
@@ -78,16 +63,13 @@ export async function DELETE(req) {
       return NextResponse.json({ success: false, message: "Id not found" }, { status: 400 });
     }
 
-    const { rows } = await pool.query(
-      "SELECT id FROM restaurant_reviews WHERE id = $1 AND tenant_id = $2 LIMIT 1",
-      [id, tenant_id]
-    );
+    const { rows } = await pool.query("SELECT id FROM restaurant_reviews WHERE id = $1 LIMIT 1", [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Review not found" }, { status: 404 });
     }
 
-    await pool.query("DELETE FROM restaurant_reviews WHERE id = $1 AND tenant_id = $2", [id, tenant_id]);
+    await pool.query("DELETE FROM restaurant_reviews WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,

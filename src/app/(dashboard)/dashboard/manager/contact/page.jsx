@@ -1,5 +1,5 @@
 import DeleteContact from '@/components/buttons/DeleteContact'
-import { getBaseUrl } from '@/lib/tenant/helper'
+import { getBaseUrl } from '@/lib/helper';
 import Link from 'next/link'
 import React from 'react'
 

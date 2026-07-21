@@ -64,7 +64,7 @@ const Reservation = () => {
             </h1>
           </div>
           <p className='text-gray-500 text-lg leading-relaxed max-w-md font-medium'>
-            {siteData?.meta_description || "Book your table at Grand Kitchen and prepare for an unforgettable culinary journey."}
+            {siteData?.hero_subtitle || `Book your table at ${siteData?.name || "Grand Kitchen"} and prepare for an unforgettable culinary journey.`}
           </p>
           <div className='flex flex-col gap-4 pt-4 border-t border-gray-100'>
             <div className='flex items-center gap-3'>

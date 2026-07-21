@@ -1,5 +1,5 @@
 import UpdateItemForm from '@/components/forms/UpdateItemForm'
-import { getBaseUrl } from '@/lib/tenant/helper'
+import { getBaseUrl } from '@/lib/helper';
 import React from 'react'
 
 const UpdateItem = async ({ params }) => {

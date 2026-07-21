@@ -1,4 +1,4 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import cloudinary from "@/lib/database/cloudinary";
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
@@ -7,18 +7,16 @@ import { isManager } from "@/lib/auth/middleware";
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const { searchParams } = new URL(req.url);
     const category_id = searchParams.get("q");
 
-    let query = "SELECT p.*, c.name as category_name, c.slug as category_slug FROM restaurant_items p LEFT JOIN restaurant_categories c ON p.category_id = c.id WHERE p.tenant_id = $1";
-    let params = [tenant_id];
+    let query = "SELECT p.*, c.name as category_name, c.slug as category_slug FROM restaurant_items p LEFT JOIN restaurant_categories c ON p.category_id = c.id";
+    let params = [];
 
     if (category_id) {
-      query += " AND p.category_id = $2";
+      query += " WHERE p.category_id = $1";
       params.push(category_id);
     }
 
@@ -31,9 +29,7 @@ export async function GET(req) {
     let variantsMap = {};
     if (itemIds.length > 0) {
       const { rows: variants } = await pool.query(
-        "SELECT * FROM restaurant_item_variants WHERE item_id = ANY($1) AND tenant_id = $2",
-        [itemIds, tenant_id]
-      );
+        "SELECT * FROM restaurant_item_variants WHERE item_id = ANY($1)", [itemIds]);
       variants.forEach(v => {
         if (!variantsMap[v.item_id]) variantsMap[v.item_id] = [];
         variantsMap[v.item_id].push(v);
@@ -62,9 +58,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isManager();
     if (!auth.success) {
@@ -90,10 +84,7 @@ export async function POST(req) {
     const slug = slugify(title, { lower: true, strict: true });
 
     // Check if product exists
-    const { rows: existingProduct } = await pool.query(
-      "SELECT id FROM restaurant_items WHERE slug = $1 AND tenant_id = $2 LIMIT 1",
-      [slug, tenant_id]
-    );
+    const { rows: existingProduct } = await pool.query("SELECT id FROM restaurant_items WHERE slug = $1 LIMIT 1", [slug]);
 
     if (existingProduct.length > 0) {
       return NextResponse.json({ success: false, message: "Product already exists" }, { status: 400 });
@@ -118,10 +109,7 @@ export async function POST(req) {
       uploadStream.end(buffer);
     });
 
-    const { rows: newProduct } = await pool.query(
-      "INSERT INTO restaurant_items (tenant_id, category_id, title, slug, description, price, discount, image, image_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *",
-      [tenant_id, category_id, title, slug, description, price, discount, cloudImage.secure_url, cloudImage.public_id]
-    );
+    const { rows: newProduct } = await pool.query("INSERT INTO restaurant_items (category_id, title, slug, description, price, discount, image, image_id) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *", [category_id, title, slug, description, price, discount, cloudImage.secure_url, cloudImage.public_id]);
 
     const product = newProduct[0];
 
@@ -132,10 +120,7 @@ export async function POST(req) {
         const variants = JSON.parse(variantsStr);
         if (Array.isArray(variants) && variants.length > 0) {
           for (const variant of variants) {
-            await pool.query(
-              "INSERT INTO restaurant_item_variants (tenant_id, item_id, name, value, price_adjustment, is_default) VALUES ($1, $2, $3, $4, $5, $6)",
-              [tenant_id, product.id, variant.name, variant.value, Number(variant.price_adjustment) || 0, variant.is_default || false]
-            );
+            await pool.query("INSERT INTO restaurant_item_variants (item_id, name, value, price_adjustment, is_default) VALUES ($1, $2, $3, $4, $5)", [product.id, variant.name, variant.value, Number(variant.price_adjustment) || 0, variant.is_default || false]);
           }
         }
       } catch (e) {
@@ -160,9 +145,7 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isManager();
     if (!auth.success) {
@@ -174,10 +157,7 @@ export async function DELETE(req) {
       return NextResponse.json({ success: false, message: "Id not found" }, { status: 400 });
     }
 
-    const { rows } = await pool.query(
-      "SELECT * FROM restaurant_items WHERE id = $1 AND tenant_id = $2 LIMIT 1",
-      [id, tenant_id]
-    );
+    const { rows } = await pool.query("SELECT * FROM restaurant_items WHERE id = $1 LIMIT 1", [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
@@ -189,7 +169,7 @@ export async function DELETE(req) {
       await cloudinary.uploader.destroy(product.image_id);
     }
 
-    await pool.query("DELETE FROM restaurant_items WHERE id = $1 AND tenant_id = $2", [id, tenant_id]);
+    await pool.query("DELETE FROM restaurant_items WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,

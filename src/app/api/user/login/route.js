@@ -1,4 +1,4 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -7,9 +7,7 @@ import { JWT_SECRET, NODE_ENV } from "@/lib/database/secret";
 
 export async function POST(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const { email, password } = await req.json();
 
@@ -20,10 +18,7 @@ export async function POST(req) {
       }, { status: 400 });
     }
 
-    const { rows } = await pool.query(
-      "SELECT * FROM restaurant_users WHERE email = $1 AND tenant_id = $2 LIMIT 1",
-      [email, tenant_id]
-    );
+    const { rows } = await pool.query("SELECT * FROM restaurant_users WHERE email = $1 LIMIT 1", [email]);
 
     if (rows.length === 0) {
       return NextResponse.json({
@@ -61,6 +56,9 @@ export async function POST(req) {
 
     const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "7d" });
 
+    const host = req.headers.get("host") || "";
+    const isLocalhost = host.includes("localhost") || host.includes("127.0.0.1");
+
     const response = NextResponse.json(
       {
         success: true,
@@ -72,7 +70,7 @@ export async function POST(req) {
 
     response.cookies.set("restaurant_token", token, {
       httpOnly: true,
-      secure: NODE_ENV,
+      secure: NODE_ENV && !isLocalhost,
       path: "/",
       maxAge: 60 * 60 * 24 * 7,
     });

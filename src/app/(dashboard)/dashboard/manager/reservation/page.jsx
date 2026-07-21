@@ -1,7 +1,7 @@
 
 import ConfirmBooking from '@/components/buttons/ConfirmBooking'
 import DeleteReservation from '@/components/buttons/DeleteReservation'
-import { getBaseUrl } from '@/lib/tenant/helper'
+import { getBaseUrl } from '@/lib/helper';
 import Link from 'next/link'
 import React from 'react'
 

@@ -1,19 +1,12 @@
 import React from 'react'
-import { getBaseUrl, getTenantContext } from '@/lib/tenant/helper'
+import { getBaseUrl } from '@/lib/helper';
 import ReviewCard from '@/components/card/ReviewCard'
 import { RiChatQuoteLine } from 'react-icons/ri'
 
 const ReviewsPage = async () => {
   const baseUrl = await getBaseUrl()
   
-  const tenantCtx = await getTenantContext()
-  if (!tenantCtx.success) {
-    return (
-      <div className='w-full min-h-screen flex items-center justify-center bg-gray-50'>
-        <p className='text-gray-500 font-semibold'>Website not available.</p>
-      </div>
-    )
-  }
+  
 
   // Fetch all reviews
   const reviewRes = await fetch(`${baseUrl}/api/review`, { cache: 'no-store' }).catch(() => null)

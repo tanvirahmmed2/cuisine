@@ -8,6 +8,7 @@ import { FaUser, FaPhone, FaEnvelope, FaLock, FaArrowRight } from 'react-icons/f
 
 const RegisterForm = () => {
     const [loading, setLoading] = useState(false)
+    const [registered, setRegistered] = useState(false)
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -26,12 +27,32 @@ const RegisterForm = () => {
         try {
             const res = await axios.post('/api/user', formData, { withCredentials: true })
             toast.success(res.data.message)
-            window.location.replace('/login')
+            setRegistered(true)
         } catch (error) {
             toast.error(error?.response?.data?.message || "Registration failed")
         } finally {
             setLoading(false)
         }
+    }
+    if (registered) {
+        return (
+            <motion.div 
+                initial={{ opacity: 0, y: 10 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                transition={{ duration: 0.5 }} 
+                className='flex-1 w-full max-w-md bg-white p-10 rounded-xl border border-gray-100 text-center space-y-6 flex flex-col items-center justify-center'
+            >
+                <div className='w-16 h-16 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center text-3xl font-bold'>✉</div>
+                <h2 className='text-3xl font-semibold text-gray-900 tracking-tight'>Verify your email</h2>
+                <p className='text-gray-500 text-sm leading-relaxed'>
+                    We've sent a verification link to <strong className="text-gray-900">{formData.email}</strong>. 
+                    Please check your inbox and click the link to verify your account.
+                </p>
+                <Link href='/login' className='inline-block w-full py-4 bg-pink-500 text-white rounded-xl font-semibold text-xs uppercase tracking-widest hover:bg-pink-600 transition-all text-center'>
+                    Go to Login
+                </Link>
+            </motion.div>
+        )
     }
 
     return (

@@ -1,22 +1,16 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
-    const { rows } = await pool.query(
-      `SELECT p.*, c.name as category_name, c.slug as category_slug 
+    const { rows } = await pool.query(`SELECT p.*, c.name as category_name, c.slug as category_slug 
        FROM restaurant_items p 
-       LEFT JOIN restaurant_categories c ON p.category_id = c.id 
-       WHERE p.tenant_id = $1
+       LEFT JOIN restaurant_categories c ON p.category_id = c.id
        ORDER BY p.created_at DESC 
-       LIMIT 8`,
-      [tenant_id]
-    );
+       LIMIT 8`);
 
     return NextResponse.json({
       success: true,

@@ -1,13 +1,11 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import { isLogin } from "@/lib/auth/middleware";
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isLogin();
     if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
@@ -22,10 +20,7 @@ export async function GET(req) {
 
     // Verify ownership or manager
     const isMgr = user.role === 'manager' || user.role === 'admin';
-    const { rows: ticketCheck } = await pool.query(
-      "SELECT user_id FROM restaurant_support_tickets WHERE id = $1 AND tenant_id = $2 LIMIT 1",
-      [ticket_id, tenant_id]
-    );
+    const { rows: ticketCheck } = await pool.query("SELECT user_id FROM restaurant_support_tickets WHERE id = $1 LIMIT 1", [ticket_id]);
 
     if (ticketCheck.length === 0) {
       return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
@@ -35,10 +30,7 @@ export async function GET(req) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
     }
 
-    const { rows } = await pool.query(
-      "SELECT * FROM restaurant_support_messages WHERE ticket_id = $1 AND tenant_id = $2 ORDER BY created_at ASC",
-      [ticket_id, tenant_id]
-    );
+    const { rows } = await pool.query("SELECT * FROM restaurant_support_messages WHERE ticket_id = $1 ORDER BY created_at ASC", [ticket_id]);
 
     return NextResponse.json({
       success: true,
@@ -53,9 +45,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isLogin();
     if (!auth.success) return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
@@ -70,10 +60,7 @@ export async function POST(req) {
     const isMgr = user.role === 'manager' || user.role === 'admin';
     
     // Verify ownership or manager
-    const { rows: ticketCheck } = await pool.query(
-      "SELECT user_id FROM restaurant_support_tickets WHERE id = $1 AND tenant_id = $2 LIMIT 1",
-      [ticket_id, tenant_id]
-    );
+    const { rows: ticketCheck } = await pool.query("SELECT user_id FROM restaurant_support_tickets WHERE id = $1 LIMIT 1", [ticket_id]);
 
     if (ticketCheck.length === 0) {
       return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
@@ -90,15 +77,10 @@ export async function POST(req) {
       const senderType = isMgr ? 'manager' : 'user';
 
       const { rows: msgRows } = await client.query(
-        "INSERT INTO restaurant_support_messages (tenant_id, ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-        [tenant_id, ticket_id, senderType, user.id, message]
-      );
+        "INSERT INTO restaurant_support_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4) RETURNING *", [ticket_id, senderType, user.id, message]);
 
       // Update ticket timestamp
-      await client.query(
-        "UPDATE restaurant_support_tickets SET updated_at = CURRENT_TIMESTAMP WHERE id = $1 AND tenant_id = $2",
-        [ticket_id, tenant_id]
-      );
+      await client.query("UPDATE restaurant_support_tickets SET updated_at = CURRENT_TIMESTAMP WHERE id = $1", [ticket_id]);
 
       await client.query("COMMIT");
 

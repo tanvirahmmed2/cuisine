@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { JWT_SECRET } from "../database/secret";
 import { pool } from "../database/pg";
-import { getTenantContext } from "../tenant/helper";
+
 async function getAuthenticatedUser() {
   try {
     const cookieStore = await cookies();
@@ -13,7 +13,7 @@ async function getAuthenticatedUser() {
     const decoded = jwt.verify(token, JWT_SECRET);
     
     const { rows } = await pool.query(
-      "SELECT id, tenant_id, name, email, phone, role, is_banned FROM restaurant_users WHERE id = $1 LIMIT 1",
+      "SELECT id, name, email, phone, role, is_banned FROM restaurant_users WHERE id = $1 LIMIT 1",
       [decoded.id]
     );
 
@@ -21,11 +21,6 @@ async function getAuthenticatedUser() {
     const user = rows[0];
 
     if (user.is_banned) return null;
-
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success || tenantCtx.payload.tenant_id !== user.tenant_id) {
-      return null;
-    }
 
     return user;
   } catch (error) {
@@ -64,6 +59,3 @@ export async function isSales() {
   }
   return auth;
 }
-
-
-

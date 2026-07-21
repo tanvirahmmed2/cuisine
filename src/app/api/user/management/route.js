@@ -1,4 +1,4 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
@@ -6,9 +6,7 @@ import { isAdmin } from "@/lib/auth/middleware";
 
 export async function POST(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isAdmin();
     if (!auth.success) {
@@ -25,10 +23,7 @@ export async function POST(req) {
     }
 
     // Check if email already exists
-    const { rows: existing } = await pool.query(
-      "SELECT id FROM restaurant_users WHERE email = $1 AND tenant_id = $2 LIMIT 1",
-      [email, tenant_id]
-    );
+    const { rows: existing } = await pool.query("SELECT id FROM restaurant_users WHERE email = $1 LIMIT 1", [email]);
 
     if (existing.length > 0) {
       return NextResponse.json({ success: false, message: "User already exists with this email" }, { status: 400 });
@@ -37,10 +32,7 @@ export async function POST(req) {
     const hashedPass = await bcrypt.hash(password, 10);
     const userPhone = phone || "01900000000";
 
-    const { rows: newUser } = await pool.query(
-      "INSERT INTO restaurant_users (tenant_id, name, email, password, phone, role) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, name, email, phone, role",
-      [tenant_id, name, email, hashedPass, userPhone, role]
-    );
+    const { rows: newUser } = await pool.query("INSERT INTO restaurant_users (name, email, password, phone, role) VALUES ($1, $2, $3, $4, $5) RETURNING id, name, email, phone, role", [name, email, hashedPass, userPhone, role]);
 
     return NextResponse.json({
       success: true,
@@ -55,9 +47,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isAdmin();
     if (!auth.success) {
@@ -73,10 +63,7 @@ export async function PUT(req) {
 
     // If email is provided instead of id, look up the user
     if (!userId && email) {
-      const { rows: emailSearch } = await pool.query(
-        "SELECT id FROM restaurant_users WHERE email = $1 AND tenant_id = $2 LIMIT 1",
-        [email, tenant_id]
-      );
+      const { rows: emailSearch } = await pool.query("SELECT id FROM restaurant_users WHERE email = $1 LIMIT 1", [email]);
       if (emailSearch.length === 0) {
         return NextResponse.json({ success: false, message: "User with this email not found" }, { status: 404 });
       }
@@ -90,26 +77,17 @@ export async function PUT(req) {
 
     // Check if updating the last admin
     if (role !== 'admin') {
-      const { rows: staffRows } = await pool.query(
-        "SELECT role FROM restaurant_users WHERE id = $1 AND tenant_id = $2 LIMIT 1",
-        [userId, tenant_id]
-      );
+      const { rows: staffRows } = await pool.query("SELECT role FROM restaurant_users WHERE id = $1 LIMIT 1", [userId]);
 
       if (staffRows.length > 0 && staffRows[0].role === 'admin') {
-        const { rows: adminRows } = await pool.query(
-          "SELECT id FROM restaurant_users WHERE role = 'admin' AND tenant_id = $1",
-          [tenant_id]
-        );
+        const { rows: adminRows } = await pool.query("SELECT id FROM restaurant_users WHERE role = 'admin'");
         if (adminRows.length <= 1) {
           return NextResponse.json({ success: false, message: "Cannot demote the last admin" }, { status: 400 });
         }
       }
     }
 
-    const { rows: updatedUser } = await pool.query(
-      "UPDATE restaurant_users SET role = $1 WHERE id = $2 AND tenant_id = $3 RETURNING id, name, email, role",
-      [role, userId, tenant_id]
-    );
+    const { rows: updatedUser } = await pool.query("UPDATE restaurant_users SET role = $1 WHERE id = $2 RETURNING id, name, email, role", [role, userId]);
 
     if (updatedUser.length === 0) {
       return NextResponse.json({ success: false, message: "User not found or update failed" }, { status: 404 });
@@ -128,9 +106,7 @@ export async function PUT(req) {
 
 export async function DELETE(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isAdmin();
     if (!auth.success) {
@@ -142,10 +118,7 @@ export async function DELETE(req) {
       return NextResponse.json({ success: false, message: "User id not found" }, { status: 400 });
     }
 
-    const { rows: userRows } = await pool.query(
-      "SELECT id, role FROM restaurant_users WHERE id = $1 AND tenant_id = $2 LIMIT 1",
-      [id, tenant_id]
-    );
+    const { rows: userRows } = await pool.query("SELECT id, role FROM restaurant_users WHERE id = $1 LIMIT 1", [id]);
 
     if (userRows.length === 0) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
@@ -154,16 +127,13 @@ export async function DELETE(req) {
     const user = userRows[0];
 
     // Ensure at least one admin remains
-    const { rows: adminRows } = await pool.query(
-      "SELECT id FROM restaurant_users WHERE role = 'admin' AND tenant_id = $1",
-      [tenant_id]
-    );
+    const { rows: adminRows } = await pool.query("SELECT id FROM restaurant_users WHERE role = 'admin'");
 
     if (adminRows.length === 1 && user.role === "admin") {
       return NextResponse.json({ success: false, message: "This account can't be removed (last admin)" }, { status: 400 });
     }
 
-    await pool.query("DELETE FROM restaurant_users WHERE id = $1 AND tenant_id = $2", [id, tenant_id]);
+    await pool.query("DELETE FROM restaurant_users WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,

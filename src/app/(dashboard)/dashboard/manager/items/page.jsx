@@ -1,6 +1,6 @@
 import DeleteItem from '@/components/buttons/DeleteItem'
 import UpdateItem from '@/components/buttons/UpdateItem'
-import { getBaseUrl } from '@/lib/tenant/helper'
+import { getBaseUrl } from '@/lib/helper';
 import Link from 'next/link'
 import React from 'react'
 import { FaPlus } from 'react-icons/fa'

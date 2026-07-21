@@ -5,20 +5,12 @@ import Latest from '@/components/page/Latest'
 import Review from '@/components/page/Review'
 import OfferPopup from '@/components/page/OfferPopup'
 import React from 'react'
-import { getBaseUrl, getTenantContext } from '@/lib/tenant/helper'
+import { getBaseUrl } from '@/lib/helper';
 
 const Main = async () => {
   const baseUrl = await getBaseUrl()
   
-  // Verify tenant exists before fetching all data
-  const tenantCtx = await getTenantContext()
-  if (!tenantCtx.success) {
-    return (
-      <div className='w-full min-h-screen flex items-center justify-center bg-gray-50'>
-        <p className='text-gray-500 font-semibold'>Website not available.</p>
-      </div>
-    )
-  }
+  
 
   // Fetch all initial data concurrently
   const [flashSaleRes, latestRes, reviewRes, offerRes] = await Promise.all([

@@ -1,5 +1,5 @@
 import React from 'react'
-import { getBaseUrl } from '@/lib/tenant/helper'
+import { getBaseUrl } from '@/lib/helper';
 import ChatInterface from './ChatInterface'
 import { cookies } from 'next/headers'
 

@@ -1,413 +1,162 @@
---SAAS DETAILS---
--- ress_ preffix for restaurant saas and restaurant_ preffix for tenant websites --
+-- STANDALONE RESTAURANT WEBSITE DATABASE SCHEMA --
 -- =====================================================
--- TENANTS
--- =====================================================
-
-CREATE TABLE ress_tenants (
-  tenant_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-
-  status TEXT DEFAULT 'active'
-    CHECK (status IN ('active','development','suspended','deleted')),
-
-  created_at TIMESTAMP DEFAULT now(),
-  updated_at TIMESTAMP DEFAULT now()
-);
-
 
 CREATE TABLE restaurant_websites (
   website_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-  tenant_id INT UNIQUE REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   logo_url TEXT,
   theme_color TEXT,
-
   hero_title TEXT,
   hero_subtitle TEXT,
-
   name TEXT,
   address TEXT,
   tagline TEXT,
   sociallink TEXT,
   email TEXT,
   phone TEXT,
-
   created_at TIMESTAMP DEFAULT now(),
   updated_at TIMESTAMP DEFAULT now()
 );
--- =====================================================
--- DOMAINS
--- =====================================================
 
-CREATE TABLE ress_domains (
-  domain_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
-  domain TEXT UNIQUE NOT NULL,
-  is_primary BOOLEAN DEFAULT FALSE,
-  verified BOOLEAN DEFAULT FALSE,
-
-  created_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- PACKAGES
--- =====================================================
-
-CREATE TABLE ress_packages (
-  package_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-  name TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  description TEXT,
-
-  monthly_price NUMERIC(10,2),
-  yearly_price NUMERIC(10,2),
-  setup_fee NUMERIC(10,2),
-
-  max_menu_items INT,
-  max_orders_per_month INT,
-  max_tables INT,
-
-  is_active BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- SUBSCRIPTIONS
--- =====================================================
-
-CREATE TABLE ress_subscriptions (
-  subscription_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-  package_id INT REFERENCES ress_packages(package_id),
-
-  status TEXT DEFAULT 'active'
-    CHECK (status IN ('trial','active','expired','cancelled')),
-
-  start_date TIMESTAMP DEFAULT now(),
-  end_date TIMESTAMP,
-
-  auto_renew BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- PURCHASES
--- =====================================================
-
-CREATE TABLE ress_purchases (
-  purchase_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
-  tenant_id INT
-    REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
-  package_id INT
-    REFERENCES ress_packages(package_id),
-
-  user_id INT
-    REFERENCES ress_users(user_id) ON DELETE SET NULL,
-
-  amount NUMERIC(10,2) NOT NULL,
-  metadata JSONB,
-  
-  requested_tenant_name TEXT,
-  requested_tenant_slug TEXT,
-  requested_custom_domain TEXT,
-  transaction_id TEXT,
-  payment_method TEXT,
-  duration_months INT DEFAULT 1,
-
-  status TEXT DEFAULT 'pending'
-    CHECK (
-      status IN (
-        'pending',
-        'paid',
-        'failed',
-        'cancelled',
-        'refunded'
-      )
-    ),
-
-  note TEXT,
-  
-  created_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- INVOICES
--- =====================================================
-
-CREATE TABLE ress_invoices (
-  invoice_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
-  subscription_id INT REFERENCES ress_subscriptions(subscription_id),
-  purchase_id INT REFERENCES ress_purchases(purchase_id) ON DELETE CASCADE,
-
-  invoice_number TEXT UNIQUE NOT NULL,
-
-  amount NUMERIC(10,2) NOT NULL,
-
-  status TEXT DEFAULT 'unpaid'
-    CHECK (
-      status IN (
-        'unpaid',
-        'paid',
-        'overdue'
-      )
-    ),
-
-  due_date TIMESTAMP,
-
-  created_at TIMESTAMP DEFAULT now()
-);
-
--- =====================================================
--- SAAS PAYMENTS
--- =====================================================
-
-CREATE TABLE ress_subscription_payments (
-  payment_id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
-  subscription_id INT
-    REFERENCES ress_subscriptions(subscription_id),
-  purchase_id INT
-    REFERENCES ress_purchases(purchase_id) ON DELETE CASCADE,
-
-  amount NUMERIC(10,2),
-
-  provider TEXT,
-  transaction_id TEXT UNIQUE,
-
-  status TEXT DEFAULT 'pending'
-    CHECK (
-      status IN (
-        'pending',
-        'success',
-        'failed',
-        'refunded'
-      )
-    ),
-
-  paid_at TIMESTAMP,
-
-  created_at TIMESTAMP DEFAULT now()
-);
-
-
-
---RETAURANT WEBSITE--
---USER & IDENTITY MANAGEMENT--
-
+-- USER & IDENTITY MANAGEMENT
 CREATE TABLE restaurant_users (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   name VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
   phone VARCHAR(50) NOT NULL,
-
   password VARCHAR(255) NOT NULL,
-
   role VARCHAR(50) DEFAULT 'user'
     CHECK (role IN ('admin','manager','sales','user')),
-
   is_banned BOOLEAN DEFAULT FALSE,
+  
+  -- 🔐 EMAIL VERIFICATION SYSTEM
+  is_verified BOOLEAN DEFAULT FALSE,
+  verification_token TEXT,
+  verification_token_expires TIMESTAMP,
 
   -- 🔐 FORGOT PASSWORD SYSTEM
   reset_token TEXT,
   reset_token_expires TIMESTAMP,
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_customers (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   name VARCHAR(255) DEFAULT 'guest',
   phone VARCHAR(50)
 );
 
-
 CREATE TABLE restaurant_categories (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   name VARCHAR(255) NOT NULL,
   image TEXT,
   image_id VARCHAR(255),
   slug VARCHAR(255) UNIQUE,
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_items (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   category_id INT REFERENCES restaurant_categories(id) ON DELETE CASCADE,
-
   title VARCHAR(255) NOT NULL,
   slug VARCHAR(255) UNIQUE,
   description TEXT,
-
   price DECIMAL(12,2) NOT NULL,
   image TEXT,
   image_id VARCHAR(255),
-
   is_available BOOLEAN DEFAULT TRUE,
   discount DECIMAL(5,2) DEFAULT 0,
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
 CREATE TABLE restaurant_orders (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   name VARCHAR(255),
   phone VARCHAR(50),
-
   delivery_method VARCHAR(50) DEFAULT 'takein'
     CHECK (delivery_method IN ('takeaway','takein')),
-
   table_no VARCHAR(50),
-
   sub_total DECIMAL(12,2),
   total_discount DECIMAL(12,2) DEFAULT 0,
   total_price DECIMAL(12,2),
-
   payment_method VARCHAR(50) DEFAULT 'cash',
   status VARCHAR(50) DEFAULT 'pending',
-
   transaction_id TEXT,
   payment_status VARCHAR(50) DEFAULT 'unpaid',
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_order_items (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   order_id INT REFERENCES restaurant_orders(id) ON DELETE CASCADE,
   product_id INT REFERENCES restaurant_items(id),
-
   title VARCHAR(255),
   quantity INT NOT NULL,
   price DECIMAL(12,2),
   discount DECIMAL(12,2)
 );
 
-
 CREATE TABLE restaurant_payments (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   order_id INT REFERENCES restaurant_orders(id),
-
   amount DECIMAL(12,2) NOT NULL,
   method VARCHAR(50),
   transaction_id TEXT,
-
   status VARCHAR(50) DEFAULT 'pending',
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_expenses (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   title VARCHAR(255),
   note TEXT,
   amount DECIMAL(12,2),
-
   created_by INT REFERENCES restaurant_users(id),
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-
 CREATE TABLE restaurant_reservations (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   name VARCHAR(255),
   email VARCHAR(255),
-
   res_date TIMESTAMP,
   member_count INT,
-
   table_no VARCHAR(50),
   message TEXT,
-
   status VARCHAR(50) DEFAULT 'pending'
 );
 
-
-
 CREATE TABLE restaurant_contact_tickets (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   name VARCHAR(255),
   email VARCHAR(255),
   subject VARCHAR(255),
   message TEXT,
-
   status VARCHAR(50) DEFAULT 'unread',
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_support_tickets (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   user_id INT REFERENCES restaurant_users(id) ON DELETE SET NULL,
-
   subject VARCHAR(255),
   status VARCHAR(50) DEFAULT 'open',
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_support_messages (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   ticket_id INT REFERENCES restaurant_support_tickets(id) ON DELETE CASCADE,
   sender_type VARCHAR(50) CHECK (sender_type IN ('user', 'manager')),
   sender_id INT,
-
   message TEXT,
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_reviews (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   name VARCHAR(255),
   email VARCHAR(255),
   comment TEXT,
@@ -416,47 +165,32 @@ CREATE TABLE restaurant_reviews (
 
 CREATE TABLE restaurant_offers (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   title VARCHAR(255) NOT NULL,
   description TEXT,
-
   image TEXT,
   image_id TEXT,
-
   is_active BOOLEAN DEFAULT TRUE,
-
   start_date TIMESTAMP,
   end_date TIMESTAMP,
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_item_variants (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   item_id INT REFERENCES restaurant_items(id) ON DELETE CASCADE,
-
   name VARCHAR(255) NOT NULL,        -- e.g. Size / Add-on
   value VARCHAR(255) NOT NULL,       -- e.g. Large / Cheese
-
   price_adjustment DECIMAL(12,2) DEFAULT 0,  -- extra price
   is_default BOOLEAN DEFAULT FALSE,
-
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE TABLE restaurant_order_item_variants (
   id SERIAL PRIMARY KEY,
-  tenant_id INT REFERENCES ress_tenants(tenant_id) ON DELETE CASCADE,
-
   order_item_id INT REFERENCES restaurant_order_items(id) ON DELETE CASCADE,
   variant_id INT REFERENCES restaurant_item_variants(id),
-
   name VARCHAR(255),   -- snapshot (e.g. Size)
   value VARCHAR(255),  -- snapshot (e.g. Large)
-
   price_adjustment DECIMAL(12,2) DEFAULT 0
 );
 
@@ -464,114 +198,18 @@ CREATE INDEX idx_restaurant_items_slug ON restaurant_items(slug);
 CREATE INDEX idx_restaurant_categories_slug ON restaurant_categories(slug);
 CREATE INDEX idx_restaurant_orders_status ON restaurant_orders(status);
 
-
-
--- RLS for restaurant_users
-ALTER TABLE restaurant_users ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_users 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_users ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_customers
-ALTER TABLE restaurant_customers ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_customers 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_customers ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_categories
-ALTER TABLE restaurant_categories ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_categories 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_categories ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_items
-ALTER TABLE restaurant_items ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_items 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_items ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_orders
-ALTER TABLE restaurant_orders ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_orders 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_orders ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_order_items
-ALTER TABLE restaurant_order_items ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_order_items 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_order_items ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_payments
-ALTER TABLE restaurant_payments ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_payments 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_payments ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_expenses
-ALTER TABLE restaurant_expenses ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_expenses 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_expenses ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_reservations
-ALTER TABLE restaurant_reservations ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_reservations 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_reservations ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_contact_tickets
-ALTER TABLE restaurant_contact_tickets ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_contact_tickets 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_contact_tickets ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_support_tickets
-ALTER TABLE restaurant_support_tickets ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_support_tickets 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_support_tickets ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_support_messages
-ALTER TABLE restaurant_support_messages ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_support_messages 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_support_messages ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_reviews
-ALTER TABLE restaurant_reviews ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_reviews 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_reviews ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_offers
-ALTER TABLE restaurant_offers ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_offers 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_offers ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_item_variants
-ALTER TABLE restaurant_item_variants ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_item_variants 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_item_variants ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
--- RLS for restaurant_order_item_variants
-ALTER TABLE restaurant_order_item_variants ENABLE ROW LEVEL SECURITY;
-CREATE POLICY tenant_isolation_policy ON restaurant_order_item_variants 
-  USING (tenant_id = NULLIF(current_setting('app.current_tenant_id', true), '')::int);
-ALTER TABLE restaurant_order_item_variants ALTER COLUMN tenant_id SET DEFAULT NULLIF(current_setting('app.current_tenant_id', true), '')::int;
-
-
- - -   M u l t i - t e n a n t   o p t i m i z a t i o n   i n d e x e s 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ i t e m s _ t e n a n t   O N   r e s t a u r a n t _ i t e m s ( t e n a n t _ i d ) ; 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ c a t e g o r i e s _ t e n a n t   O N   r e s t a u r a n t _ c a t e g o r i e s ( t e n a n t _ i d ) ; 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ o r d e r s _ t e n a n t   O N   r e s t a u r a n t _ o r d e r s ( t e n a n t _ i d ) ; 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ r e v i e w s _ t e n a n t   O N   r e s t a u r a n t _ r e v i e w s ( t e n a n t _ i d ) ; 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ o f f e r s _ t e n a n t   O N   r e s t a u r a n t _ o f f e r s ( t e n a n t _ i d ) ; 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ u s e r s _ t e n a n t   O N   r e s t a u r a n t _ u s e r s ( t e n a n t _ i d ) ; 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ c u s t o m e r s _ t e n a n t   O N   r e s t a u r a n t _ c u s t o m e r s ( t e n a n t _ i d ) ; 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ s u p p o r t _ t i c k e t s _ t e n a n t   O N   r e s t a u r a n t _ s u p p o r t _ t i c k e t s ( t e n a n t _ i d ) ; 
- C R E A T E   I N D E X   I F   N O T   E X I S T S   i d x _ r e s t a u r a n t _ c o n t a c t _ t i c k e t s _ t e n a n t   O N   r e s t a u r a n t _ c o n t a c t _ t i c k e t s ( t e n a n t _ i d ) ; 
-  
- 
+-- 🏢 INITIAL DEFAULT WEBSITE PROFILE
+INSERT INTO restaurant_websites (website_id, logo_url, theme_color, hero_title, hero_subtitle, name, address, tagline, sociallink, email, phone)
+VALUES (
+  1,
+  null,
+  '#ec4899',
+  'Experience Culinary Excellence',
+  'Hand-crafted with passion and precision.',
+  'Grand Kitchen',
+  '123 Gourmet Blvd, Food City',
+  'Flavors of Excellence',
+  'https://facebook.com',
+  'info@grandkitchen.com',
+  '+1234567890'
+) ON CONFLICT (website_id) DO NOTHING;

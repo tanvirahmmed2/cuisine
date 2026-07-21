@@ -1,13 +1,11 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import { pool } from "@/lib/database/pg";
 import { isLogin } from "@/lib/auth/middleware";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isLogin();
     
@@ -38,7 +36,7 @@ export async function GET(req) {
     };
 
     for (const table of tables) {
-      const { rows } = await pool.query(`SELECT * FROM ${table} WHERE tenant_id = $1`, [tenant_id]);
+      const { rows } = await pool.query(`SELECT * FROM ${table}`);
       databaseExport.data[table] = rows;
     }
 

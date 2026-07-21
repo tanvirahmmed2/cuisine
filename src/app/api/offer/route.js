@@ -1,4 +1,4 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import cloudinary from "@/lib/database/cloudinary";
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
@@ -6,18 +6,16 @@ import { isManager } from "@/lib/auth/middleware";
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const { searchParams } = new URL(req.url);
     const activeOnly = searchParams.get('active') === 'true';
 
-    let query = "SELECT * FROM restaurant_offers WHERE tenant_id = $1";
-    let params = [tenant_id];
+    let query = "SELECT * FROM restaurant_offers";
+    let params = [];
 
     if (activeOnly) {
-      query += " AND is_active = true AND (end_date IS NULL OR end_date >= CURRENT_TIMESTAMP)";
+      query += " WHERE is_active = true AND (end_date IS NULL OR end_date >= CURRENT_TIMESTAMP)";
     }
     
     query += " ORDER BY created_at DESC";
@@ -36,9 +34,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isManager();
     if (!auth.success) {
@@ -79,9 +75,7 @@ export async function POST(req) {
     });
 
     const { rows: newOffer } = await pool.query(
-      "INSERT INTO restaurant_offers (tenant_id, title, description, image, image_id, is_active, start_date, end_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
-      [tenant_id, title, description, cloudImage.secure_url, cloudImage.public_id, is_active, start_date, end_date]
-    );
+      "INSERT INTO restaurant_offers (title, description, image, image_id, is_active, start_date, end_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", [title, description, cloudImage.secure_url, cloudImage.public_id, is_active, start_date, end_date]);
 
     return NextResponse.json({
       success: true,
@@ -96,9 +90,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isManager();
     if (!auth.success) {
@@ -121,10 +113,10 @@ export async function PUT(req) {
     
     let query = "UPDATE restaurant_offers SET title = $1, description = $2, is_active = $3, start_date = $4, end_date = $5";
     let params = [title, description, is_active, start_date, end_date];
-    let paramIndex = 6;
+    let paramIndex = 5;
 
     if (imageFile && imageFile.name && imageFile.size > 0) {
-      const { rows } = await pool.query("SELECT image_id FROM restaurant_offers WHERE id = $1 AND tenant_id = $2", [id, tenant_id]);
+      const { rows } = await pool.query("SELECT image_id FROM restaurant_offers WHERE id = $1", [id]);
       if (rows.length > 0 && rows[0].image_id) {
         try {
           await cloudinary.uploader.destroy(rows[0].image_id);
@@ -149,13 +141,13 @@ export async function PUT(req) {
         stream.end(imageBuffer);
       });
 
-      query += `, image = $${paramIndex}, image_id = $${paramIndex + 1}`;
+      query += `, image = ${paramIndex - 1}, image_id = ${paramIndex}`;
       params.push(cloudImage.secure_url, cloudImage.public_id);
       paramIndex += 2;
     }
 
-    query += ` WHERE id = $${paramIndex} AND tenant_id = $${paramIndex + 1} RETURNING *`;
-    params.push(id, tenant_id);
+    query += ` WHERE id = ${paramIndex} RETURNING *`;
+    params.push(id);
 
     const { rows: updatedOffer } = await pool.query(query, params);
 
@@ -168,9 +160,7 @@ export async function PUT(req) {
 
 export async function DELETE(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isManager();
     if (!auth.success) {
@@ -183,9 +173,7 @@ export async function DELETE(req) {
     }
 
     const { rows } = await pool.query(
-      "SELECT * FROM restaurant_offers WHERE id = $1 AND tenant_id = $2 LIMIT 1",
-      [id, tenant_id]
-    );
+      "SELECT * FROM restaurant_offers WHERE id = $1 LIMIT 1", [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
@@ -197,7 +185,7 @@ export async function DELETE(req) {
       await cloudinary.uploader.destroy(offer.image_id);
     }
 
-    await pool.query("DELETE FROM restaurant_offers WHERE id = $1 AND tenant_id = $2", [id, tenant_id]);
+    await pool.query("DELETE FROM restaurant_offers WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,

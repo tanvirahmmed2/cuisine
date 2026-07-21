@@ -1,13 +1,11 @@
-import { getTenantContext } from "@/lib/tenant/helper";
+
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth/middleware";
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
+    
 
     const auth = await isAdmin();
     if (!auth.success) {
@@ -17,8 +15,8 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const filterRole = searchParams.get('role');
 
-    let query = "SELECT id, name, email, role, is_banned, created_at FROM restaurant_users WHERE tenant_id = $1";
-    let params = [tenant_id];
+    let query = "SELECT id, name, email, role, is_banned, created_at FROM restaurant_users";
+    let params = [];
     
     if (filterRole === 'management') {
       query += " AND role IN ('admin', 'manager', 'sales')";

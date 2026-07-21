@@ -1,18 +1,10 @@
-import { getTenantContext } from "@/lib/tenant/helper";
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
 import { isAdmin } from "@/lib/auth/middleware";
 
 export async function GET(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
-
-    const { rows } = await pool.query(
-      "SELECT * FROM restaurant_websites WHERE tenant_id = $1 LIMIT 1",
-      [tenant_id]
-    );
+    const { rows } = await pool.query("SELECT * FROM restaurant_websites LIMIT 1");
 
     if (rows.length === 0) {
       return NextResponse.json(
@@ -38,10 +30,6 @@ export async function GET(req) {
 
 export async function PATCH(req) {
   try {
-    const tenantCtx = await getTenantContext();
-    if (!tenantCtx.success) return NextResponse.json(tenantCtx, { status: tenantCtx.status });
-    const tenant_id = tenantCtx.payload.tenant_id;
-
     const auth = await isAdmin();
     if (!auth.success) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
@@ -49,10 +37,7 @@ export async function PATCH(req) {
 
     const body = await req.json();
 
-    const { rows } = await pool.query(
-      "SELECT website_id FROM restaurant_websites WHERE tenant_id = $1 LIMIT 1",
-      [tenant_id]
-    );
+    const { rows } = await pool.query("SELECT website_id FROM restaurant_websites LIMIT 1");
 
     if (rows.length === 0) {
       return NextResponse.json(
@@ -92,15 +77,11 @@ export async function PATCH(req) {
     const updateQuery = `
       UPDATE restaurant_websites
       SET ${setQuery}, updated_at = now()
-      WHERE website_id = $${fields.length + 1} AND tenant_id = $${fields.length + 2}
+      WHERE website_id = $${fields.length + 1}
       RETURNING *
     `;
 
-    const updated = await pool.query(updateQuery, [
-      ...values,
-      website_id,
-      tenant_id
-    ]);
+    const updated = await pool.query(updateQuery, [...values, website_id]);
 
     return NextResponse.json(
       {
