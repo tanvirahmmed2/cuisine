@@ -198,18 +198,3 @@ CREATE INDEX idx_restaurant_items_slug ON restaurant_items(slug);
 CREATE INDEX idx_restaurant_categories_slug ON restaurant_categories(slug);
 CREATE INDEX idx_restaurant_orders_status ON restaurant_orders(status);
 
--- 🏢 INITIAL DEFAULT WEBSITE PROFILE
-INSERT INTO restaurant_websites (website_id, logo_url, theme_color, hero_title, hero_subtitle, name, address, tagline, sociallink, email, phone)
-VALUES (
-  1,
-  null,
-  '#ec4899',
-  'Experience Culinary Excellence',
-  'Hand-crafted with passion and precision.',
-  'Grand Kitchen',
-  '123 Gourmet Blvd, Food City',
-  'Flavors of Excellence',
-  'https://facebook.com',
-  'info@grandkitchen.com',
-  '+1234567890'
-) ON CONFLICT (website_id) DO NOTHING;
