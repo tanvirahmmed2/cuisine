@@ -27,7 +27,7 @@ const Main = async () => {
 
   return (
     <div className='w-full overflow-hidden min-h-screen flex flex-col items-center justify-center'>
-      <Intro/>
+      <Intro />
       <FlashSale initialProducts={flashSales} />
       <Latest initialProducts={latestItems} />
       <Review initialReviews={reviews} />
