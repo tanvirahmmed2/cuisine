@@ -1,8 +1,9 @@
 import React from 'react'
+import { name, tagline } from '@/lib/database/secret'
 
-export const metadata={
-    title:'History Orders',
-    description:'History Page'
+export const metadata = {
+    title: 'Order History Logs',
+    description: `Fulfillment and transaction history logs for ${name}. ${tagline}`
 }
 
 const HistoryLayout = ({children}) => {

@@ -1,9 +1,11 @@
 import { isLogin } from '@/lib/auth/middleware'
 import { redirect } from 'next/navigation'
 import React from 'react'
-export const metadata={
-    title:'Login | Restaurant',
-    description:'Login page'
+import { name, tagline } from '@/lib/database/secret'
+
+export const metadata = {
+    title: 'Login',
+    description: `Login to your account at ${name}. ${tagline}`
 }
 
 const LoginLayout = async({children}) => {

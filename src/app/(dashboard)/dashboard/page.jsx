@@ -15,10 +15,11 @@ import {
   MdPendingActions, 
   MdCheckCircle 
 } from 'react-icons/md'
+import { name, tagline } from '@/lib/database/secret'
 import { Context } from '@/components/context/Context'
 
 const Manage = () => {
-  const { userData, siteData } = useContext(Context)
+  const { userData } = useContext(Context)
   const role = userData?.role || ''
 
   const getRoleActions = () => {
@@ -62,14 +63,14 @@ const Manage = () => {
     <div className="w-full min-h-[90vh] flex flex-col p-8 md:p-12 gap-12 bg-white">
       <div className="flex flex-col gap-2">
         <div className='inline-block w-fit px-4 py-1 bg-gray-100 text-gray-900 text-[10px] font-semibold uppercase tracking-widest rounded-full'>
-          {role} Dashboard
+          {role} Dashboard • {name}
         </div>
         <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 tracking-tight leading-tight">
-          Welcome back, <br />
+          Welcome back to <span className="text-primary font-serif">{name}</span>, <br />
           <span className="text-gray-400">{userData?.name || 'Staff'}</span>
         </h1>
-        <p className="text-gray-500 font-medium max-w-md">
-          Control <span className="text-gray-900">{siteData?.name || "your platform"}</span> with precision.
+        <p className="text-gray-500 font-medium max-w-lg leading-relaxed">
+          {tagline}
         </p>
       </div>
 

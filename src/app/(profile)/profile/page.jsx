@@ -26,13 +26,11 @@ const Profile = () => {
 
   return (
     <div className='space-y-8'>
-      {/* Title Header */}
       <div>
         <h1 className='text-2xl font-bold text-gray-900 tracking-tight'>Account Overview</h1>
         <p className='text-gray-500 text-sm mt-1'>Welcome back, {userData?.name || 'Guest'}!</p>
       </div>
 
-      {/* Stats Cards */}
       <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
         <div className='p-5 bg-gray-50 rounded-2xl border border-gray-100 flex flex-col gap-1'>
           <span className='text-[10px] font-bold uppercase tracking-widest text-gray-400'>Total Orders</span>

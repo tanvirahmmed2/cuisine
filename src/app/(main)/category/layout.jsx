@@ -1,8 +1,9 @@
 import React from 'react'
+import { name, tagline } from '@/lib/database/secret'
 
-export const metadata={
-    title:'Category',
-    description:'Category list page'
+export const metadata = {
+    title: 'Categories',
+    description: `Explore food categories at ${name}. ${tagline}`
 }
 
 const CategoryLayout = ({children}) => {

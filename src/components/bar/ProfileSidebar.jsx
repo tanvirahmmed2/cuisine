@@ -3,9 +3,11 @@ import React, { useContext } from 'react'
 import { Context } from '@/components/context/Context'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { MdPerson, MdShoppingBag, MdSettings, MdRateReview, MdSupportAgent, MdExitToApp, MdPublic } from 'react-icons/md'
+import { MdPerson, MdShoppingBag, MdSettings, MdRateReview, MdSupportAgent, MdExitToApp, MdPublic, MdClose } from 'react-icons/md'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+
+import { name, tagline } from '@/lib/database/secret'
 
 const ProfileSidebar = ({ isOpen, onClose }) => {
   const { userData } = useContext(Context)
@@ -30,15 +32,10 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
   ]
 
   return (
-    <aside className={`fixed top-16 left-0 bottom-0 z-40 w-72 bg-tertiary-light border-r border-tertiary-dark/10 transition-transform duration-300 ease-in-out flex flex-col p-6 gap-6 overflow-y-auto ${
+    <aside className={`fixed top-0 left-0 bottom-0 z-40 w-72 bg-tertiary-light border-r border-tertiary-dark/10 transition-transform duration-300 ease-in-out flex flex-col p-6 gap-6 overflow-y-auto ${
       isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     }`}>
-      {/* Session Badge */}
-      <div className="px-4 py-3 bg-tertiary-dark/5 rounded-xl border border-tertiary-dark/10">
-        <p className="text-[10px] font-semibold uppercase text-tertiary-dark/60 tracking-widest">Logged In As</p>
-        <p className="text-sm font-semibold text-tertiary-dark truncate capitalize">{userData?.name || 'User'}</p>
-        <p className="text-[10px] text-tertiary-dark/60 font-medium truncate">{userData?.email}</p>
-      </div>
+      
 
       {/* Nav Menu Links */}
       <div className="flex-1 flex flex-col gap-1">
@@ -50,11 +47,10 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm ${
-                isActive
-                  ? 'bg-primary text-tertiary-light'
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm ${isActive
+                  ? 'bg-primary text-tertiary-light shadow-md shadow-primary/10'
                   : 'text-tertiary-dark/60 hover:bg-tertiary-dark/5 hover:text-primary'
-              }`}
+                }`}
             >
               <span className="text-xl">{item.icon}</span> {item.name}
             </Link>

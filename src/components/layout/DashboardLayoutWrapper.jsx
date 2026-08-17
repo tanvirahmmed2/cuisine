@@ -12,9 +12,10 @@ const DashboardLayoutWrapper = ({ children }) => {
       <ManageNavbar />
       <ManageSidebar />
 
-      <main className={`transition-all duration-500 pt-14 
-        }`}>
-        <div className="p-8 max-w-[1600px] mx-auto">
+      <main className={`transition-all duration-300 pt-14 ${
+        manageSidebar ? 'lg:pl-72' : 'pl-0'
+      }`}>
+        <div className="p-6 md:p-8 max-w-[1600px] mx-auto">
           {children}
         </div>
       </main>

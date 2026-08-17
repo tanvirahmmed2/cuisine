@@ -1,8 +1,9 @@
 import React from 'react'
+import { name, tagline } from '@/lib/database/secret'
 
-export const metadata={
-    title:'Pending Orders',
-    description:'Pending Page'
+export const metadata = {
+    title: 'Pending Orders',
+    description: `Active pending order management for ${name}. ${tagline}`
 }
 
 const PendingLayout = ({children}) => {

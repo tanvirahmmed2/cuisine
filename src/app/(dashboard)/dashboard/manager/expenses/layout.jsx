@@ -1,8 +1,9 @@
 import React from 'react'
+import { name, tagline } from '@/lib/database/secret'
 
-export const metadata={
-    title:' Expense',
-    description:" Expense Page"
+export const metadata = {
+    title: 'Expenses Management',
+    description: `Track business expenses for ${name}. ${tagline}`
 }
 
 

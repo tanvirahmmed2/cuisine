@@ -1,10 +1,11 @@
 import DashboardLayoutWrapper from "@/components/layout/DashboardLayoutWrapper"
 import { isLogin } from "@/lib/auth/middleware"
 import { redirect } from "next/navigation"
+import { name, tagline } from "@/lib/database/secret"
 
 export const metadata = {
-  title: 'Dashboard | Management',
-  description: 'Restaurant Management System'
+  title: `Dashboard | ${name}`,
+  description: `${name} Management Panel - ${tagline}`
 }
 
 const DashboardLayout = async ({ children }) => {

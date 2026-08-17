@@ -2,7 +2,19 @@ import CartBar from "@/components/bar/CartBar";
 import Footer from "@/components/bar/Footer";
 import Navbar from "@/components/bar/Navbar";
 import Sidebar from "@/components/bar/Sidebar";
+import { name, tagline } from "@/lib/database/secret";
 
+export const metadata = {
+  title: {
+    default: name,
+    template: `%s | ${name}`,
+  },
+  description: tagline,
+  openGraph: {
+    title: name,
+    description: tagline,
+  },
+};
 
 export default function MainLayout({ children }) {
   return (

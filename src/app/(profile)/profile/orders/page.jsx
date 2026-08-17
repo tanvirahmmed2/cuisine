@@ -41,7 +41,7 @@ const OrdersPage = () => {
           orders.map((order) => (
             <div
               key={order.id}
-              className="bg-gray-50 p-5 rounded-2xl border border-gray-100/50 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-pink-550/10 hover:border-pink-200/50 transition-all group"
+              className="bg-gray-50 p-5 rounded-2xl border border-gray-100/50 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:bg-pink-50/20 hover:border-pink-200/50 transition-all group"
             >
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-xl text-gray-400 group-hover:text-pink-500 transition-colors shrink-0">

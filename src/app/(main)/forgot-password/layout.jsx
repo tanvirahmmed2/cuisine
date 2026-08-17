@@ -1,9 +1,11 @@
 import { isLogin } from '@/lib/auth/middleware'
 import { redirect } from 'next/navigation'
 import React from 'react'
-export const metadata={
-    title:'Forget Password | Restaurant',
-    description:'Forget Password page'
+import { name, tagline } from '@/lib/database/secret'
+
+export const metadata = {
+    title: 'Forgot Password',
+    description: `Reset password for your ${name} account. ${tagline}`
 }
 
 const LoginLayout = async({children}) => {
