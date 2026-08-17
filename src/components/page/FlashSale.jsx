@@ -51,7 +51,7 @@ const FlashSale = ({ initialProducts = [] }) => {
   })
 
   return (
-    <section className='w-full py-32 bg-white overflow-hidden'>
+    <section className='w-full py-32 bg-tertiary-light overflow-hidden'>
       <div className='max-w-7xl mx-auto px-6 space-y-24'>
         
         <motion.div 
@@ -59,18 +59,15 @@ const FlashSale = ({ initialProducts = [] }) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false }}
           transition={{ duration: 0.8 }}
-          className='flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-gray-100 pb-12'
+          className='flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-tertiary-dark/10 pb-12'
         >
           <div className='space-y-4'>
-            <div className='flex items-center gap-3 text-pink-600 font-sans font-bold uppercase tracking-[0.4em] text-[10px]'>
-              <MdTimer className='animate-pulse text-lg' />
-              Limited Time Curations
-            </div>
-            <h2 className='text-5xl md:text-6xl font-serif text-gray-900 tracking-tight'>
-              Chef&apos;s <span className='font-normal text-gray-400'>Specials</span>
+            
+            <h2 className='text-5xl md:text-6xl font-serif text-tertiary-dark tracking-tight'>
+              Chef&apos;s <span className='font-normal text-tertiary-dark/40'>Specials</span>
             </h2>
           </div>
-          <Link href='/flashsale' className='group flex items-center gap-2 font-sans font-bold text-[10px] uppercase tracking-widest text-gray-400 hover:text-pink-600 transition-colors'>
+          <Link href='/flashsale' className='group flex items-center gap-2 font-sans font-bold text-[10px] uppercase tracking-widest text-tertiary-dark/60 hover:text-primary transition-colors'>
             View All Offers <span className='group-hover:translate-x-1 transition-transform duration-300'>→</span>
           </Link>
         </motion.div>
@@ -107,7 +104,7 @@ const FlashSale = ({ initialProducts = [] }) => {
                   viewport={{ once: false, amount: 0.3 }}
                   className='w-full md:w-1/2 lg:w-3/5 relative'
                 >
-                  <div className='relative aspect-square overflow-hidden rounded-full shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] border-8 border-gray-50'>
+                  <div className='relative aspect-square overflow-hidden rounded-full shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] border-8 border-tertiary-dark/5'>
                     <Image 
                       src={item.image} 
                       alt={item.title} 
@@ -123,12 +120,12 @@ const FlashSale = ({ initialProducts = [] }) => {
                       whileInView={{ opacity: 1, scale: 1, rotate: -12 }}
                       viewport={{ once: false }}
                       transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
-                      className='absolute -top-4 -left-4 bg-pink-600 text-white px-6 py-3 rounded-xl shadow-[0_20px_40px_-10px_rgba(219,39,119,0.4)] z-20'
+                      className='absolute -top-4 -left-4 bg-primary text-tertiary-light px-6 py-3 rounded-xl shadow-lg z-20'
                      >
                         <span className='text-xs font-bold uppercase tracking-widest'>Save ৳{item.discount}</span>
                      </motion.div>
                   )}
-                  <div className={`absolute -z-10 top-1/2 -translate-y-1/2 ${index % 2 === 0 ? '-left-20' : '-right-20'} w-80 h-80 bg-pink-50 rounded-full blur-3xl opacity-50`} />
+                  <div className={`absolute -z-10 top-1/2 -translate-y-1/2 ${index % 2 === 0 ? '-left-20' : '-right-20'} w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-50`} />
                 </motion.div>
 
                 <motion.div 
@@ -139,15 +136,15 @@ const FlashSale = ({ initialProducts = [] }) => {
                   className='w-full  flex flex-col items-center lg:items-start text-center lg:text-left'
                 >
                   <motion.div variants={itemVariants} className='space-y-4 mb-8'>
-                    <span className='text-[10px] font-bold uppercase text-pink-600 tracking-[0.4em]'>{item.category_name}</span>
-                    <h2 className='text-5xl md:text-6xl font-serif text-gray-900 leading-[1.1] tracking-tight'>
+                    <span className='text-[10px] font-bold uppercase text-primary tracking-[0.4em]'>{item.category_name}</span>
+                    <h2 className='text-5xl md:text-6xl font-serif text-tertiary-dark leading-[1.1] tracking-tight'>
                       {item.title}
                     </h2>
                   </motion.div>
                   
                   <motion.div 
                     variants={itemVariants}
-                    className='text-gray-500 text-lg leading-relaxed font-light max-w-lg mb-10 prose prose-sm prose-slate max-w-none'
+                    className='text-tertiary-dark/60 text-lg leading-relaxed font-light max-w-lg mb-10 prose '
                     dangerouslySetInnerHTML={{ __html: item.description || "<p>A masterpiece of flavor, crafted with hand-picked seasonal ingredients and refined culinary techniques.</p>" }}
                   />
 
@@ -155,11 +152,10 @@ const FlashSale = ({ initialProducts = [] }) => {
                     variants={itemVariants}
                     className='flex flex-col gap-2 items-center lg:items-start mb-12'
                   >
-                    {hasDiscount && <span className='text-sm line-through text-gray-300 font-sans font-medium'>৳{Number(baseWithVariant).toFixed(2)}</span>}
+                    {hasDiscount && <span className='text-sm line-through text-tertiary-dark/40 font-sans font-medium'>৳{Number(baseWithVariant).toFixed(2)}</span>}
                     <div className='flex items-center gap-3'>
-                       <span className='text-5xl md:text-6xl font-sans font-medium text-gray-900 tracking-tighter'>৳{Number(currentPrice).toFixed(2)}</span>
-                       <span className='px-3 py-1 bg-pink-50 text-pink-600 text-[10px] font-bold rounded-full uppercase tracking-widest'>Special Price</span>
-                    </div>
+                       <span className='text-5xl md:text-6xl font-sans font-medium text-tertiary-dark tracking-tighter'>৳{Number(currentPrice).toFixed(2)}</span>
+                   </div>
                   </motion.div>
 
                   <motion.div 
@@ -168,13 +164,13 @@ const FlashSale = ({ initialProducts = [] }) => {
                   >
                     <button 
                       onClick={() => addToCart({ ...item, price: baseWithVariant, selectedVariants: defaultVariants })} 
-                      className='group relative px-14 py-3 bg-gray-900 text-white rounded-full font-sans font-bold text-xs uppercase tracking-widest overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.3)] active:scale-95 flex items-center justify-center gap-4'
+                      className='group relative px-14 py-3 bg-tertiary-dark text-tertiary-light rounded-full font-sans font-bold text-xs uppercase tracking-widest overflow-hidden transition-all duration-500 hover:shadow-xl active:scale-95 flex items-center justify-center gap-4'
                     >
                       <span className='relative z-10 flex items-center gap-3 text-sm'>
                         <BiCartDownload size={24} />
                         Add to Cart
                       </span>
-                      <div className='absolute inset-0 bg-pink-600 translate-y-full group-hover:translate-y-0 transition-transform duration-500' />
+                      <div className='absolute inset-0 bg-primary translate-y-full group-hover:translate-y-0 transition-transform duration-500' />
                     </button>
                   </motion.div>
                 </motion.div>

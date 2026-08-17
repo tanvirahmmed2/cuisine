@@ -7,8 +7,6 @@ import Link from "next/link"
 import { useEffect, useState, useMemo, useContext } from "react"
 import SaleItem from "../card/SaleItem"
 
-
-
 const MenuPage = () => {
   const [products, setProducts] = useState([])
   const { categories } = useContext(Context)
@@ -27,18 +25,18 @@ const MenuPage = () => {
   }, [categoryId])
 
   return (
-    <div className="w-full min-h-screen bg-white">
+    <div className="w-full min-h-screen bg-tertiary-light">
       <div className="w-full flex flex-col gap-6">
         <div className="flex flex-col gap-1">
-          <h2 className="text-xl font-semibold text-gray-900 tracking-tight">Menu Selection</h2>
-          <p className="text-gray-500 text-xs">Choose items for the current order.</p>
+          <h2 className="text-xl font-semibold text-tertiary-dark tracking-tight">Menu Selection</h2>
+          <p className="text-tertiary-dark/60 text-xs">Choose items for the current order.</p>
         </div>
 
         <div className="w-full flex flex-wrap gap-2">
           <button
             onClick={() => setCategoryId('')}
             className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all border ${
-              categoryId === '' ? 'bg-pink-500 text-white border-pink-500' : 'bg-gray-50 text-gray-600 border-gray-100 hover:border-pink-500 hover:text-pink-600'
+              categoryId === '' ? 'bg-primary text-tertiary-light border-primary' : 'bg-tertiary-dark/5 text-tertiary-dark/70 border-tertiary-dark/10 hover:border-primary hover:text-primary'
             }`}
           >
             All Items
@@ -48,7 +46,7 @@ const MenuPage = () => {
               key={cat.id}
               onClick={() => setCategoryId(cat.id)}
               className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all border ${
-                categoryId === cat.id ? 'bg-pink-500 text-white border-pink-500' : 'bg-gray-50 text-gray-600 border-gray-100 hover:border-pink-500 hover:text-pink-600'
+                categoryId === cat.id ? 'bg-primary text-tertiary-light border-primary' : 'bg-tertiary-dark/5 text-tertiary-dark/70 border-tertiary-dark/10 hover:border-primary hover:text-primary'
               }`}
             >
               {cat.name}
@@ -62,8 +60,8 @@ const MenuPage = () => {
               <SaleItem key={item.id} item={item}/>
             ))
           ) : (
-            <div className="col-span-full py-24 text-center border border-dashed border-gray-100 rounded-xl">
-              <p className="text-gray-400 text-xs font-medium">No items available.</p>
+            <div className="col-span-full py-24 text-center border border-dashed border-tertiary-dark/10 rounded-xl">
+              <p className="text-tertiary-dark/60 text-xs font-medium">No items available.</p>
             </div>
           )}
         </div>

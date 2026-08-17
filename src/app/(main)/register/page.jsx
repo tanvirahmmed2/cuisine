@@ -4,8 +4,9 @@ import RegisterForm from '@/components/forms/RegisterForm'
 import { motion } from 'framer-motion'
 import React, { useContext } from 'react'
 
+import { name } from '@/lib/database/secret'
+
 const RegistrationPage = () => {
-    const { siteData } = useContext(Context)
     return (
         <div className='w-full min-h-screen bg-gray-50 flex items-center justify-center p-6'>
             
@@ -21,7 +22,7 @@ const RegistrationPage = () => {
                     className='hidden lg:flex flex-col gap-6'
                 >
                     <div className='inline-block w-fit px-4 py-1 bg-pink-500 text-white text-[10px] font-semibold uppercase tracking-widest rounded-full'>
-                        {siteData?.name || 'Grand Kitchen'}
+                        {name}
                     </div>
                     <h1 className='text-6xl font-semibold text-gray-900 leading-[1.1] tracking-tight'>
                         Begin Your <br />

@@ -17,3 +17,6 @@ export const PG_PASSWORD = process.env.PG_PASSWORD;
 export const BREVO_API_KEY = process.env.BREVO_API_KEY;
 export const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL;
 export const BREVO_SENDER_NAME = process.env.BREVO_SENDER_NAME;
+
+export const name = "Cuisine";
+export const tagline = "Crafting exceptional culinary experiences with passion and precision since 2010.";

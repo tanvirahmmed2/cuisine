@@ -28,16 +28,16 @@ const StaffLoginForm = () => {
         
     }
   return (
-    <form onSubmit={loginHandle} className='flex-1 flex flex-col  gap-4'>
-          <div className='w-full flex flex-col'>
-            <label htmlFor="email">Email</label>
-            <input type="email" id='email' name='email' required value={formData.email} onChange={handleChange} className='w-full px-3 p-1 rounded-lg outline-none border border-pink-500/10'/>
+    <form onSubmit={loginHandle} className='flex-1 flex flex-col gap-4'>
+          <div className='w-full flex flex-col text-tertiary-dark'>
+            <label htmlFor="email" className='text-xs font-semibold text-tertiary-dark/80 mb-1'>Email</label>
+            <input type="email" id='email' name='email' required value={formData.email} onChange={handleChange} className='input-style'/>
           </div>
-          <div className='w-full flex flex-col'>
-            <label htmlFor="password">Password</label>
-            <input type="password" id='password' name='password' required value={formData.password} onChange={handleChange} className='w-full px-3 p-1 rounded-lg outline-none border border-pink-500/10'/>
+          <div className='w-full flex flex-col text-tertiary-dark'>
+            <label htmlFor="password" className='text-xs font-semibold text-tertiary-dark/80 mb-1'>Password</label>
+            <input type="password" id='password' name='password' required value={formData.password} onChange={handleChange} className='input-style'/>
           </div>
-          <button type='submit' className='bg-pink-500/80 hover:bg-pink-500 text-white rounded-lg cursor-pointer '>Next</button>
+          <button type='submit' className='bg-primary/90 hover:bg-primary text-tertiary-light py-3 rounded-lg font-bold transition-all cursor-pointer'>Next</button>
         </form>
   )
 }

@@ -42,10 +42,6 @@ export const ContextProvider = ({ children }) => {
         const response = await axios.get('/api/website', { withCredentials: true })
         const data = response.data.payload;
         setSiteData(data)
-
-        if (data && data.theme_color && typeof window !== 'undefined') {
-           document.documentElement.style.setProperty('--theme-base', data.theme_color);
-        }
       } catch (error) {
         if (error.response && error.response.data && !error.response.data.success) {
           if ([402, 403, 404].includes(error.response.status)) {

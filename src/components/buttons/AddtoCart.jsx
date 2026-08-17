@@ -6,7 +6,7 @@ import { Context } from '../context/Context';
 const AddtoCart = ({product}) => {
   const {addToCart}=useContext(Context)
   return (
-    <button onClick={()=>addToCart(product)} className="bg-pink-500 text-white px-8 py-3 rounded-full font-semibold hover:bg-slate-800 transition-colors flex flex-row gap-2 cursor-pointer">Cart <CiShoppingCart className='text-xl'/></button>
+    <button onClick={()=>addToCart(product)} className="bg-primary text-tertiary-light px-8 py-3 rounded-full font-semibold hover:bg-primary-dark transition-colors flex flex-row gap-2 cursor-pointer items-center justify-center">Cart <CiShoppingCart className='text-xl'/></button>
   )
 }
 

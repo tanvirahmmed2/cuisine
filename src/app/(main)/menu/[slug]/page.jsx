@@ -13,13 +13,13 @@ const SingleProduct = async ({ params }) => {
 
   if (!product) return (
     <div className="flex justify-center items-center min-h-screen">
-      <p className="text-xl font-medium text-slate-700">No data found</p>
+      <p className="text-xl font-medium text-tertiary-dark">No data found</p>
     </div>
   )
 
   return (
-    <div className='w-full min-h-screen bg-slate-50 pb-20'>
-      <div className='w-full bg-slate-700 h-64 relative' />
+    <div className='w-full min-h-screen bg-tertiary-dark/5 pb-20'>
+      <div className='w-full bg-tertiary-dark h-64 relative' />
 
       <div className='max-w-7xl mx-auto px-4 -mt-32 relative z-10'>
         <ItemDetails product={product} />

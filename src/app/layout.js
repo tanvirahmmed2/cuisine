@@ -1,37 +1,15 @@
 import ToastProvider from "@/components/bar/ToastProvider";
 import "./globals.css";
 import { ContextProvider } from "@/components/context/Context";
-
-
-import { headers } from "next/headers";
-
-import { pool } from "@/lib/database/pg";
+import { name, tagline } from "@/lib/database/secret";
 
 export async function generateMetadata() {
-  try {
-    const { rows } = await pool.query("SELECT name, tagline, hero_subtitle FROM restaurant_websites LIMIT 1");
-    if (rows.length > 0) {
-      const site = rows[0];
-      const title = site.name || "Restaurant";
-      const desc = site.hero_subtitle || site.tagline || "Exceptional culinary experience.";
-      return {
-        title: title,
-        description: desc,
-        openGraph: {
-          title: title,
-          description: desc,
-        },
-      };
-    }
-  } catch (error) {
-    console.error("Metadata generation error:", error);
-  }
   return {
-    title: "Restaurant",
-    description: "Exceptional culinary experience.",
+    title: name,
+    description: tagline,
     openGraph: {
-      title: "Restaurant",
-      description: "Exceptional culinary experience.",
+      title: name,
+      description: tagline,
     },
   };
 }

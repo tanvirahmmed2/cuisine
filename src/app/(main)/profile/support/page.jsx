@@ -221,7 +221,7 @@ const ProfileSupportPage = () => {
                     onChange={(e) => setNewSubject(e.target.value)}
                     required
                     placeholder="e.g., Issue with my recent order delivery"
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:border-pink-500 focus:ring-2 focus:ring-pink-500/5 transition-all text-sm text-gray-800 font-medium" 
+                    className="input-style" 
                   />
                 </div>
                 

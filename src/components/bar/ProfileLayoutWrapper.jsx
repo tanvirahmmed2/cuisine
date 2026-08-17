@@ -7,13 +7,13 @@ const ProfileLayoutWrapper = ({ children }) => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className='w-full min-h-screen bg-gray-50/30 flex flex-col relative'>
+    <div className='w-full min-h-screen bg-tertiary-dark/5 flex flex-col relative'>
       {/* Mobile Header Bar */}
-      <div className="lg:hidden flex items-center justify-between px-6 py-4 bg-white border-b border-gray-100 sticky top-16 z-20">
-        <span className="font-bold text-sm text-gray-900">Profile Dashboard</span>
+      <div className="lg:hidden flex items-center justify-between px-6 py-4 bg-tertiary-light border-b border-tertiary-dark/10 sticky top-16 z-20">
+        <span className="font-bold text-sm text-tertiary-dark">Profile Dashboard</span>
         <button 
           onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-          className="p-2 hover:bg-gray-50 border border-gray-100 rounded-lg text-gray-600 transition-colors flex items-center justify-center cursor-pointer"
+          className="p-2 hover:bg-tertiary-dark/5 border border-tertiary-dark/10 rounded-lg text-tertiary-dark/70 transition-colors flex items-center justify-center cursor-pointer"
         >
           {isSidebarOpen ? <MdClose size={20} /> : <MdMenu size={20} />}
         </button>
@@ -23,7 +23,7 @@ const ProfileLayoutWrapper = ({ children }) => {
       {isSidebarOpen && (
         <div 
           onClick={() => setIsSidebarOpen(false)}
-          className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-30 lg:hidden top-16"
+          className="fixed inset-0 bg-tertiary-dark/20 backdrop-blur-[2px] z-30 lg:hidden top-16"
         />
       )}
 

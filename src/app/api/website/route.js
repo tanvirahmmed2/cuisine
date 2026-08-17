@@ -38,10 +38,7 @@ export async function POST(req) {
 
     const body = await req.json();
 
-    const allowedFields = [
-      'logo_url', 'theme_color', 'hero_title', 'hero_subtitle',
-      'name', 'address', 'tagline', 'sociallink', 'email', 'phone'
-    ];
+    const allowedFields = ['address', 'sociallink', 'email', 'phone'];
 
     const updates = {};
     Object.keys(body).forEach(key => {

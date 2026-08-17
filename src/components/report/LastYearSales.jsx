@@ -23,32 +23,32 @@ const LastYearSales = ({ data }) => {
   }, [currentYearData]);
 
   return (
-    <div className='w-full bg-white rounded-[2rem] p-8 border border-pink-50 shadow-xl shadow-pink-900/5 hover:shadow-2xl hover:shadow-pink-900/10 transition-all duration-500 h-full flex flex-col justify-between min-h-[220px]'>
+    <div className='w-full bg-tertiary-light rounded-[2rem] p-8 border border-primary/20 shadow-xl shadow-primary/5 hover:shadow-2xl hover:shadow-primary/10 transition-all duration-500 h-full flex flex-col justify-between min-h-[220px]'>
       <div>
         <div className='flex items-center justify-between mb-6'>
-          <div className='p-3 bg-pink-50 text-pink-600 rounded-2xl'>
+          <div className='p-3 bg-primary/10 text-primary rounded-2xl'>
             <BarChart3 size={24} />
           </div>
-          <div className='flex items-center gap-1 text-pink-500 font-bold text-xs bg-pink-50 px-3 py-1 rounded-full'>
+          <div className='flex items-center gap-1 text-primary font-bold text-xs bg-primary/10 px-3 py-1 rounded-full'>
             <History size={14} />
             <span>Annual</span>
           </div>
         </div>
         
-        <h3 className='text-sm font-bold text-slate-400 uppercase tracking-wider mb-1'>Yearly Revenue</h3>
-        <div className='text-3xl font-black text-slate-900 tracking-tight mb-4'>
+        <h3 className='text-sm font-bold text-tertiary-dark/60 uppercase tracking-wider mb-1'>Yearly Revenue</h3>
+        <div className='text-3xl font-black text-tertiary-dark tracking-tight mb-4'>
           ৳{totalPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
         </div>
       </div>
 
-      <div className='grid grid-cols-2 gap-4 pt-4 border-t border-slate-50'>
+      <div className='grid grid-cols-2 gap-4 pt-4 border-t border-tertiary-dark/10'>
         <div>
-          <p className='text-[10px] font-bold text-slate-400 uppercase tracking-widest'>Orders</p>
-          <p className='text-xl font-black text-slate-900'>{currentYearData.length}</p>
+          <p className='text-[10px] font-bold text-tertiary-dark/60 uppercase tracking-widest'>Orders</p>
+          <p className='text-xl font-black text-tertiary-dark'>{currentYearData.length}</p>
         </div>
         <div>
-          <p className='text-[10px] font-bold text-slate-400 uppercase tracking-widest'>Year</p>
-          <p className='text-xs font-bold text-pink-600'>{currYear}</p>
+          <p className='text-[10px] font-bold text-tertiary-dark/60 uppercase tracking-widest'>Year</p>
+          <p className='text-xs font-bold text-primary'>{currYear}</p>
         </div>
       </div>
     </div>

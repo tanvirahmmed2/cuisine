@@ -57,12 +57,12 @@ const People = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className='flex-1 px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-pink-500 transition-all text-sm'
+            className='input-style flex-1'
           />
           <select 
             value={role} 
             onChange={(e) => setRole(e.target.value)}
-            className='px-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-pink-500 transition-all text-sm'
+            className='input-style w-auto bg-white'
           >
             <option value="manager">Manager</option>
             <option value="sales">Sales</option>

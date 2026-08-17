@@ -3,13 +3,7 @@
 
 CREATE TABLE restaurant_websites (
   website_id SERIAL PRIMARY KEY,
-  logo_url TEXT,
-  theme_color TEXT,
-  hero_title TEXT,
-  hero_subtitle TEXT,
-  name TEXT,
   address TEXT,
-  tagline TEXT,
   sociallink TEXT,
   email TEXT,
   phone TEXT,

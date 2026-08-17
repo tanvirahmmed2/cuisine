@@ -5,6 +5,8 @@ import Link from 'next/link'
 import React from 'react'
 import { FaPlus } from 'react-icons/fa'
 
+export const dynamic = 'force-dynamic'
+
 const Items = async () => {
   let items = [];
   try {

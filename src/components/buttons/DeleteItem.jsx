@@ -18,7 +18,7 @@ const DeleteItem = ({id}) => {
       }
     }
   return (
-    <button onClick={deleteProduct} className='cursor-pointer text-xl text-red-500 hover:text-red-700 transition-colors'><MdDeleteOutline/></button>
+    <button onClick={deleteProduct} className='cursor-pointer text-xl text-primary-dark hover:text-primary transition-colors'><MdDeleteOutline/></button>
   )
 }
 

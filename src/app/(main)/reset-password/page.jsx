@@ -6,11 +6,12 @@ import axios from 'axios';
 import { Context } from '@/components/context/Context';
 import Link from 'next/link';
 
+import { name } from '@/lib/database/secret';
+
 const ResetPasswordContent = () => {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
   const router = useRouter();
-  const { siteData } = useContext(Context);
   
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -55,7 +56,7 @@ const ResetPasswordContent = () => {
       <div className='w-full max-w-md bg-white p-8 shadow-xl rounded-2xl border border-gray-100'>
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
           <div className='inline-block w-fit px-4 py-1 bg-pink-50 text-pink-600 text-[10px] font-bold uppercase tracking-widest rounded-full mb-6'>
-            {siteData?.name || 'Account Recovery'}
+            {name}
           </div>
           
           {status === 'success' ? (
@@ -83,7 +84,7 @@ const ResetPasswordContent = () => {
                     type="password" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all"
+                    className="input-style"
                    
                     required
                     disabled={!token}
@@ -96,7 +97,7 @@ const ResetPasswordContent = () => {
                     type="password" 
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all"
+                    className="input-style"
                    
                     required
                     disabled={!token}

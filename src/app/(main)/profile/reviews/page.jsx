@@ -128,7 +128,7 @@ const ReviewsPage = () => {
                     required
                     type="text"
                     disabled
-                    className="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl text-xs focus:ring-2 focus:ring-pink-500/20 transition-all text-gray-400 cursor-not-allowed font-medium"
+                    className="input-style"
                     value={formData.name}
                   />
                 </div>
@@ -138,7 +138,7 @@ const ReviewsPage = () => {
                     required
                     type="email"
                     disabled
-                    className="w-full px-4 py-3 bg-white border border-gray-100 rounded-xl text-xs focus:ring-2 focus:ring-pink-500/20 transition-all text-gray-400 cursor-not-allowed font-medium"
+                    className="input-style"
                     value={formData.email}
                   />
                 </div>

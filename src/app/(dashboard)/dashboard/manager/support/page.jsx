@@ -3,6 +3,8 @@ import { getBaseUrl } from '@/lib/helper';
 import ChatInterface from './ChatInterface'
 import { cookies } from 'next/headers'
 
+export const dynamic = 'force-dynamic'
+
 const SupportDashboard = async () => {
   const baseUrl = await getBaseUrl()
   

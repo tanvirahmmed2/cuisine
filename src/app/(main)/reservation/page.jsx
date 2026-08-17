@@ -6,6 +6,8 @@ import { motion } from 'framer-motion'
 import { FaCalendarAlt, FaChair } from 'react-icons/fa'
 import { Context } from '@/components/context/Context'
 
+import { name, tagline } from '@/lib/database/secret'
+
 const Reservation = () => {
   const { siteData } = useContext(Context)
   const [loading, setLoading] = useState(false)
@@ -19,8 +21,8 @@ const Reservation = () => {
   })
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+    const { name: fieldName, value } = e.target
+    setFormData((prev) => ({ ...prev, [fieldName]: value }))
   }
 
   const handleSubmit = async (e) => {
@@ -64,7 +66,7 @@ const Reservation = () => {
             </h1>
           </div>
           <p className='text-gray-500 text-lg leading-relaxed max-w-md font-medium'>
-            {siteData?.hero_subtitle || `Book your table at ${siteData?.name || "Grand Kitchen"} and prepare for an unforgettable culinary journey.`}
+            {siteData?.tagline || tagline}
           </p>
           <div className='flex flex-col gap-4 pt-4 border-t border-gray-100'>
             <div className='flex items-center gap-3'>
@@ -104,35 +106,35 @@ const Reservation = () => {
             <div className='grid grid-cols-1 md:grid-cols-2 gap-5'>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor="name" className='text-[10px] font-semibold uppercase text-gray-400 tracking-widest ml-1'>Name</label>
-                <input type="text" id='name' name='name' required onChange={handleChange} value={formData.name} className='w-full px-4 py-2.5 bg-gray-50 border border-gray-50 rounded-xl outline-none focus:border-pink-500 transition-all text-sm font-semibold' />
+                <input type="text" id='name' name='name' required onChange={handleChange} value={formData.name} className='input-style' />
               </div>
               
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor="email" className='text-[10px] font-semibold uppercase text-gray-400 tracking-widest ml-1'>Email</label>
-                <input type="email" id='email' name='email' required onChange={handleChange} value={formData.email} className='w-full px-4 py-2.5 bg-gray-50 border border-gray-50 rounded-xl outline-none focus:border-pink-500 transition-all text-sm font-semibold' />
+                <input type="email" id='email' name='email' required onChange={handleChange} value={formData.email} className='input-style' />
               </div>
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor="date" className='text-[10px] font-semibold uppercase text-gray-400 tracking-widest ml-1'>Date</label>
-                <input type="date" id='date' name='date' required onChange={handleChange} value={formData.date} className='w-full px-4 py-2.5 bg-gray-50 border border-gray-50 rounded-xl outline-none focus:border-pink-500 transition-all text-sm font-semibold' />
+                <input type="date" id='date' name='date' required onChange={handleChange} value={formData.date} className='input-style' />
               </div>
 
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor="member" className='text-[10px] font-semibold uppercase text-gray-400 tracking-widest ml-1'>Guests</label>
-                <input type="number" id='member' name='member' min="1" required onChange={handleChange} value={formData.member} className='w-full px-4 py-2.5 bg-gray-50 border border-gray-50 rounded-xl outline-none focus:border-pink-500 transition-all text-sm font-semibold' />
+                <input type="number" id='member' name='member' min="1" required onChange={handleChange} value={formData.member} className='input-style' />
               </div>
 
               <div className='flex flex-col gap-1.5'>
                 <label htmlFor="table" className='text-[10px] font-semibold uppercase text-gray-400 tracking-widest ml-1'>Table</label>
-                <input type="number" id='table' name='table' required onChange={handleChange} value={formData.table} className='w-full px-4 py-2.5 bg-gray-50 border border-gray-50 rounded-xl outline-none focus:border-pink-500 transition-all text-sm font-semibold' />
+                <input type="number" id='table' name='table' required onChange={handleChange} value={formData.table} className='input-style' />
               </div>
             </div>
 
             <div className='flex flex-col gap-1.5'>
               <label htmlFor="message" className='text-[10px] font-semibold uppercase text-gray-400 tracking-widest ml-1'>Notes (Optional)</label>
-              <textarea name="message" id="message" rows="2" onChange={handleChange} value={formData.message} className='w-full px-4 py-2.5 bg-gray-50 border border-gray-50 rounded-xl outline-none focus:border-pink-500 transition-all text-sm font-semibold resize-none' />
+              <textarea name="message" id="message" rows="2" onChange={handleChange} value={formData.message} className='input-style resize-none' />
             </div>
 
             <button 

@@ -16,7 +16,7 @@ const DeleteOrder = ({id}) => {
     }
   }
   return (
-    <button onClick={deleteOrder} className='w-full px-2 rounded-lg hover:bg-pink-500/10 p-1 cursor-pointer flex flex-row items-center justify-center gap-4'><MdDeleteOutline/></button>
+    <button onClick={deleteOrder} className='w-full px-2 rounded-lg hover:bg-primary/10 p-1 cursor-pointer flex flex-row items-center justify-center gap-4 transition-colors'><MdDeleteOutline/></button>
   )
 }
 

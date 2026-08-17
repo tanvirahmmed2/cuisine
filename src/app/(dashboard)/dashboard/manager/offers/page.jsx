@@ -86,7 +86,7 @@ const OffersPage = () => {
           offers.map(offer => (
             <div key={offer.id} className="bg-white border border-slate-100 rounded-2xl overflow-hidden shadow-sm flex flex-col relative group">
               <div className="relative w-full h-48 bg-slate-100">
-                <Image src={offer.image} alt={offer.title} fill className="object-cover" />
+                <Image src={offer.image} alt={offer.title} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover" />
                 <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button 
                     onClick={() => {

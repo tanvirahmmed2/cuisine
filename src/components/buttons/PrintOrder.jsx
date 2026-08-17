@@ -4,6 +4,8 @@ import React from 'react'
 import { FaPrint } from "react-icons/fa";
 import { Context } from '../context/Context';
 
+import { name } from '@/lib/database/secret';
+
 const PrintOrder = ({ order }) => {
   const { siteData } = React.useContext(Context)
 
@@ -41,7 +43,7 @@ const PrintOrder = ({ order }) => {
         </head>
         <body>
           <div class="center">
-            <h2 style="margin:0; font-size: 18px; text-transform: uppercase;">${siteData?.name || 'Restaurant'}</h2>
+            <h2 style="margin:0; font-size: 18px; text-transform: uppercase;">${name}</h2>
             <p style="margin:2px 0;">${siteData?.address || ''}</p>
             ${siteData?.phone ? `<p style="margin:2px 0;">Tel: ${siteData.phone}</p>` : ''}
             <div class="divider"></div>
@@ -118,12 +120,12 @@ const PrintOrder = ({ order }) => {
   return (
     <button 
       onClick={printOrder} 
-      className='w-full px-2 rounded-lg hover:bg-pink-500/10 p-2 cursor-pointer flex flex-row items-center justify-center gap-4 transition-colors border border-transparent active:border-pink-500/20'
+      className='w-full px-2 rounded-lg hover:bg-primary/10 p-2 cursor-pointer flex flex-row items-center justify-center gap-4 transition-colors border border-transparent active:border-primary/20'
     >
-      <FaPrint className="text-gray-700 hover:text-pink-600" />
+      <FaPrint className="text-tertiary-dark/70 hover:text-primary" />
       <span className="font-medium">Print Receipt</span>
     </button>
   )
 }
 
-export default PrintOrder
+export default PrintOrder

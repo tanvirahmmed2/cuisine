@@ -1,4 +1,6 @@
 
+import { name } from './secret';
+
 export const generateReceipt = (order, siteData = {}) => {
   if (!order) return;
   const iframe = document.createElement('iframe');
@@ -48,7 +50,7 @@ export const generateReceipt = (order, siteData = {}) => {
       </head>
       <body>
         <div class="header">
-          <p class="store-name">${siteData?.name || "Restaurant"}</p>
+          <p class="store-name">${name}</p>
           <p class="store-contact">${siteData?.address || ""}</p>
           <p class="receipt-type">— ${order.receipt_type || "Sales Receipt"} —</p>
         </div>

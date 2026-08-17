@@ -30,19 +30,19 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
   ]
 
   return (
-    <aside className={`fixed top-16 left-0 bottom-0 z-40 w-72 bg-white border-r border-gray-100 transition-transform duration-300 ease-in-out flex flex-col p-6 gap-6 overflow-y-auto ${
+    <aside className={`fixed top-16 left-0 bottom-0 z-40 w-72 bg-tertiary-light border-r border-tertiary-dark/10 transition-transform duration-300 ease-in-out flex flex-col p-6 gap-6 overflow-y-auto ${
       isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
     }`}>
       {/* Session Badge */}
-      <div className="px-4 py-3 bg-gray-50 rounded-xl border border-gray-100">
-        <p className="text-[10px] font-semibold uppercase text-gray-400 tracking-widest">Logged In As</p>
-        <p className="text-sm font-semibold text-black truncate capitalize">{userData?.name || 'User'}</p>
-        <p className="text-[10px] text-gray-400 font-medium truncate">{userData?.email}</p>
+      <div className="px-4 py-3 bg-tertiary-dark/5 rounded-xl border border-tertiary-dark/10">
+        <p className="text-[10px] font-semibold uppercase text-tertiary-dark/60 tracking-widest">Logged In As</p>
+        <p className="text-sm font-semibold text-tertiary-dark truncate capitalize">{userData?.name || 'User'}</p>
+        <p className="text-[10px] text-tertiary-dark/60 font-medium truncate">{userData?.email}</p>
       </div>
 
       {/* Nav Menu Links */}
       <div className="flex-1 flex flex-col gap-1">
-        <p className="text-[10px] font-semibold uppercase text-gray-400 tracking-widest px-4 mb-2">Profile Navigation</p>
+        <p className="text-[10px] font-semibold uppercase text-tertiary-dark/60 tracking-widest px-4 mb-2">Profile Navigation</p>
         {menuItems.map((item) => {
           const isActive = pathname === item.href
           return (
@@ -52,8 +52,8 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
               onClick={onClose}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-semibold text-sm ${
                 isActive
-                  ? 'bg-pink-500 text-white'
-                  : 'text-gray-500 hover:bg-gray-50 hover:text-pink-600'
+                  ? 'bg-primary text-tertiary-light'
+                  : 'text-tertiary-dark/60 hover:bg-tertiary-dark/5 hover:text-primary'
               }`}
             >
               <span className="text-xl">{item.icon}</span> {item.name}
@@ -63,13 +63,13 @@ const ProfileSidebar = ({ isOpen, onClose }) => {
       </div>
 
       {/* Bottom Actions */}
-      <div className="flex flex-col gap-1 pt-6 border-t border-gray-100">
-        <Link href="/" onClick={onClose} className="flex items-center gap-3 px-4 py-3 rounded-xl text-gray-500 font-semibold text-sm hover:bg-gray-50 hover:text-pink-600 transition-all">
+      <div className="flex flex-col gap-1 pt-6 border-t border-tertiary-dark/10">
+        <Link href="/" onClick={onClose} className="flex items-center gap-3 px-4 py-3 rounded-xl text-tertiary-dark/60 font-semibold text-sm hover:bg-tertiary-dark/5 hover:text-primary transition-all">
           <span className="text-xl"><MdPublic /></span> Website Home
         </Link>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-4 py-3 rounded-xl text-rose-500 font-semibold text-sm hover:bg-rose-50 transition-all text-left cursor-pointer"
+          className="flex items-center gap-3 px-4 py-3 rounded-xl text-primary-dark font-semibold text-sm hover:bg-primary/10 transition-all text-left cursor-pointer"
         >
           <span className="text-xl"><MdExitToApp /></span> Logout
         </button>

@@ -5,8 +5,9 @@ import axios from 'axios';
 import { Context } from '@/components/context/Context';
 import Link from 'next/link';
 
+import { name } from '@/lib/database/secret';
+
 const ForgotPasswordPage = () => {
-  const { siteData } = useContext(Context);
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
@@ -30,7 +31,7 @@ const ForgotPasswordPage = () => {
       <div className='w-full max-w-md bg-white p-8 shadow-xl rounded-2xl border border-gray-100'>
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
           <div className='inline-block w-fit px-4 py-1 bg-pink-50 text-pink-600 text-[10px] font-bold uppercase tracking-widest rounded-full mb-6'>
-            {siteData?.name || 'Account Recovery'}
+            {name}
           </div>
           <h2 className="text-3xl font-semibold text-gray-900 mb-2">Forgot Password</h2>
           <p className="text-gray-500 mb-8">Enter your email address to receive a password reset link.</p>
@@ -56,7 +57,7 @@ const ForgotPasswordPage = () => {
                   type="email" 
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:ring-2 focus:ring-pink-500 focus:border-transparent outline-none transition-all"
+                  className="input-style"
                  
                   required
                 />

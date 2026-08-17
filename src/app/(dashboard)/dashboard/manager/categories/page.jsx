@@ -141,7 +141,7 @@ const CategorListPage = () => {
                   onClick={() => fileInputRef.current?.click()}
                 >
                   {editImagePreview ? (
-                    <Image src={editImagePreview} alt='Preview' fill className='object-cover' />
+                    <Image src={editImagePreview} alt='Preview' fill sizes="200px" className='object-cover' />
                   ) : (
                     <div className='flex flex-col items-center justify-center h-full text-gray-400 group-hover:text-pink-500 transition-colors'>
                       <MdImage size={32} className='mb-2' />

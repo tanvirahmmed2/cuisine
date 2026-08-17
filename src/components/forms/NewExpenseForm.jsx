@@ -25,20 +25,20 @@ const NewExpenseForm = () => {
         }
     }
   return (
-    <form onSubmit={handleSubmit} className='w-full flex flex-col items-center gap-4'>
+    <form onSubmit={handleSubmit} className='w-full flex flex-col items-center gap-4 text-tertiary-dark'>
         <div className='w-full flex flex-col gap-1'>
-            <label htmlFor="title">Title</label>
-            <input type="text" name='title' id='title' required onChange={handleChange} value={formData.title} className='w-full px-3 p-1 border border-pink-500/2- rounded-xl outline-none' />
+            <label htmlFor="title" className='text-xs font-semibold text-tertiary-dark/80'>Title</label>
+            <input type="text" name='title' id='title' required onChange={handleChange} value={formData.title} className='input-style' />
         </div>
         <div className='w-full flex flex-col gap-1'>
-            <label htmlFor="note">Note</label>
-            <textarea name="note" id="note" onChange={handleChange} required value={formData.note} className='w-full px-3 p-1 border border-pink-500/2- rounded-xl outline-none'></textarea>
+            <label htmlFor="note" className='text-xs font-semibold text-tertiary-dark/80'>Note</label>
+            <textarea name="note" id="note" onChange={handleChange} required value={formData.note} className='input-style resize-none' rows={3}></textarea>
         </div>
         <div className='w-full flex flex-col gap-1'>
-            <label htmlFor="amount">Amount</label>
-            <input type="number" onChange={handleChange} required value={formData.amount} name='amount' id='amount' className='w-full px-3 p-1 border border-pink-500/2- rounded-xl outline-none' />
+            <label htmlFor="amount" className='text-xs font-semibold text-tertiary-dark/80'>Amount</label>
+            <input type="number" onChange={handleChange} required value={formData.amount} name='amount' id='amount' className='input-style' />
         </div>
-      <button type='submit' className='w-full bg-slate-700 text-white p-1 rounded-xl cursor-pointer'>Submit</button>
+      <button type='submit' className='w-full bg-secondary hover:bg-secondary-dark text-tertiary-light py-3 rounded-xl font-bold transition-all cursor-pointer'>Submit</button>
     </form>
   )
 }

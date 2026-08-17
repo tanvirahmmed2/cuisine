@@ -9,6 +9,8 @@ import Logout from '../buttons/Logout'
 import { Context } from '../context/Context'
 import { motion, AnimatePresence } from 'framer-motion'
 
+import { name } from '@/lib/database/secret';
+
 const Navbar = () => {
   const { siteData, cartBar, setCartBar, userData, cart, mobileSidebar, setMobileSidebar } = useContext(Context)
   const [scrolled, setScrolled] = useState(false)
@@ -33,24 +35,16 @@ const Navbar = () => {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? 'py-3 bg-white/80 backdrop-blur-xl shadow-lg shadow-pink-900/5' : 'py-5 bg-transparent'
+      scrolled ? 'py-3 bg-tertiary-light/90 backdrop-blur-xl shadow-lg shadow-primary/5' : 'py-5 bg-transparent'
     }`}>
       <div className='max-w-7xl mx-auto px-6 flex flex-row items-center justify-between'>
         
         <Link 
           href={'/'} 
           onClick={() => setCartBar(false)} 
-          className='text-xl font-bold tracking-tight text-gray-900 flex items-center gap-3'
+          className='text-xl font-bold tracking-tight text-tertiary-dark flex items-center gap-3'
         >
-          {siteData?.logo_url ? (
-            <img 
-              src={siteData.logo_url} 
-              alt={siteData.name || 'Logo'} 
-              className='h-8 w-auto object-contain'
-            />
-          ) : (
-            siteData?.name || 'EST. 2024'
-          )}
+          {name}
         </Link>
 
         <div className='hidden md:flex flex-row items-center gap-8'>
@@ -59,7 +53,7 @@ const Navbar = () => {
               key={link.name} 
               href={link.href} 
               onClick={() => setCartBar(false)}
-              className='text-xs font-semibold text-gray-500 hover:text-pink-600 transition-colors uppercase tracking-widest'
+              className='text-xs font-semibold text-tertiary-dark/60 hover:text-primary transition-colors uppercase tracking-widest'
             >
               {link.name}
             </Link>
@@ -68,21 +62,21 @@ const Navbar = () => {
           {(userData && userData.role !== 'user') && (
             <Link 
               href={getDashboardLink()} 
-              className='text-xs font-semibold text-gray-900 bg-gray-100 px-3 py-1.5 rounded-lg hover:bg-pink-500 hover:text-white transition-all uppercase tracking-widest'
+              className='text-xs font-semibold text-tertiary-dark bg-tertiary-dark/5 px-3 py-1.5 rounded-lg hover:bg-primary hover:text-tertiary-light transition-all uppercase tracking-widest'
             >
               Dashboard
             </Link>
           )}
 
-          <div className="flex items-center gap-6 border-l border-gray-100 pl-6">
+          <div className="flex items-center gap-6 border-l border-tertiary-dark/10 pl-6">
             {/* Cart Trigger */}
             <button 
               onClick={() => setCartBar(!cartBar)} 
-              className='relative p-2 text-gray-400 hover:text-pink-600 transition-colors cursor-pointer'
+              className='relative p-2 text-tertiary-dark/40 hover:text-primary transition-colors cursor-pointer'
             >
               <FaShoppingCart size={18} />
               {cart?.items?.length > 0 && (
-                <span className='absolute top-0 right-0 w-4 h-4 bg-pink-500 text-white text-[8px] font-bold rounded-full flex items-center justify-center border-2 border-white'>
+                <span className='absolute top-0 right-0 w-4 h-4 bg-primary text-tertiary-light text-[8px] font-bold rounded-full flex items-center justify-center border-2 border-tertiary-light'>
                   {cart.items.length}
                 </span>
               )}
@@ -98,7 +92,7 @@ const Navbar = () => {
               <Link 
                 href={'/login'} 
                 onClick={() => setCartBar(false)} 
-                className='px-5 py-2 bg-pink-500 text-white text-[10px] font-semibold rounded-xl hover:bg-pink-600 transition-all active:scale-95 uppercase tracking-widest'
+                className='px-5 py-2 bg-primary text-tertiary-light text-[10px] font-semibold rounded-xl hover:bg-primary-dark transition-all active:scale-95 uppercase tracking-widest'
               >
                 Sign In
               </Link>
@@ -109,7 +103,7 @@ const Navbar = () => {
         {/* Mobile Toggle */}
         <button 
           onClick={() => setMobileSidebar(!mobileSidebar)} 
-          className='p-2 text-gray-900 block md:hidden cursor-pointer'
+          className='p-2 text-tertiary-dark block md:hidden cursor-pointer'
         >
           {mobileSidebar ? <RxCross2 size={24} /> : <FaBars size={24} />}
         </button>

@@ -26,11 +26,11 @@ const ToggleAvailability = ({ id, currentStatus }) => {
       onClick={handleToggle}
       disabled={loading}
       className={`relative inline-flex h-5 w-9 items-center rounded-full transition-all focus:outline-none disabled:opacity-50 ${
-        currentStatus ? 'bg-white text-gray-800 shadow-lg shadow-pink-900/10' : 'bg-gray-100'
+        currentStatus ? 'bg-primary text-tertiary-light shadow-md shadow-primary/20' : 'bg-tertiary-dark/20'
       }`}
     >
       <span
-        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-all duration-300 shadow-sm ${
+        className={`inline-block h-3.5 w-3.5 transform rounded-full bg-tertiary-light transition-all duration-300 shadow-sm ${
           currentStatus ? 'translate-x-[1.25rem]' : 'translate-x-[0.25rem]'
         }`}
       />

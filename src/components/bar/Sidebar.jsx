@@ -31,7 +31,7 @@ const Sidebar = () => {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setMobileSidebar(false)}
-                        className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-[60] md:hidden"
+                        className="fixed inset-0 bg-tertiary-dark/20 backdrop-blur-[2px] z-[60] md:hidden"
                     />
 
                     {/* Simple Slide-out Sidebar */}
@@ -40,15 +40,15 @@ const Sidebar = () => {
                         animate={{ x: 0 }}
                         exit={{ x: '-100%' }}
                         transition={{ type: 'tween', duration: 0.3 }}
-                        className="fixed top-0 left-0 h-full w-64 bg-white z-[70] shadow-xl flex flex-col md:hidden"
+                        className="fixed top-0 left-0 h-full w-64 bg-tertiary-light z-[70] shadow-xl flex flex-col md:hidden"
                     >
-                        <div className="p-5 flex items-center justify-between border-b border-gray-100">
-                            <span className="font-bold text-lg text-pink-600">Menu</span>
+                        <div className="p-5 flex items-center justify-between border-b border-tertiary-dark/10">
+                            <span className="font-bold text-lg text-primary">Menu</span>
                             <button 
                                 onClick={() => setMobileSidebar(false)}
-                                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                className="p-2 hover:bg-tertiary-dark/5 rounded-full transition-colors"
                             >
-                                <MdClose size={20} className="text-gray-500" />
+                                <MdClose size={20} className="text-tertiary-dark/60" />
                             </button>
                         </div>
 
@@ -58,7 +58,7 @@ const Sidebar = () => {
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setMobileSidebar(false)}
-                                    className="flex items-center gap-3 px-6 py-3 text-gray-600 hover:bg-pink-50 hover:text-pink-600 transition-all font-medium"
+                                    className="flex items-center gap-3 px-6 py-3 text-tertiary-dark/70 hover:bg-primary/10 hover:text-primary transition-all font-medium"
                                 >
                                     <span className="text-lg opacity-70">{link.icon}</span>
                                     {link.name}
@@ -67,20 +67,20 @@ const Sidebar = () => {
 
                             <button
                                 onClick={handleGotoCart}
-                                className="flex items-center gap-3 px-6 py-3 text-gray-600 hover:bg-pink-50 hover:text-pink-600 transition-all font-medium text-left w-full"
+                                className="flex items-center gap-3 px-6 py-3 text-tertiary-dark/70 hover:bg-primary/10 hover:text-primary transition-all font-medium text-left w-full"
                             >
                                 <span className="text-lg opacity-70"><MdShoppingCart /></span>
                                 Cart
                             </button>
                         </div>
 
-                        <div className="p-4 border-t border-gray-100">
+                        <div className="p-4 border-t border-tertiary-dark/10">
                             {userData ? (
                                 <div className="space-y-1">
                                     <Link
                                         href="/profile"
                                         onClick={() => setMobileSidebar(false)}
-                                        className="flex items-center gap-3 px-2 py-3 text-gray-600 hover:text-pink-600 transition-all font-medium"
+                                        className="flex items-center gap-3 px-2 py-3 text-tertiary-dark/70 hover:text-primary transition-all font-medium"
                                     >
                                         <span className="text-lg opacity-70"><MdPerson /></span>
                                         Profile
@@ -93,7 +93,7 @@ const Sidebar = () => {
                                 <Link
                                     href="/login"
                                     onClick={() => setMobileSidebar(false)}
-                                    className="flex items-center justify-center gap-2 w-full py-3 bg-pink-500 text-white rounded-xl font-bold hover:bg-pink-600 transition-all shadow-md shadow-pink-200"
+                                    className="flex items-center justify-center gap-2 w-full py-3 bg-primary text-tertiary-light rounded-xl font-bold hover:bg-primary-dark transition-all shadow-md shadow-primary/20"
                                 >
                                     <MdLogin /> Sign In
                                 </Link>

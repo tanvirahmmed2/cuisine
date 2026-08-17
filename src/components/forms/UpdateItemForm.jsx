@@ -65,16 +65,16 @@ const UpdateItemForm = ({ product }) => {
 
     return (
         <div className='w-full flex flex-col items-center gap-6 p-4'>
-            <form onSubmit={updateData} className='w-full flex flex-col gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100'>
-                <h2 className='text-xl font-bold text-gray-800'>Edit Item Details</h2>
+            <form onSubmit={updateData} className='w-full flex flex-col gap-4 bg-tertiary-light p-6 rounded-2xl shadow-sm border border-tertiary-dark/10'>
+                <h2 className='text-xl font-bold text-tertiary-dark'>Edit Item Details</h2>
                 
                 <div className='w-full flex flex-col gap-1'>
-                    <label className='text-sm font-semibold text-gray-600'>Title</label>
-                    <input type="text" name='title' id='title' required value={formData.title} onChange={handleChange} className='w-full p-2 px-3 rounded-lg border border-gray-300 outline-none focus:border-pink-500 transition-colors' />
+                    <label className='text-sm font-semibold text-tertiary-dark/70'>Title</label>
+                    <input type="text" name='title' id='title' required value={formData.title} onChange={handleChange} className='input-style' />
                 </div>
                 
                 <div className='w-full flex flex-col gap-1'>
-                    <label className='text-sm font-semibold text-gray-600'>Description</label>
+                    <label className='text-sm font-semibold text-tertiary-dark/70'>Description</label>
                     <TiptapEditor 
                         content={formData.description} 
                         onChange={(html) => setFormData((prev) => ({ ...prev, description: html }))} 
@@ -83,19 +83,19 @@ const UpdateItemForm = ({ product }) => {
 
                 <div className='grid grid-cols-2 gap-4'>
                     <div className='flex flex-col gap-1'>
-                        <label className='text-sm font-semibold text-gray-600'>Price (৳)</label>
-                        <input type="number" min={0} required name='price' id='price' value={formData.price} onChange={handleChange} className='w-full p-2 px-3 rounded-lg border border-gray-300 outline-none focus:border-pink-500 transition-colors' />
+                        <label className='text-sm font-semibold text-tertiary-dark/70'>Price (৳)</label>
+                        <input type="number" min={0} required name='price' id='price' value={formData.price} onChange={handleChange} className='input-style' />
                     </div>
                     <div className='flex flex-col gap-1'>
-                        <label className='text-sm font-semibold text-gray-600'>Discount Value</label>
-                        <input type="number" name='discount' id='discount' value={formData.discount} onChange={handleChange} className='w-full p-2 px-3 rounded-lg border border-gray-300 outline-none focus:border-pink-500 transition-colors' />
+                        <label className='text-sm font-semibold text-tertiary-dark/70'>Discount Value</label>
+                        <input type="number" name='discount' id='discount' value={formData.discount} onChange={handleChange} className='input-style' />
                     </div>
                 </div>
 
-                <div className='w-full flex flex-col gap-4 mt-4 border-t border-gray-100 pt-4'>
+                <div className='w-full flex flex-col gap-4 mt-4 border-t border-tertiary-dark/10 pt-4'>
                     <div className='flex items-center justify-between'>
-                        <h3 className='text-lg font-bold text-gray-800'>Variants (Sizes/Add-ons)</h3>
-                        <button type='button' onClick={addVariantField} className='text-xs font-bold bg-pink-500 text-white px-3 py-1.5 rounded-lg hover:bg-pink-600 transition-all'>
+                        <h3 className='text-lg font-bold text-tertiary-dark'>Variants (Sizes/Add-ons)</h3>
+                        <button type='button' onClick={addVariantField} className='text-xs font-bold bg-primary text-tertiary-light px-3 py-1.5 rounded-lg hover:bg-primary-dark transition-all'>
                             + Add Variant
                         </button>
                     </div>
@@ -103,22 +103,22 @@ const UpdateItemForm = ({ product }) => {
                     {variants.length > 0 && (
                         <div className='flex flex-col gap-3'>
                             {variants.map((variant, index) => (
-                                <div key={index} className='grid grid-cols-1 md:grid-cols-4 gap-3 bg-gray-50 p-3 rounded-xl relative group'>
+                                <div key={index} className='grid grid-cols-1 md:grid-cols-4 gap-3 bg-tertiary-dark/5 p-3 rounded-xl relative group'>
                                     <div className='flex flex-col gap-1'>
-                                        <input type="text" name="name" value={variant.name} onChange={(e) => handleVariantChange(index, e)} required className='w-full p-1.5 text-sm outline-none border border-gray-300 rounded-lg focus:border-pink-500 transition-all' />
+                                        <input type="text" name="name" value={variant.name} onChange={(e) => handleVariantChange(index, e)} required className='input-style' />
                                     </div>
                                     <div className='flex flex-col gap-1'>
-                                        <input type="text" name="value" value={variant.value} onChange={(e) => handleVariantChange(index, e)} required className='w-full p-1.5 text-sm outline-none border border-gray-300 rounded-lg focus:border-pink-500 transition-all' />
+                                        <input type="text" name="value" value={variant.value} onChange={(e) => handleVariantChange(index, e)} required className='input-style' />
                                     </div>
                                     <div className='flex flex-col gap-1'>
-                                        <input type="number" name="price_adjustment" value={variant.price_adjustment} onChange={(e) => handleVariantChange(index, e)} className='w-full p-1.5 text-sm outline-none border border-gray-300 rounded-lg focus:border-pink-500 transition-all' />
+                                        <input type="number" name="price_adjustment" value={variant.price_adjustment} onChange={(e) => handleVariantChange(index, e)} className='input-style' />
                                     </div>
                                     <div className='flex items-center gap-2'>
-                                        <label className='flex items-center gap-2 text-xs font-medium text-gray-600 cursor-pointer'>
-                                            <input type="checkbox" name="is_default" checked={variant.is_default} onChange={(e) => handleVariantChange(index, e)} className='w-4 h-4 accent-black' />
+                                        <label className='flex items-center gap-2 text-xs font-medium text-tertiary-dark/70 cursor-pointer'>
+                                            <input type="checkbox" name="is_default" checked={variant.is_default} onChange={(e) => handleVariantChange(index, e)} className='w-4 h-4 accent-primary' />
                                             Default
                                         </label>
-                                        <button type='button' onClick={() => removeVariantField(index)} className='ml-auto text-red-500 hover:text-red-700 transition-all'>
+                                        <button type='button' onClick={() => removeVariantField(index)} className='ml-auto text-primary-dark hover:text-primary transition-all'>
                                             ✕
                                         </button>
                                     </div>
@@ -128,20 +128,20 @@ const UpdateItemForm = ({ product }) => {
                     )}
                 </div>
 
-                <button type='submit' className='bg-pink-500 text-white font-bold py-3 rounded-xl hover:bg-pink-600 transition-colors shadow-lg active:scale-[0.98]'>Save Changes</button>
+                <button type='submit' className='bg-primary text-tertiary-light font-bold py-3 rounded-xl hover:bg-primary-dark transition-colors shadow-lg active:scale-[0.98]'>Save Changes</button>
             </form>
 
-            <div className='w-full flex flex-col sm:flex-row gap-4 items-center justify-between bg-gray-50 p-4 rounded-2xl border border-dashed border-gray-300'>
+            <div className='w-full flex flex-col sm:flex-row gap-4 items-center justify-between bg-tertiary-dark/5 p-4 rounded-2xl border border-dashed border-tertiary-dark/20'>
                 <div className='flex items-center gap-3'>
-                    <span className='text-sm font-medium text-gray-500'>Availability Status:</span>
+                    <span className='text-sm font-medium text-tertiary-dark/60'>Availability Status:</span>
                     {product.is_available ? (
-                        <span className='px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-bold border border-green-200'>LIVE ON MENU</span>
+                        <span className='px-3 py-1 rounded-full bg-secondary/10 text-secondary-dark text-xs font-bold border border-secondary/20'>LIVE ON MENU</span>
                     ) : (
-                        <span className='px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold border border-red-200'>HIDDEN</span>
+                        <span className='px-3 py-1 rounded-full bg-primary/10 text-primary-dark text-xs font-bold border border-primary/20'>HIDDEN</span>
                     )}
                 </div>
-                <button onClick={changeStatus} className='flex items-center gap-2 text-sm font-bold bg-white px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95'>
-                    {product.is_available ? <><CgUnavailable className='text-red-500' /> Mark Unavailable</> : <><MdOutlineEventAvailable className='text-green-500' /> Mark Available</>}
+                <button onClick={changeStatus} className='flex items-center gap-2 text-sm font-bold bg-tertiary-light text-tertiary-dark px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95'>
+                    {product.is_available ? <><CgUnavailable className='text-primary-dark' /> Mark Unavailable</> : <><MdOutlineEventAvailable className='text-secondary-dark' /> Mark Available</>}
                 </button>
             </div>
         </div>
