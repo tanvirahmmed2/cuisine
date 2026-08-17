@@ -46,18 +46,18 @@ const ItemDetails = ({ product }) => {
   }, [product.variants])
 
   return (
-    <div className='bg-tertiary-light rounded-[2.5rem] shadow-2xl overflow-hidden border border-tertiary-dark/10'>
+    <div className=' shadow-2xl overflow-hidden rounded-lg'>
       <div className='flex flex-col lg:flex-row w-full'>
-        {/* Image Section */}
+        
         <div className='w-full lg:w-1/2 aspect-square relative overflow-hidden bg-tertiary-dark/5'>
           <div className='absolute right-6 top-6 z-20'>
             {product.is_available ? (
-              <span className='text-[10px] font-black uppercase tracking-[0.2em] text-tertiary-light py-2 px-5 rounded-full bg-secondary shadow-sm'>
-                In Stock
+              <span className='text-[10px] font-semibold uppercase tracking-[0.2em] text-tertiary-light py-2 px-5 rounded-full bg-secondary shadow-sm'>
+                Available
               </span>
             ) : (
-              <span className='text-[10px] font-black uppercase tracking-[0.2em] text-tertiary-light py-2 px-5 rounded-full bg-primary-dark shadow-sm'>
-                Sold Out
+              <span className='text-[10px] font-semibold uppercase tracking-[0.2em] text-tertiary-light py-2 px-5 rounded-full bg-primary-dark shadow-sm'>
+                Out of order
               </span>
             )}
           </div>
@@ -69,33 +69,31 @@ const ItemDetails = ({ product }) => {
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 50vw"
             className="object-cover transition-transform duration-1000 hover:scale-110"
           />
-          <div className='absolute inset-0 bg-gradient-to-t from-tertiary-dark/20 to-transparent pointer-events-none' />
         </div>
 
-        {/* Content Section */}
         <div className='w-full lg:w-1/2 p-8 md:p-14 flex flex-col gap-10 bg-tertiary-light'>
           <div className='space-y-6'>
             <div className='space-y-2'>
-              <p className='text-[11px] font-black uppercase text-primary tracking-[0.3em]'>
-                {product.category_name}
-              </p>
-              <h1 className='text-4xl md:text-6xl font-black text-tertiary-dark leading-[1.1] tracking-tight'>
+              
+              <h1 className='text-4xl font-semibold text-tertiary-dark leading-[1.1] tracking-tight mb-4'>
                 {product.title}
               </h1>
+              <p className='text-[11px] font-semibold uppercase text-primary tracking-[0.3em]'>
+                {product.category_name}
+              </p>
             </div>
             <div 
-              className='text-tertiary-dark/70 leading-relaxed text-lg font-medium prose max-w-none'
+              className='text-tertiary-dark/70 leading-relaxed prose max-w-none'
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
           </div>
 
-          {/* Variants Section */}
           {Object.keys(groupedVariants).length > 0 && (
             <div className='flex flex-col gap-8 py-10 border-y border-tertiary-dark/10'>
               {Object.entries(groupedVariants).map(([groupName, variants]) => (
                 <div key={groupName} className='space-y-4'>
                   <div className='flex items-center gap-3'>
-                    <h3 className='text-[10px] font-black text-tertiary-dark/60 uppercase tracking-[0.2em]'>{groupName}</h3>
+                    <h3 className='text-[10px] font-semibold text-tertiary-dark/60 uppercase tracking-[0.2em]'>{groupName}</h3>
                     <div className='h-px flex-1 bg-tertiary-dark/10' />
                   </div>
                   <div className='flex flex-wrap gap-3'>
@@ -111,7 +109,7 @@ const ItemDetails = ({ product }) => {
                       >
                         <span className='relative z-10'>{v.value}</span>
                         {v.price_adjustment > 0 && (
-                          <span className={`ml-2 text-[10px] font-black ${
+                          <span className={`ml-2 text-[10px] font-semibold ${
                             selectedVariants[groupName]?.id === v.id ? 'text-tertiary-light/70' : 'text-primary'
                           }`}>
                             +৳{v.price_adjustment}
@@ -127,13 +125,13 @@ const ItemDetails = ({ product }) => {
 
           <div className="flex items-center justify-between mt-auto pt-8">
             <div className='flex flex-col gap-1'>
-              <span className='text-[10px] font-black text-tertiary-dark/60 uppercase tracking-[0.2em]'>Price Amount</span>
+              <span className='text-[10px] font-semibold text-tertiary-dark/60 uppercase tracking-[0.2em]'>Price Amount</span>
               {hasDiscount && (
                 <span className="text-lg line-through text-tertiary-dark/40 font-bold tracking-tighter">
                   ৳{totalPrice.toFixed(2)}
                 </span>
               )}
-              <span className="text-4xl md:text-5xl font-black text-tertiary-dark tracking-tighter">
+              <span className="text-4xl md:text-5xl font-semibold text-tertiary-dark tracking-tighter">
                 ৳{currentPrice.toFixed(2)}
               </span>
             </div>

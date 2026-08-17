@@ -63,13 +63,7 @@ const RegisterForm = () => {
             className='flex-1 w-full max-w-md'
         >
             <form onSubmit={handleSubmit} className='flex flex-col gap-8 bg-tertiary-light p-10 rounded-xl border border-tertiary-dark/10'>
-                <div className='space-y-2'>
-                    <div className='inline-block px-3 py-1 bg-tertiary-dark/5 text-tertiary-dark/60 text-[10px] font-semibold uppercase tracking-widest rounded-full'>
-                        New Account
-                    </div>
-                    <h2 className='text-3xl font-semibold text-tertiary-dark tracking-tight'>Join the experience.</h2>
-                    <p className='text-tertiary-dark/60 text-xs font-medium'>Experience culinary excellence at your fingertips.</p>
-                </div>
+                
 
                 <div className='flex flex-col gap-4'>
                     <div className='flex flex-col gap-1.5'>
@@ -135,7 +129,7 @@ const RegisterForm = () => {
                     </button>
 
                     <p className='text-center text-xs text-tertiary-dark/60 font-medium'>
-                        Already registered? <Link href='/login' className='text-tertiary-dark font-semibold hover:underline'>Sign In</Link>
+                        Already registered? <Link href='/login' className='text-tertiary-dark font-semibold hover:underline'>Login</Link>
                     </p>
                 </div>
             </form>

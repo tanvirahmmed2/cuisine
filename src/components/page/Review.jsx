@@ -13,7 +13,6 @@ const Review = ({ initialReviews = [] }) => {
     const [isFormOpen, setIsFormOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     
-    // Form State
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -47,8 +46,8 @@ const Review = ({ initialReviews = [] }) => {
     }
 
     return (
-        <section className='w-full py-32 bg-tertiary-light overflow-hidden border-t border-tertiary-dark/10'>
-            <div className='max-w-7xl mx-auto px-6'>
+        <section className='w-full py-32 bg-tertiary-light overflow-hidden p-4 md:p-20'>
+            <div className=''>
                 
                 <div className='flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20'>
                     <div className='space-y-4'>

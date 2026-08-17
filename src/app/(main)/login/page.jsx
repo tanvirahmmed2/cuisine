@@ -20,23 +20,16 @@ const Login = () => {
                     transition={{ duration: 0.8 }} 
                     className='hidden lg:flex flex-col gap-6 order-last lg:order-first'
                 >
-                    <div className='inline-block w-fit px-4 py-1 bg-primary text-tertiary-light text-[10px] font-semibold uppercase tracking-widest rounded-full'>
-                        {name}
-                    </div>
+                    
                     <h1 className='text-6xl font-semibold text-tertiary-dark leading-[1.1] tracking-tight'>
                         Welcome to <br />
-                        <span className='text-tertiary-dark/40'>Premium Dining</span>
+                        <span className='text-primary'>{name}</span>
                     </h1>
                     <p className='text-tertiary-dark/60 text-lg font-medium max-w-sm leading-relaxed'>
-                        Sign in to access your profile, manage your reservations, and explore our curated seasonal menu.
+                        Login to access your profile, manage your reservations, and explore our curated seasonal menu.
                     </p>
                     
-                    <div className='flex items-center gap-4 mt-4'>
-                        <div className='w-12 h-12 rounded-full bg-tertiary-light border border-tertiary-dark/10 flex items-center justify-center shadow-sm'>
-                            <div className='w-2 h-2 bg-secondary rounded-full' />
-                        </div>
-                        <p className='text-xs font-semibold text-tertiary-dark/60 uppercase tracking-widest'>System Secure</p>
-                    </div>
+                   
                 </motion.div>
 
                 <div className="flex justify-center lg:justify-start">

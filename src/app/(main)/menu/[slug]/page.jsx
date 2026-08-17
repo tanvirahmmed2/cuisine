@@ -18,10 +18,10 @@ const SingleProduct = async ({ params }) => {
   )
 
   return (
-    <div className='w-full min-h-screen bg-tertiary-dark/5 pb-20'>
-      <div className='w-full bg-tertiary-dark h-64 relative' />
+    <div className='w-full min-h-screen bg-tertiary-dark/5 pb-20 '>
+      <div className='w-full bg-secondary h-64 relative' />
 
-      <div className='max-w-7xl mx-auto px-4 -mt-32 relative z-10'>
+      <div className='w-full -mt-32 md:-mt-48 relative z-10 p-4 md:p-20'>
         <ItemDetails product={product} />
 
         <SameCategoryProducts id={product.category_id} />

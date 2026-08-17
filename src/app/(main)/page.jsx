@@ -12,7 +12,6 @@ const Main = async () => {
   
   
 
-  // Fetch all initial data concurrently
   const [flashSaleRes, latestRes, reviewRes, offerRes] = await Promise.all([
     fetch(`${baseUrl}/api/product/discount/latest`, { cache: 'no-store' }).catch(() => null),
     fetch(`${baseUrl}/api/product/latest`, { cache: 'no-store' }).catch(() => null),

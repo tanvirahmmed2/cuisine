@@ -25,21 +25,16 @@ const FlashSale = () => {
   }, [])
 
   return (
-    <div className='w-full min-h-screen bg-gray-50/50 pt-4 pb-20 px-6'>
-      <div className='max-w-7xl mx-auto flex flex-col gap-12'>
+    <div className='w-full min-h-screen bg-gray-50/50 pt-4 pb-20 p-4 md:p-20'>
+      <div className='w-full flex flex-col gap-12'>
         
-        {/* Header Section */}
         <div className='text-center space-y-4'>
-          <div className='inline-flex items-center gap-2 px-4 py-1.5 bg-red-100 text-red-600 rounded-full text-[10px] font-black uppercase tracking-[0.3em]'>
-            <MdFlashOn className='animate-pulse' />
-            Limited Time Offers
-          </div>
-          <h1 className='text-5xl font-black text-gray-900 tracking-tight'>Flash Sale</h1>
+          
+          <h1 className='text-5xl font-semibold text-gray-900 tracking-tight'>Flash Sale</h1>
           <p className='text-gray-500 max-w-lg mx-auto'>Grab your favorite delicacies at an unbeatable price. Act fast, these deals won&apos;t last forever!</p>
         </div>
 
-        {/* Content Section */}
-        <div className='w-full min-h-[400px]'>
+        <div className='w-full min-h-100'>
           {loading ? (
             <div className="w-full h-64 flex items-center justify-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>

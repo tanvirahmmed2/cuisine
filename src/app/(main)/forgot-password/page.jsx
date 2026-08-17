@@ -30,9 +30,7 @@ const ForgotPasswordPage = () => {
       <div className="absolute top-0 left-0 w-1/3 h-full bg-white -z-10" />
       <div className='w-full max-w-md bg-white p-8 shadow-xl rounded-2xl border border-gray-100'>
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ duration: 0.5 }}>
-          <div className='inline-block w-fit px-4 py-1 bg-pink-50 text-pink-600 text-[10px] font-bold uppercase tracking-widest rounded-full mb-6'>
-            {name}
-          </div>
+          
           <h2 className="text-3xl font-semibold text-gray-900 mb-2">Forgot Password</h2>
           <p className="text-gray-500 mb-8">Enter your email address to receive a password reset link.</p>
 

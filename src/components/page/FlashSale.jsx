@@ -51,8 +51,8 @@ const FlashSale = ({ initialProducts = [] }) => {
   })
 
   return (
-    <section className='w-full py-32 bg-tertiary-light overflow-hidden'>
-      <div className='max-w-7xl mx-auto px-6 space-y-24'>
+    <section className='w-full py-32 p-4 md:p-20 bg-tertiary-light overflow-hidden'>
+      <div className='w-full space-y-24'>
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -114,17 +114,7 @@ const FlashSale = ({ initialProducts = [] }) => {
                       className='object-cover transition-transform duration-1000 hover:scale-110' 
                     />
                   </div>
-                  {hasDiscount && (
-                     <motion.div 
-                      initial={{ opacity: 0, scale: 0, rotate: -20 }}
-                      whileInView={{ opacity: 1, scale: 1, rotate: -12 }}
-                      viewport={{ once: false }}
-                      transition={{ delay: 0.6, type: "spring", stiffness: 200 }}
-                      className='absolute -top-4 -left-4 bg-primary text-tertiary-light px-6 py-3 rounded-xl shadow-lg z-20'
-                     >
-                        <span className='text-xs font-bold uppercase tracking-widest'>Save ৳{item.discount}</span>
-                     </motion.div>
-                  )}
+                  
                   <div className={`absolute -z-10 top-1/2 -translate-y-1/2 ${index % 2 === 0 ? '-left-20' : '-right-20'} w-80 h-80 bg-primary/10 rounded-full blur-3xl opacity-50`} />
                 </motion.div>
 

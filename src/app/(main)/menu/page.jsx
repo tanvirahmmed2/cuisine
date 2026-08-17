@@ -28,11 +28,11 @@ const Menu = () => {
   }, [categoryId])
 
   return (
-    <div className="w-full min-h-screen bg-gray-50/50 pt-4 pb-20">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col gap-12">
+    <div className="w-full min-h-screen bg-gray-50/50 pt-4 pb-20 p-4 md:p-20">
+      <div className="w-full flex flex-col gap-12">
         
         <div className="text-center space-y-4">
-          <h1 className="text-5xl font-black text-gray-900 tracking-tight">Our Menu</h1>
+          <h1 className="text-5xl font-semibold text-gray-900 tracking-tight">Our Menu</h1>
           <p className="text-gray-500 max-w-lg mx-auto">Explore our curated selection of gourmet dishes, prepared with the finest ingredients.</p>
         </div>
 
@@ -62,8 +62,7 @@ const Menu = () => {
           ))}
         </div>
 
-        {/* Products Grid */}
-        <div className="w-full min-h-[400px]">
+        <div className="w-full min-h-100">
           {loading ? (
             <div className="w-full h-64 flex items-center justify-center">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-pink-500"></div>

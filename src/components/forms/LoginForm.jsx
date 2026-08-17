@@ -27,7 +27,6 @@ const LoginForm = () => {
             
             const { role } = response.data.payload
             
-            // Role-based redirection
             if (role === 'admin' || role === 'manager' || role === 'sales') {
                 window.location.replace('/dashboard')
             } else {
@@ -49,13 +48,7 @@ const LoginForm = () => {
             className='flex-1 w-full max-w-md'
         >
             <form onSubmit={loginHandle} className='flex flex-col gap-8 bg-tertiary-light p-10 rounded-xl border border-tertiary-dark/10'>
-                <div className='space-y-2'>
-                    <div className='inline-block px-3 py-1 bg-tertiary-dark/5 text-tertiary-dark/60 text-[10px] font-semibold uppercase tracking-widest rounded-full'>
-                        Security Check
-                    </div>
-                    <h2 className='text-3xl font-semibold text-tertiary-dark tracking-tight'>Welcome Back.</h2>
-                    <p className='text-tertiary-dark/60 text-xs font-medium'>Sign in to manage your dining experience.</p>
-                </div>
+                
 
                 <div className='flex flex-col gap-4'>
                     <div className='flex flex-col gap-1.5'>
@@ -94,7 +87,7 @@ const LoginForm = () => {
                         disabled={loading}
                         className='w-full py-4 bg-primary text-tertiary-light rounded-xl font-semibold text-xs uppercase tracking-widest hover:bg-primary-dark transition-all active:scale-[0.98] shadow-xl shadow-primary/10 disabled:opacity-50'
                     >
-                        {loading ? 'Authenticating...' : 'Sign In'}
+                        {loading ? 'Authenticating...' : 'Login'}
                     </button>
 
                     <p className='text-center text-xs text-tertiary-dark/60 font-medium'>

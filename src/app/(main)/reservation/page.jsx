@@ -47,10 +47,9 @@ const Reservation = () => {
   }
 
   return (
-    <div className='w-full min-h-screen bg-gray-50/30 pt-28 pb-20 px-6'>
-      <div className='max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center'>
+    <div className='w-full min-h-screen bg-gray-50/30 pt-28 pb-20 p-4 md:p-20'>
+      <div className='w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center'>
 
-        {/* Text Section */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }} 
           animate={{ opacity: 1, x: 0 }} 
@@ -58,9 +57,7 @@ const Reservation = () => {
           className='space-y-8'
         >
           <div className='space-y-4'>
-            <div className='inline-block px-4 py-1 bg-pink-500 text-white text-[10px] font-semibold uppercase tracking-widest rounded-full'>
-              Reservations
-            </div>
+            
             <h1 className='text-5xl md:text-6xl font-semibold text-gray-900 tracking-tight leading-tight'>
               Experience the Art of <span className='text-gray-400'>Fine Dining</span>
             </h1>

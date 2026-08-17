@@ -29,7 +29,7 @@ const About = () => {
 
   return (
     <section className="w-full bg-tertiary-light py-32 overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="w-full p-4 md:p-20">
         
         <motion.div 
           variants={containerVariants}
@@ -38,7 +38,6 @@ const About = () => {
           viewport={{ once: false, amount: 0.2 }}
           className="grid grid-cols-1 lg:grid-cols-12 gap-20 items-center"
         >
-          {/* Header & Story Section */}
           <div className="lg:col-span-7 space-y-12">
             <motion.div variants={itemVariants} className='space-y-6'>
               <div className='flex items-center gap-4'>
