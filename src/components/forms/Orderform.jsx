@@ -77,7 +77,12 @@ const Orderform = () => {
         setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
+    const isServiceOffline = siteData && siteData.is_service_available === false;
+
     const handleOpenReview = () => {
+        if (isServiceOffline) {
+            return toast.error("Restaurant service is currently unavailable. Orders cannot be placed at this time.");
+        }
         if (!cart?.items || cart.items.length === 0) {
             return toast.error("Cart is empty");
         }
@@ -90,6 +95,10 @@ const Orderform = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (isServiceOffline) {
+            return toast.error("Restaurant service is currently unavailable. Orders cannot be placed at this time.");
+        }
 
         const actualPaid = paidAmount !== '' ? parseFloat(paidAmount) : totalPrice;
         if (actualPaid < totalPrice) {

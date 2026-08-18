@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import React, { useContext } from 'react'
 import { Context } from '../context/Context'
-import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from 'react-icons/fa'
+import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter, FaYoutube } from 'react-icons/fa'
 
 import { name, tagline } from '@/lib/database/secret'
 
@@ -10,6 +10,8 @@ const Footer = () => {
   const { siteData } = useContext(Context)
   
   const currentYear = new Date().getFullYear()
+  const openTime = siteData?.open_time || '09:00 AM'
+  const closeTime = siteData?.close_time || '10:00 PM'
 
   return (
     <footer className='w-full bg-secondary-dark text-tertiary-light pt-32 pb-16 px-6 '>
@@ -35,16 +37,28 @@ const Footer = () => {
                 </div>
               </div>
 
-              {siteData?.sociallink && (
-                <div className='flex gap-4 pt-4'>
-                  <a href={siteData.sociallink} target="_blank" rel="noopener noreferrer" className='w-11 h-11 border border-tertiary-dark/10 rounded-full flex items-center justify-center text-tertiary-light hover:bg-tertiary-dark hover:text-tertiary-light hover:border-tertiary-dark transition-all duration-300'>
-                    {siteData.sociallink.includes('facebook') ? <FaFacebook size={18} /> :
-                     siteData.sociallink.includes('instagram') ? <FaInstagram size={18} /> :
-                     siteData.sociallink.includes('linkedin') ? <FaLinkedin size={18} /> :
-                     <FaTwitter size={18} />}
+              <div className='flex flex-wrap gap-3 pt-2'>
+                {siteData?.fb_link && (
+                  <a href={siteData.fb_link} target="_blank" rel="noopener noreferrer" title="Facebook" className='w-10 h-10 border border-tertiary-dark/20 rounded-full flex items-center justify-center text-tertiary-light hover:bg-primary hover:text-white hover:border-primary transition-all duration-300'>
+                    <FaFacebook size={16} />
                   </a>
-                </div>
-              )}
+                )}
+                {siteData?.insta_link && (
+                  <a href={siteData.insta_link} target="_blank" rel="noopener noreferrer" title="Instagram" className='w-10 h-10 border border-tertiary-dark/20 rounded-full flex items-center justify-center text-tertiary-light hover:bg-primary hover:text-white hover:border-primary transition-all duration-300'>
+                    <FaInstagram size={16} />
+                  </a>
+                )}
+                {siteData?.twitter_link && (
+                  <a href={siteData.twitter_link} target="_blank" rel="noopener noreferrer" title="Twitter / X" className='w-10 h-10 border border-tertiary-dark/20 rounded-full flex items-center justify-center text-tertiary-light hover:bg-primary hover:text-white hover:border-primary transition-all duration-300'>
+                    <FaTwitter size={16} />
+                  </a>
+                )}
+                {siteData?.yt_link && (
+                  <a href={siteData.yt_link} target="_blank" rel="noopener noreferrer" title="YouTube" className='w-10 h-10 border border-tertiary-dark/20 rounded-full flex items-center justify-center text-tertiary-light hover:bg-primary hover:text-white hover:border-primary transition-all duration-300'>
+                    <FaYoutube size={16} />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
 
@@ -79,7 +93,7 @@ const Footer = () => {
               </div>
               <div className='p-6 bg-tertiary-dark/5 rounded-2xl border border-tertiary-dark/10'>
                 <p className='text-[9px] font-bold uppercase tracking-[0.2em] text-primary mb-2'>Open Hours</p>
-                <p className='text-xs text-tertiary-light/70 font-medium'>Mon - Sun: 11:00 AM - 11:00 PM</p>
+                <p className='text-xs text-tertiary-light/70 font-medium'>Everyday: {openTime} - {closeTime}</p>
               </div>
             </div>
           </div>

@@ -38,7 +38,18 @@ export async function POST(req) {
 
     const body = await req.json();
 
-    const allowedFields = ['address', 'sociallink', 'email', 'phone'];
+    const allowedFields = [
+      'address', 
+      'email', 
+      'phone', 
+      'open_time', 
+      'close_time', 
+      'fb_link', 
+      'insta_link', 
+      'twitter_link', 
+      'yt_link', 
+      'is_service_available'
+    ];
 
     const updates = {};
     Object.keys(body).forEach(key => {

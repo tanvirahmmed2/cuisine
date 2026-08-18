@@ -48,7 +48,7 @@ export async function PATCH(req) {
 
     const website_id = rows[0].website_id;
 
-    const allowedFields = ['address', 'sociallink', 'email', 'phone'];
+    const allowedFields = ['address', 'email', 'phone', 'open_time', 'close_time', 'fb_link', 'insta_link', 'twitter_link', 'yt_link', 'is_service_available'];
 
     const updates = {};
     Object.keys(body).forEach(key => {

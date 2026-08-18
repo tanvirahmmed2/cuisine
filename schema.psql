@@ -4,9 +4,15 @@
 CREATE TABLE restaurant_websites (
   website_id SERIAL PRIMARY KEY,
   address TEXT,
-  sociallink TEXT,
   email TEXT,
   phone TEXT,
+  open_time VARCHAR(50) DEFAULT '09:00 AM',
+  close_time VARCHAR(50) DEFAULT '10:00 PM',
+  fb_link TEXT,
+  insta_link TEXT,
+  twitter_link TEXT,
+  yt_link TEXT,
+  is_service_available BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMP DEFAULT now(),
   updated_at TIMESTAMP DEFAULT now()
 );

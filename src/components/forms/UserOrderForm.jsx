@@ -20,9 +20,11 @@ const paymentOptions = [
 ]
 
 const UserOrderForm = () => {
-    const { subTotal, totalPrice, totalDiscount, addToCart, removeFromCart, decreaseQuantity, clearCart, userData, cart } = useContext(Context)
+    const { subTotal, totalPrice, totalDiscount, addToCart, removeFromCart, decreaseQuantity, clearCart, userData, cart, siteData } = useContext(Context)
     const [loading, setLoading] = useState(false)
     const [isMounted, setIsMounted] = useState(false)
+
+    const isServiceOffline = siteData && siteData.is_service_available === false;
 
     useEffect(() => {
         setIsMounted(true)
@@ -53,6 +55,12 @@ const UserOrderForm = () => {
 
     const handleOrder = async (e) => {
         e.preventDefault()
+
+        if (isServiceOffline) {
+            toast.error("Restaurant service is currently unavailable. We are not accepting orders at this time.")
+            return
+        }
+
         setLoading(true)
         try {
             const cleanedPhone = formData.phone ? formData.phone.replace(/\D/g, '').slice(-11) : '';
@@ -255,10 +263,16 @@ const UserOrderForm = () => {
                                 </div>
                             </div>
 
+                            {isServiceOffline && (
+                                <div className='w-full bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-2xl flex items-center justify-center text-center text-xs font-semibold gap-2 mt-4'>
+                                    <span>⚠️ Restaurant service is currently unavailable. We are not accepting orders at this time.</span>
+                                </div>
+                            )}
+
                             <button 
                                 onClick={handleOrder}
-                                disabled={loading}
-                                className='w-full py-6 bg-primary text-tertiary-light rounded-xl font-semibold text-sm uppercase tracking-[0.2em] hover:bg-primary-dark transition-all shadow-[0_20px_60px_rgba(0,0,0,0.2)] active:scale-[0.98] disabled:opacity-50 mt-6'
+                                disabled={loading || isServiceOffline}
+                                className='w-full py-6 bg-primary text-tertiary-light rounded-xl font-semibold text-sm uppercase tracking-[0.2em] hover:bg-primary-dark transition-all shadow-[0_20px_60px_rgba(0,0,0,0.2)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed mt-6'
                             >
                                 {loading ? 'CONFIRMING ORDER...' : 'FINALIZE ORDER'}
                             </button>

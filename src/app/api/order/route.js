@@ -58,6 +58,15 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Cart is empty" }, { status: 400 });
     }
 
+    // Check if restaurant service is currently available
+    const { rows: webRows } = await client.query("SELECT is_service_available FROM restaurant_websites LIMIT 1");
+    if (webRows.length > 0 && webRows[0].is_service_available === false) {
+      return NextResponse.json({
+        success: false,
+        message: "Restaurant service is currently unavailable. We are not accepting orders at this time."
+      }, { status: 400 });
+    }
+
     const rawPhone = phone ? String(phone).trim() : "";
     const cleanedDigits = rawPhone.replace(/\D/g, "");
     let customerPhone = cleanedDigits.length >= 11 ? cleanedDigits.slice(-11) : rawPhone;

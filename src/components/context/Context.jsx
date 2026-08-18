@@ -35,27 +35,28 @@ export const ContextProvider = ({ children }) => {
   }, [])
 
 
-  useEffect(() => {
-    const fetchWebsiteData = async () => {
-      setSiteLoading(true)
-      try {
-        const response = await axios.get('/api/website', { withCredentials: true })
-        const data = response.data.payload;
-        setSiteData(data)
-      } catch (error) {
-        if (error.response && error.response.data && !error.response.data.success) {
-          if ([402, 403, 404].includes(error.response.status)) {
-            setTenantError({
-              status: error.response.status,
-              message: error.response.data.message
-            });
-          }
+  const fetchWebsiteData = async () => {
+    setSiteLoading(true)
+    try {
+      const response = await axios.get('/api/website', { withCredentials: true })
+      const data = response.data.payload;
+      setSiteData(data)
+    } catch (error) {
+      if (error.response && error.response.data && !error.response.data.success) {
+        if ([402, 403, 404].includes(error.response.status)) {
+          setTenantError({
+            status: error.response.status,
+            message: error.response.data.message
+          });
         }
-        setSiteData(null)
-      } finally {
-        setSiteLoading(false)
       }
+      setSiteData(null)
+    } finally {
+      setSiteLoading(false)
     }
+  }
+
+  useEffect(() => {
     fetchWebsiteData()
   }, [])
 
@@ -262,7 +263,7 @@ export const ContextProvider = ({ children }) => {
 
   const contextValue = {
     manageSidebar, setManageSidebar, cartBar, setCartBar, mobileSidebar, setMobileSidebar, updateUserBox, setUpdateUserBox,
-    cart, siteData, userData, subTotal, totalPrice, totalDiscount,
+    cart, siteData, setSiteData, fetchWebsiteData, siteLoading, userData, subTotal, totalPrice, totalDiscount,
     categories,
     fetchCategories, addToCart, removeFromCart, decreaseQuantity, clearCart, fetchCart, updateCartItemVariant
   }
