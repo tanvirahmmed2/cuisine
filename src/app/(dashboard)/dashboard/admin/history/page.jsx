@@ -49,12 +49,12 @@ const AdminHistory = () => {
 
   return (
     <div className="w-full flex flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-black text-gray-900 tracking-tight">Business History</h1>
+      <div className="flex flex-col gap-1">
+        <h1 className="text-2xl font-semibold text-gray-900 tracking-tight">Order History</h1>
         <p className="text-gray-500 text-sm">Overview of all purchases, payments, and delivered orders.</p>
       </div>
 
-      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         <div className='grid grid-cols-12 bg-gray-50/50 p-3 sm:p-4 rounded-xl font-bold text-[10px] uppercase text-gray-500 tracking-wider items-center gap-2 sm:gap-3 border-b border-gray-100'>
           <div className='col-span-3 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1'>Order ID</div>
           <div className='col-span-4 sm:col-span-3 md:col-span-3 lg:col-span-2 xl:col-span-2'>Customer</div>

@@ -106,103 +106,89 @@ const Analytics = () => {
   }
 
   return (
-    <div className='w-full flex flex-col gap-12 animate-in fade-in duration-700'>
-      <div className='flex flex-col md:flex-row md:items-end justify-between gap-4'>
+    <div className='w-full flex flex-col gap-10'>
+      <div className='flex flex-col md:flex-row md:items-center justify-between gap-4'>
         <div className='flex flex-col gap-1'>
-          <h1 className='text-4xl font-black text-slate-900 tracking-tight'>Business Analytics</h1>
-          <p className='text-slate-500 font-medium'>In-depth performance and financial analysis for your restaurant.</p>
+          <h1 className='text-2xl font-semibold text-gray-900 tracking-tight'>Business Analytics</h1>
+          <p className='text-gray-500 text-sm'>In-depth performance and financial analysis.</p>
         </div>
         <div className='flex items-center gap-3'>
           <button 
             onClick={downloadFullExcel}
-            className='flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl text-sm font-bold shadow-xl shadow-slate-200 hover:bg-slate-800 transition-all active:scale-95 group'
+            className='flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-bold hover:bg-gray-800 transition-all active:scale-95'
           >
-            <Download size={18} className='group-hover:-translate-y-0.5 transition-transform' />
+            <Download size={16} />
             Download Full Report
           </button>
-          <div className='flex items-center gap-2 px-4 py-2 bg-pink-50 text-pink-600 rounded-full text-sm font-bold'>
-            <Activity size={16} className='animate-pulse' />
-            Live Reports
+          <div className='flex items-center gap-2 px-3 py-2 bg-pink-50 text-pink-600 rounded-xl text-xs font-bold'>
+            <Activity size={14} className='animate-pulse' />
+            Live
           </div>
         </div>
       </div>
 
-      <div className='flex flex-col gap-16'>
+      <div className='flex flex-col gap-12'>
         {/* Sales Overview */}
-        <section className='flex flex-col gap-8'>
+        <section className='flex flex-col gap-6'>
           <div className='flex items-center justify-between gap-4'>
-            <div className='flex items-center gap-4'>
-              <div className='p-3 bg-pink-500 rounded-2xl shadow-lg shadow-pink-200 text-white'>
-                <TrendingUp size={24} />
+            <div className='flex items-center gap-3'>
+              <div className='w-9 h-9 bg-pink-500 rounded-xl flex items-center justify-center text-white'>
+                <TrendingUp size={18} />
               </div>
               <div>
-                <h2 className='text-2xl font-bold text-slate-900 tracking-tight'>Sales Performance</h2>
-                <p className='text-slate-400 text-sm font-medium'>Monitor your revenue growth and order trends.</p>
+                <h2 className='text-base font-semibold text-gray-900 tracking-tight'>Sales Performance</h2>
+                <p className='text-gray-400 text-xs'>Revenue growth and order trends.</p>
               </div>
             </div>
             <button 
               onClick={downloadSalesExcel}
-              className='flex items-center gap-2 px-4 py-2 bg-pink-50 text-pink-600 rounded-xl text-xs font-bold hover:bg-pink-100 transition-all active:scale-95'
+              className='flex items-center gap-2 px-4 py-2 bg-pink-50 text-pink-600 rounded-xl text-xs font-bold hover:bg-pink-100 transition-all'
             >
               <Download size={14} />
-              Export Sales
+              Export
             </button>
           </div>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
-            <div className='group'>
-              <LastMonthSales data={data} />
-            </div>
-            <div className='group'>
-              <LastYearSales data={data} />
-            </div>
-            <div className='group'>
-              <TotalSales data={data} />
-            </div>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+            <LastMonthSales data={data} />
+            <LastYearSales data={data} />
+            <TotalSales data={data} />
           </div>
         </section>
 
         {/* Expenses Overview */}
-        <section className='flex flex-col gap-8'>
+        <section className='flex flex-col gap-6'>
           <div className='flex items-center justify-between gap-4'>
-            <div className='flex items-center gap-4'>
-              <div className='p-3 bg-slate-900 rounded-2xl shadow-lg shadow-slate-200 text-white'>
-                <Wallet size={24} />
+            <div className='flex items-center gap-3'>
+              <div className='w-9 h-9 bg-gray-900 rounded-xl flex items-center justify-center text-white'>
+                <Wallet size={18} />
               </div>
               <div>
-                <h2 className='text-2xl font-bold text-slate-900 tracking-tight'>Expense Analysis</h2>
-                <p className='text-slate-400 text-sm font-medium'>Keep track of your spending and overheads.</p>
+                <h2 className='text-base font-semibold text-gray-900 tracking-tight'>Expense Analysis</h2>
+                <p className='text-gray-400 text-xs'>Track your spending and overheads.</p>
               </div>
             </div>
             <button 
               onClick={downloadExpensesExcel}
-              className='flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-100 transition-all active:scale-95'
+              className='flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-100 transition-all'
             >
               <Download size={14} />
-              Export Expenses
+              Export
             </button>
           </div>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
-            <div className='group'>
-              <LastMonthExpense data={expenses}/>
-            </div>
-            <div className='group'>
-              <LastYearExpense data={expenses}/>
-            </div>
-            <div className='group'>
-              <TotalExpense data={expenses}/>
-            </div>
+          <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+            <LastMonthExpense data={expenses}/>
+            <LastYearExpense data={expenses}/>
+            <TotalExpense data={expenses}/>
           </div>
         </section>
       </div>
 
       {data.length === 0 && expenses.length === 0 && (
-        <div className='text-center py-24 bg-pink-50/30 rounded-[2.5rem] border-2 border-dashed border-pink-100 flex flex-col items-center gap-4 transition-all hover:bg-pink-50/50'>
-          <div className='p-4 bg-white rounded-full shadow-sm'>
-            <AlertCircle size={32} className='text-pink-300' />
-          </div>
+        <div className='text-center py-24 bg-gray-50 rounded-xl border border-dashed border-gray-200 flex flex-col items-center gap-3'>
+          <AlertCircle size={32} className='text-gray-300' />
           <div className='flex flex-col gap-1'>
-            <p className='text-slate-900 font-bold text-lg tracking-tight uppercase'>No Data Available Yet</p>
-            <p className='text-slate-400 text-sm max-w-xs mx-auto'>Start processing orders and recording expenses to see your business analytics here.</p>
+            <p className='text-gray-700 font-semibold text-sm'>No Data Available Yet</p>
+            <p className='text-gray-400 text-xs max-w-xs mx-auto'>Start processing orders and recording expenses to see analytics here.</p>
           </div>
         </div>
       )}

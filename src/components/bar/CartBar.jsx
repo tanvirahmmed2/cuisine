@@ -151,7 +151,7 @@ const CartBar = () => {
         <AnimatePresence>
             {cartBar && (
                 <>
-                    {/* Backdrop */}
+                    
                     <motion.div 
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -160,7 +160,7 @@ const CartBar = () => {
                             setCartBar(false);
                             setEditingItem(null);
                         }}
-                        className="fixed inset-0 bg-tertiary-dark/20 backdrop-blur-sm z-[60]"
+                        className="fixed inset-0 bg-tertiary-dark/20 backdrop-blur-sm z-60"
                     />
 
                     {/* Cart Sidebar */}
@@ -169,10 +169,10 @@ const CartBar = () => {
                         animate={{ x: 0 }}
                         exit={{ x: '100%' }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed top-0 right-0 h-full w-full sm:w-[480px] bg-tertiary-light z-[70] shadow-2xl flex flex-col overflow-hidden"
+                        className="fixed top-0 right-0 h-full w-full sm:w-120 bg-tertiary-light z-70 shadow-2xl flex flex-col overflow-hidden"
                     >
                         {/* Header */}
-                        <div className="p-5 flex items-center justify-between border-b border-tertiary-dark/10 bg-gradient-to-b from-primary/10 to-transparent">
+                        <div className="p-5 flex items-center justify-between border-b border-tertiary-dark/10 bg-linear-to-b from-primary/10 to-transparent">
                             <div>
                                 <h2 className="text-2xl font-semibold text-tertiary-dark tracking-tighter">My Cart</h2>
                                 <p className="text-[10px] text-primary uppercase font-semibold tracking-[0.2em] mt-1">
@@ -194,7 +194,7 @@ const CartBar = () => {
                         <div className="flex-1 overflow-y-auto p-4 space-y-3 relative">
                             {cart?.items?.length === 0 ? (
                                 <div className="h-full flex flex-col items-center justify-center text-center gap-4">
-                                    <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center text-primary/60">
+                                    <div className="w-20 h-20 bg-primary/10 rounded-xl flex items-center justify-center text-primary/60">
                                         <MdDeleteOutline size={48} />
                                     </div>
                                     <div className='space-y-2'>

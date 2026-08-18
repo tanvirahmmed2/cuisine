@@ -136,17 +136,24 @@ const PendingOrder = () => {
   }
 
   return (
-    <div className='w-full  flex flex-col gap-6 p-4 md:p-8'>
-      <div className='flex flex-col gap-1'>
-        <h1 className='text-2xl font-semibold text-tertiary-dark tracking-tight'>Pending Orders</h1>
-        <p className='text-tertiary-dark/60 text-xs font-medium'>Orders waiting for confirmation or processing.</p>
+    <div className='w-full flex flex-col gap-6'>
+      <div className='flex items-center justify-between'>
+        <div className='flex flex-col gap-1'>
+          <h1 className='text-2xl font-semibold text-gray-900 tracking-tight'>Pending Orders</h1>
+          <p className='text-gray-500 text-sm'>Orders waiting for confirmation or processing.</p>
+        </div>
+        {orders.length > 0 && (
+          <div className='bg-amber-50 text-amber-700 px-4 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider'>
+            {orders.length} Pending
+          </div>
+        )}
       </div>
 
       <div className='w-full flex flex-col gap-3'>
         {orders.length > 0 ? (
           <div className='w-full flex flex-col gap-2 min-h-screen'>
             
-            <div className='grid grid-cols-12 bg-tertiary-dark/5 p-3 sm:p-4 rounded-xl font-semibold text-[10px] uppercase text-tertiary-dark/60 tracking-widest border border-tertiary-dark/10 gap-2 sm:gap-3 items-center'>
+            <div className='grid grid-cols-12 bg-gray-50/50 p-3 sm:p-4 rounded-xl font-semibold text-[10px] uppercase text-gray-400 tracking-widest border border-gray-100 gap-2 sm:gap-3 items-center'>
               <div className='col-span-3 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1'>Order ID</div>
               <div className='col-span-4 sm:col-span-3 md:col-span-3 lg:col-span-2 xl:col-span-2'>Customer</div>
               <div className='hidden md:block md:col-span-3 lg:col-span-3 xl:col-span-3'>Items</div>
@@ -164,7 +171,7 @@ const PendingOrder = () => {
                 return (
                   <div 
                     key={order.id} 
-                    className='w-full grid grid-cols-12 p-3 sm:p-4 items-center bg-tertiary-light border border-tertiary-dark/10 rounded-xl hover:border-primary/40 transition-all gap-2 sm:gap-3 relative shadow-2xs'
+                    className='w-full grid grid-cols-12 p-3 sm:p-4 items-center bg-white border border-gray-100 rounded-xl hover:border-pink-200 transition-all gap-2 sm:gap-3 relative'
                   >
                     {/* 1. Order ID */}
                     <div className='col-span-3 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1 font-mono font-semibold text-primary text-xs truncate'>
@@ -234,7 +241,7 @@ const PendingOrder = () => {
                             onClick={() => setActiveMenuId(null)}
                           />
 
-                          <div className='absolute right-0 top-10 z-50 w-44 bg-tertiary-light rounded-xl shadow-xl border border-tertiary-dark/10 py-1.5 flex flex-col gap-0.5 text-left text-xs font-semibold animate-in fade-in zoom-in-95 duration-100'>
+                          <div className='absolute right-0 top-10 z-50 w-44 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 flex flex-col gap-0.5 text-left text-xs font-semibold animate-in fade-in zoom-in-95 duration-100'>
                             <button
                               type='button'
                               onClick={() => openPaymentModal(order, 'confirm')}
@@ -296,8 +303,8 @@ const PendingOrder = () => {
 
           </div>
         ) : (
-          <div className='text-center py-20 bg-tertiary-light rounded-xl border border-dashed border-tertiary-dark/20 flex flex-col items-center gap-2'>
-            <p className='text-tertiary-dark/40 text-sm font-semibold'>No pending orders found</p>
+          <div className='text-center py-20 bg-gray-50 rounded-xl border border-dashed border-gray-200 flex flex-col items-center gap-2'>
+            <p className='text-gray-400 text-sm font-medium'>No pending orders found</p>
           </div>
         )}
       </div>
