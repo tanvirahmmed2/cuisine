@@ -13,7 +13,7 @@ export async function POST(req) {
     }
 
     // Find user with this token
-    const { rows } = await pool.query("SELECT id, verification_token_expires FROM restaurant_users WHERE verification_token = $1 LIMIT 1", [token]);
+    const { rows } = await pool.query("SELECT id, verification_token_expires FROM users WHERE verification_token = $1 LIMIT 1", [token]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Invalid verification token" }, { status: 400 });
@@ -25,7 +25,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Verification token has expired" }, { status: 400 });
     }
 
-    await pool.query("UPDATE restaurant_users SET is_verified = TRUE, verification_token = NULL, verification_token_expires = NULL WHERE id = $1", [user.id]);
+    await pool.query("UPDATE users SET is_verified = TRUE, verification_token = NULL, verification_token_expires = NULL WHERE id = $1", [user.id]);
 
     return NextResponse.json({ success: true, message: "Account successfully verified" }, { status: 200 });
 

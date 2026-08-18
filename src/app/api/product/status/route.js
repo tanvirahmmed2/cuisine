@@ -17,7 +17,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Id not found" }, { status: 400 });
     }
 
-    const { rows } = await pool.query("SELECT id, is_available FROM restaurant_items WHERE id = $1", [id]);
+    const { rows } = await pool.query("SELECT id, is_available FROM items WHERE id = $1", [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Product not found" }, { status: 404 });
@@ -26,7 +26,7 @@ export async function POST(req) {
     const currentStatus = rows[0].is_available;
     const newStatus = !currentStatus;
 
-    await pool.query("UPDATE restaurant_items SET is_available = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2", [newStatus, id]);
+    await pool.query("UPDATE items SET is_available = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2", [newStatus, id]);
 
     return NextResponse.json({
       success: true,

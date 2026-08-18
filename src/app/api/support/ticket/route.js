@@ -12,8 +12,8 @@ export async function GET(req) {
 
     let query = `
       SELECT t.*, u.name as user_name, u.email as user_email
-      FROM restaurant_support_tickets t
-      LEFT JOIN restaurant_users u ON t.user_id = u.id
+      FROM support_tickets t
+      LEFT JOIN users u ON t.user_id = u.id
     `;
     let params = [];
 
@@ -55,14 +55,14 @@ export async function POST(req) {
 
       // Insert Ticket
       const { rows: ticketRows } = await client.query(
-        "INSERT INTO restaurant_support_tickets (user_id, subject, status) VALUES ($1, $2, $3) RETURNING *", 
+        "INSERT INTO support_tickets (user_id, subject, status) VALUES ($1, $2, $3) RETURNING *", 
         [user.id, subject, 'open']
       );
       const ticket = ticketRows[0];
 
       // Insert Initial Message
       await client.query(
-        "INSERT INTO restaurant_support_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4)", 
+        "INSERT INTO support_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4)", 
         [ticket.id, 'user', user.id, initial_message]
       );
 
@@ -96,7 +96,7 @@ export async function PUT(req) {
     }
 
     const { rows } = await pool.query(
-      "UPDATE restaurant_support_tickets SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", 
+      "UPDATE support_tickets SET status = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *", 
       [status, id]
     );
 

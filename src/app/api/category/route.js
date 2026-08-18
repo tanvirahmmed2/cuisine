@@ -9,7 +9,7 @@ export async function GET(req) {
   try {
     
 
-    const { rows } = await pool.query("SELECT * FROM restaurant_categories ORDER BY created_at DESC");
+    const { rows } = await pool.query("SELECT * FROM categories ORDER BY created_at DESC");
 
     return NextResponse.json({
       success: true,
@@ -40,7 +40,7 @@ export async function POST(req) {
     const slug = slugify(name, { lower: true, strict: true });
 
     // Check if category exists
-    const { rows: existingCat } = await pool.query("SELECT id FROM restaurant_categories WHERE slug = $1 LIMIT 1", [slug]);
+    const { rows: existingCat } = await pool.query("SELECT id FROM categories WHERE slug = $1 LIMIT 1", [slug]);
 
     if (existingCat.length > 0) {
       return NextResponse.json({ success: false, message: "Category already exists" }, { status: 400 });
@@ -69,7 +69,7 @@ export async function POST(req) {
       stream.end(imageBuffer);
     });
 
-    const { rows: newCat } = await pool.query("INSERT INTO restaurant_categories (name, slug, image, image_id) VALUES ($1, $2, $3, $4) RETURNING *", [name, slug, cloudImage.secure_url, cloudImage.public_id]);
+    const { rows: newCat } = await pool.query("INSERT INTO categories (name, slug, image, image_id) VALUES ($1, $2, $3, $4) RETURNING *", [name, slug, cloudImage.secure_url, cloudImage.public_id]);
 
     return NextResponse.json({
       success: true,
@@ -96,7 +96,7 @@ export async function DELETE(req) {
       return NextResponse.json({ success: false, message: "Id not found" }, { status: 400 });
     }
 
-    const { rows } = await pool.query("SELECT * FROM restaurant_categories WHERE id = $1 LIMIT 1", [id]);
+    const { rows } = await pool.query("SELECT * FROM categories WHERE id = $1 LIMIT 1", [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Category not found" }, { status: 404 });
@@ -108,7 +108,7 @@ export async function DELETE(req) {
       await cloudinary.uploader.destroy(cat.image_id);
     }
 
-    await pool.query("DELETE FROM restaurant_categories WHERE id = $1", [id]);
+    await pool.query("DELETE FROM categories WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,
@@ -139,7 +139,7 @@ export async function PUT(req) {
 
     const slug = slugify(name, { lower: true, strict: true });
 
-    const { rows: existingCat } = await pool.query("SELECT id FROM restaurant_categories WHERE slug = $1 AND id != $2 LIMIT 1", [slug, id]);
+    const { rows: existingCat } = await pool.query("SELECT id FROM categories WHERE slug = $1 AND id != $2 LIMIT 1", [slug, id]);
 
     if (existingCat.length > 0) {
       return NextResponse.json({ success: false, message: "Category with this name already exists" }, { status: 400 });
@@ -148,7 +148,7 @@ export async function PUT(req) {
     const imageFile = formData.get("image");
     
     if (imageFile && imageFile.name && imageFile.size > 0) {
-      const { rows } = await pool.query("SELECT image_id FROM restaurant_categories WHERE id = $1", [id]);
+      const { rows } = await pool.query("SELECT image_id FROM categories WHERE id = $1", [id]);
       if (rows.length > 0 && rows[0].image_id) {
         try {
           await cloudinary.uploader.destroy(rows[0].image_id);
@@ -174,11 +174,11 @@ export async function PUT(req) {
         stream.end(imageBuffer);
       });
 
-      const { rows: updatedCat } = await pool.query("UPDATE restaurant_categories SET name = $1, slug = $2, image = $3, image_id = $4 WHERE id = $5 RETURNING *", [name, slug, cloudImage.secure_url, cloudImage.public_id, id]);
+      const { rows: updatedCat } = await pool.query("UPDATE categories SET name = $1, slug = $2, image = $3, image_id = $4 WHERE id = $5 RETURNING *", [name, slug, cloudImage.secure_url, cloudImage.public_id, id]);
 
       return NextResponse.json({ success: true, message: "Successfully updated category", payload: updatedCat[0] }, { status: 200 });
     } else {
-      const { rows: updatedCat } = await pool.query("UPDATE restaurant_categories SET name = $1, slug = $2 WHERE id = $3 RETURNING *", [name, slug, id]);
+      const { rows: updatedCat } = await pool.query("UPDATE categories SET name = $1, slug = $2 WHERE id = $3 RETURNING *", [name, slug, id]);
 
       return NextResponse.json({ success: true, message: "Successfully updated category", payload: updatedCat[0] }, { status: 200 });
     }

@@ -13,7 +13,7 @@ async function getAuthenticatedUser() {
     const decoded = jwt.verify(token, JWT_SECRET);
     
     const { rows } = await pool.query(
-      "SELECT id, name, email, phone, role, is_banned FROM restaurant_users WHERE id = $1 LIMIT 1",
+      "SELECT id, name, email, phone, role, is_banned FROM users WHERE id = $1 LIMIT 1",
       [decoded.id]
     );
 

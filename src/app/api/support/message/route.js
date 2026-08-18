@@ -20,7 +20,7 @@ export async function GET(req) {
 
     // Verify ownership or manager
     const isMgr = user.role === 'manager' || user.role === 'admin';
-    const { rows: ticketCheck } = await pool.query("SELECT user_id FROM restaurant_support_tickets WHERE id = $1 LIMIT 1", [ticket_id]);
+    const { rows: ticketCheck } = await pool.query("SELECT user_id FROM support_tickets WHERE id = $1 LIMIT 1", [ticket_id]);
 
     if (ticketCheck.length === 0) {
       return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
@@ -30,7 +30,7 @@ export async function GET(req) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
     }
 
-    const { rows } = await pool.query("SELECT * FROM restaurant_support_messages WHERE ticket_id = $1 ORDER BY created_at ASC", [ticket_id]);
+    const { rows } = await pool.query("SELECT * FROM support_messages WHERE ticket_id = $1 ORDER BY created_at ASC", [ticket_id]);
 
     return NextResponse.json({
       success: true,
@@ -60,7 +60,7 @@ export async function POST(req) {
     const isMgr = user.role === 'manager' || user.role === 'admin';
     
     // Verify ownership or manager
-    const { rows: ticketCheck } = await pool.query("SELECT user_id FROM restaurant_support_tickets WHERE id = $1 LIMIT 1", [ticket_id]);
+    const { rows: ticketCheck } = await pool.query("SELECT user_id FROM support_tickets WHERE id = $1 LIMIT 1", [ticket_id]);
 
     if (ticketCheck.length === 0) {
       return NextResponse.json({ success: false, message: "Ticket not found" }, { status: 404 });
@@ -77,10 +77,10 @@ export async function POST(req) {
       const senderType = isMgr ? 'manager' : 'user';
 
       const { rows: msgRows } = await client.query(
-        "INSERT INTO restaurant_support_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4) RETURNING *", [ticket_id, senderType, user.id, message]);
+        "INSERT INTO support_messages (ticket_id, sender_type, sender_id, message) VALUES ($1, $2, $3, $4) RETURNING *", [ticket_id, senderType, user.id, message]);
 
       // Update ticket timestamp
-      await client.query("UPDATE restaurant_support_tickets SET updated_at = CURRENT_TIMESTAMP WHERE id = $1", [ticket_id]);
+      await client.query("UPDATE support_tickets SET updated_at = CURRENT_TIMESTAMP WHERE id = $1", [ticket_id]);
 
       await client.query("COMMIT");
 

@@ -15,7 +15,7 @@ export async function GET(req, { params }) {
       }, { status: 400 });
     }
 
-    const { rows: productRows } = await pool.query("SELECT p.*, c.name as category_name FROM restaurant_items p LEFT JOIN restaurant_categories c ON p.category_id = c.id WHERE p.slug = $1 LIMIT 1", [slug]);
+    const { rows: productRows } = await pool.query("SELECT p.*, c.name as category_name FROM items p LEFT JOIN categories c ON p.category_id = c.id WHERE p.slug = $1 LIMIT 1", [slug]);
 
     if (productRows.length === 0) {
       return NextResponse.json({
@@ -27,7 +27,7 @@ export async function GET(req, { params }) {
     const product = productRows[0];
 
     // Fetch variants
-    const { rows: variantRows } = await pool.query("SELECT * FROM restaurant_item_variants WHERE item_id = $1 ORDER BY created_at ASC", [product.id]);
+    const { rows: variantRows } = await pool.query("SELECT * FROM item_variants WHERE item_id = $1 ORDER BY created_at ASC", [product.id]);
 
     return NextResponse.json({
       success: true,

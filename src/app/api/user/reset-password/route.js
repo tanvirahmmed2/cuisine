@@ -13,7 +13,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Token and new password are required" }, { status: 400 });
     }
 
-    const { rows } = await pool.query("SELECT id, reset_token_expires FROM restaurant_users WHERE reset_token = $1 LIMIT 1", [token]);
+    const { rows } = await pool.query("SELECT id, reset_token_expires FROM users WHERE reset_token = $1 LIMIT 1", [token]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Invalid reset token" }, { status: 400 });
@@ -27,7 +27,7 @@ export async function POST(req) {
 
     const hashedPass = await bcrypt.hash(password, 10);
 
-    await pool.query("UPDATE restaurant_users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2", [hashedPass, user.id]);
+    await pool.query("UPDATE users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2", [hashedPass, user.id]);
 
     return NextResponse.json({ success: true, message: "Password has been successfully reset" }, { status: 200 });
 

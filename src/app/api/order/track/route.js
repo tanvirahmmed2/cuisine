@@ -12,7 +12,7 @@ export async function GET(req) {
     const cleanedDigits = cleanQuery.replace(/\D/g, "");
     const last11 = cleanedDigits.length >= 11 ? cleanedDigits.slice(-11) : cleanQuery;
 
-    let queryStr = "SELECT id, name, phone, delivery_method, table_no, sub_total, total_discount, total_price, payment_method, status, payment_status, created_at FROM restaurant_orders WHERE (RIGHT(phone, 11) = $1 OR phone = $2";
+    let queryStr = "SELECT id, name, phone, delivery_method, table_no, sub_total, total_discount, total_price, payment_method, status, payment_status, created_at FROM orders WHERE (RIGHT(phone, 11) = $1 OR phone = $2";
     const params = [last11, cleanQuery];
 
     const parsedId = parseInt(cleanQuery, 10);
@@ -27,7 +27,7 @@ export async function GET(req) {
     if (orders.length > 0) {
       const orderIds = orders.map(o => o.id);
       const { rows: itemRows } = await pool.query(
-        "SELECT * FROM restaurant_order_items WHERE order_id = ANY($1)", [orderIds]
+        "SELECT * FROM order_items WHERE order_id = ANY($1)", [orderIds]
       );
       
       orders.forEach(order => {

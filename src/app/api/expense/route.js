@@ -12,7 +12,7 @@ export async function GET(req) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
     }
 
-    const { rows } = await pool.query("SELECT e.*, u.name as creator_name FROM restaurant_expenses e LEFT JOIN restaurant_users u ON e.created_by = u.id ORDER BY e.created_at DESC");
+    const { rows } = await pool.query("SELECT e.*, u.name as creator_name FROM expenses e LEFT JOIN users u ON e.created_by = u.id ORDER BY e.created_at DESC");
 
     return NextResponse.json({
       success: true,
@@ -40,7 +40,7 @@ export async function POST(req) {
 
     const user = auth.payload;
 
-    const { rows: newExpense } = await pool.query("INSERT INTO restaurant_expenses (title, note, amount, created_by) VALUES ($1, $2, $3, $4) RETURNING *", [title, note, amount, user.id]);
+    const { rows: newExpense } = await pool.query("INSERT INTO expenses (title, note, amount, created_by) VALUES ($1, $2, $3, $4) RETURNING *", [title, note, amount, user.id]);
 
     return NextResponse.json({
       success: true,
@@ -67,13 +67,13 @@ export async function DELETE(req) {
       return NextResponse.json({ success: false, message: "Id not found" }, { status: 400 });
     }
 
-    const { rows } = await pool.query("SELECT id FROM restaurant_expenses WHERE id = $1 LIMIT 1", [id]);
+    const { rows } = await pool.query("SELECT id FROM expenses WHERE id = $1 LIMIT 1", [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Expense record not found" }, { status: 404 });
     }
 
-    await pool.query("DELETE FROM restaurant_expenses WHERE id = $1", [id]);
+    await pool.query("DELETE FROM expenses WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,

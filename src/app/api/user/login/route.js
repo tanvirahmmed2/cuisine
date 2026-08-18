@@ -18,7 +18,7 @@ export async function POST(req) {
       }, { status: 400 });
     }
 
-    const { rows } = await pool.query("SELECT * FROM restaurant_users WHERE email = $1 LIMIT 1", [email]);
+    const { rows } = await pool.query("SELECT * FROM users WHERE email = $1 LIMIT 1", [email]);
 
     if (rows.length === 0) {
       return NextResponse.json({

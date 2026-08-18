@@ -19,8 +19,8 @@ export async function GET(req) {
         c.phone,
         COUNT(o.id)::int as total_orders,
         COALESCE(SUM(o.total_price), 0)::float as total_spent
-      FROM restaurant_customers c
-      LEFT JOIN restaurant_orders o ON c.phone = o.phone
+      FROM customers c
+      LEFT JOIN orders o ON c.phone = o.phone
       GROUP BY c.id, c.name, c.phone
       ORDER BY c.id DESC
       `);

@@ -12,7 +12,7 @@ export async function GET(req) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
     }
 
-    const { rows } = await pool.query("SELECT * FROM restaurant_customers ORDER BY id DESC");
+    const { rows } = await pool.query("SELECT * FROM customers ORDER BY id DESC");
 
     return NextResponse.json({
       success: true,

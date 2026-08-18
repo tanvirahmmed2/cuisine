@@ -17,7 +17,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Id not found" }, { status: 400 });
     }
 
-    const { rowCount } = await pool.query("UPDATE restaurant_reservations SET status = 'confirmed' WHERE id = $1", [id]);
+    const { rowCount } = await pool.query("UPDATE reservations SET status = 'confirmed' WHERE id = $1", [id]);
 
     if (rowCount === 0) {
       return NextResponse.json({ success: false, message: "Reservation not found" }, { status: 404 });

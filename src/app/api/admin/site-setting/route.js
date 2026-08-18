@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 
 export async function GET(req) {
   try {
-    const { rows } = await pool.query("SELECT * FROM restaurant_websites LIMIT 1");
+    const { rows } = await pool.query("SELECT * FROM websites LIMIT 1");
     return NextResponse.json({
       success: true,
       message: "Site settings fetched successfully",

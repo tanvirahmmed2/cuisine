@@ -17,7 +17,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "ID not found" }, { status: 400 });
     }
 
-    let query = "UPDATE restaurant_orders SET status = 'cooking'";
+    let query = "UPDATE orders SET status = 'cooking'";
     let params = [id];
 
     if (paid_amount !== undefined && paid_amount !== null) {
@@ -62,11 +62,11 @@ export async function GET(req) {
   try {
     
 
-    const { rows: orders } = await pool.query("SELECT * FROM restaurant_orders WHERE status = 'confirmed' ORDER BY created_at DESC");
+    const { rows: orders } = await pool.query("SELECT * FROM orders WHERE status = 'confirmed' ORDER BY created_at DESC");
 
     if (orders.length > 0) {
       const orderIds = orders.map(o => o.id);
-      const { rows: itemRows } = await pool.query("SELECT * FROM restaurant_order_items WHERE order_id = ANY($1)", [orderIds]);
+      const { rows: itemRows } = await pool.query("SELECT * FROM order_items WHERE order_id = ANY($1)", [orderIds]);
       
       orders.forEach(order => {
         order.items = itemRows.filter(item => item.order_id === order.id);

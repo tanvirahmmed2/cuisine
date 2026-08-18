@@ -17,7 +17,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Id not found" }, { status: 400 });
     }
 
-    const { rows: users } = await pool.query("SELECT id, role, is_banned FROM restaurant_users WHERE id = $1 LIMIT 1", [id]);
+    const { rows: users } = await pool.query("SELECT id, role, is_banned FROM users WHERE id = $1 LIMIT 1", [id]);
 
     if (users.length === 0) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
@@ -34,7 +34,7 @@ export async function POST(req) {
 
     const newBanStatus = !user.is_banned;
 
-    await pool.query("UPDATE restaurant_users SET is_banned = $1 WHERE id = $2", [newBanStatus, id]);
+    await pool.query("UPDATE users SET is_banned = $1 WHERE id = $2", [newBanStatus, id]);
 
     return NextResponse.json({
       success: true,

@@ -4,7 +4,7 @@ import { isAdmin } from "@/lib/auth/middleware";
 
 export async function GET(req) {
   try {
-    const { rows } = await pool.query("SELECT * FROM restaurant_websites LIMIT 1");
+    const { rows } = await pool.query("SELECT * FROM websites LIMIT 1");
 
     if (rows.length === 0) {
       return NextResponse.json(
@@ -37,7 +37,7 @@ export async function PATCH(req) {
 
     const body = await req.json();
 
-    const { rows } = await pool.query("SELECT website_id FROM restaurant_websites LIMIT 1");
+    const { rows } = await pool.query("SELECT website_id FROM websites LIMIT 1");
 
     if (rows.length === 0) {
       return NextResponse.json(
@@ -72,7 +72,7 @@ export async function PATCH(req) {
       .join(", ");
 
     const updateQuery = `
-      UPDATE restaurant_websites
+      UPDATE websites
       SET ${setQuery}, updated_at = now()
       WHERE website_id = $${fields.length + 1}
       RETURNING *

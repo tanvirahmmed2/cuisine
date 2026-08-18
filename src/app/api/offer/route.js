@@ -11,7 +11,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const activeOnly = searchParams.get('active') === 'true';
 
-    let query = "SELECT * FROM restaurant_offers";
+    let query = "SELECT * FROM offers";
     let params = [];
 
     if (activeOnly) {
@@ -75,7 +75,7 @@ export async function POST(req) {
     });
 
     const { rows: newOffer } = await pool.query(
-      "INSERT INTO restaurant_offers (title, description, image, image_id, is_active, start_date, end_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", [title, description, cloudImage.secure_url, cloudImage.public_id, is_active, start_date, end_date]);
+      "INSERT INTO offers (title, description, image, image_id, is_active, start_date, end_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *", [title, description, cloudImage.secure_url, cloudImage.public_id, is_active, start_date, end_date]);
 
     return NextResponse.json({
       success: true,
@@ -111,12 +111,12 @@ export async function PUT(req) {
 
     const imageFile = formData.get("image");
     
-    let query = "UPDATE restaurant_offers SET title = $1, description = $2, is_active = $3, start_date = $4, end_date = $5";
+    let query = "UPDATE offers SET title = $1, description = $2, is_active = $3, start_date = $4, end_date = $5";
     let params = [title, description, is_active, start_date, end_date];
     let paramIndex = 5;
 
     if (imageFile && imageFile.name && imageFile.size > 0) {
-      const { rows } = await pool.query("SELECT image_id FROM restaurant_offers WHERE id = $1", [id]);
+      const { rows } = await pool.query("SELECT image_id FROM offers WHERE id = $1", [id]);
       if (rows.length > 0 && rows[0].image_id) {
         try {
           await cloudinary.uploader.destroy(rows[0].image_id);
@@ -175,7 +175,7 @@ export async function DELETE(req) {
     }
 
     const { rows } = await pool.query(
-      "SELECT * FROM restaurant_offers WHERE id = $1 LIMIT 1", [id]);
+      "SELECT * FROM offers WHERE id = $1 LIMIT 1", [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Offer not found" }, { status: 404 });
@@ -187,7 +187,7 @@ export async function DELETE(req) {
       await cloudinary.uploader.destroy(offer.image_id);
     }
 
-    await pool.query("DELETE FROM restaurant_offers WHERE id = $1", [id]);
+    await pool.query("DELETE FROM offers WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,

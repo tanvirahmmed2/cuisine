@@ -15,7 +15,7 @@ export async function GET(req) {
     const { searchParams } = new URL(req.url);
     const filterRole = searchParams.get('role');
 
-    let query = "SELECT id, name, email, role, is_banned, created_at FROM restaurant_users";
+    let query = "SELECT id, name, email, role, is_banned, created_at FROM users";
     let params = [];
     
     if (filterRole === 'management') {

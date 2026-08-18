@@ -7,8 +7,8 @@ export async function GET(req) {
     
 
     const { rows } = await pool.query(`SELECT p.*, c.name as category_name, c.slug as category_slug 
-       FROM restaurant_items p 
-       LEFT JOIN restaurant_categories c ON p.category_id = c.id
+       FROM items p 
+       LEFT JOIN categories c ON p.category_id = c.id
        ORDER BY p.created_at DESC 
        LIMIT 8`);
 

@@ -11,7 +11,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "ID not found" }, { status: 400 });
     }
 
-    const { rowCount } = await pool.query("UPDATE restaurant_orders SET status = 'cancelled', payment_status = 'unpaid' WHERE id = $1", [id]);
+    const { rowCount } = await pool.query("UPDATE orders SET status = 'cancelled', payment_status = 'unpaid' WHERE id = $1", [id]);
 
     if (rowCount === 0) {
       return NextResponse.json({ success: false, message: "Order not found" }, { status: 404 });
@@ -19,7 +19,7 @@ export async function POST(req) {
 
     // Free associated table (set status to 'available')
     try {
-      const { rows: orderRows } = await pool.query("SELECT table_id, table_no FROM restaurant_orders WHERE id = $1 LIMIT 1", [id]);
+      const { rows: orderRows } = await pool.query("SELECT table_id, table_no FROM orders WHERE id = $1 LIMIT 1", [id]);
       if (orderRows.length > 0) {
         if (orderRows[0].table_id) {
           await pool.query("UPDATE tables SET status = 'available', updated_at = CURRENT_TIMESTAMP WHERE id = $1", [orderRows[0].table_id]);

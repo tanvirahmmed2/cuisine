@@ -13,21 +13,21 @@ export async function GET(req) {
     }
 
     const { rows: orderStats } = await pool.query(`SELECT COUNT(id) as total_orders, COALESCE(SUM(total_price), 0) as total_revenue 
-       FROM restaurant_orders 
+       FROM orders 
        WHERE status != 'canceled'`);
 
     // 2. Pending Orders
     const { rows: pendingStats } = await pool.query(`SELECT COUNT(id) as pending_orders 
-       FROM restaurant_orders 
+       FROM orders 
        WHERE status = 'pending'`);
 
     // 3. Total Customers
     const { rows: customerStats } = await pool.query(`SELECT COUNT(id) as total_customers 
-       FROM restaurant_customers`);
+       FROM customers`);
 
     // 4. Total Items
     const { rows: itemStats } = await pool.query(`SELECT COUNT(id) as total_items 
-       FROM restaurant_items`);
+       FROM items`);
 
     const payload = {
       totalOrders: parseInt(orderStats[0].total_orders) || 0,

@@ -12,7 +12,7 @@ export async function GET(req) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
     }
 
-    const { rows } = await pool.query("SELECT * FROM restaurant_reservations ORDER BY res_date DESC");
+    const { rows } = await pool.query("SELECT * FROM reservations ORDER BY res_date DESC");
 
     return NextResponse.json({
       success: true,
@@ -34,7 +34,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Please fill all information" }, { status: 400 });
     }
 
-    const { rows: newRes } = await pool.query(`INSERT INTO restaurant_reservations (name, email, res_date, member_count, table_no, message) 
+    const { rows: newRes } = await pool.query(`INSERT INTO reservations (name, email, res_date, member_count, table_no, message) 
       VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, [name, email, date, member, table, message || ""]);
 
     return NextResponse.json({
@@ -62,13 +62,13 @@ export async function DELETE(req) {
       return NextResponse.json({ success: false, message: "Id not found" }, { status: 400 });
     }
 
-    const { rows } = await pool.query("SELECT id FROM restaurant_reservations WHERE id = $1 LIMIT 1", [id]);
+    const { rows } = await pool.query("SELECT id FROM reservations WHERE id = $1 LIMIT 1", [id]);
 
     if (rows.length === 0) {
       return NextResponse.json({ success: false, message: "Reservation not found" }, { status: 404 });
     }
 
-    await pool.query("DELETE FROM restaurant_reservations WHERE id = $1", [id]);
+    await pool.query("DELETE FROM reservations WHERE id = $1", [id]);
 
     return NextResponse.json({
       success: true,

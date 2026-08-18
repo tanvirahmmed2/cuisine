@@ -11,7 +11,7 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "ID not found" }, { status: 400 });
     }
 
-    let query = "UPDATE restaurant_orders SET status = 'delivered'";
+    let query = "UPDATE orders SET status = 'delivered'";
     let params = [id];
 
     if (paid_amount !== undefined && paid_amount !== null) {
@@ -43,7 +43,7 @@ export async function POST(req) {
 
     // Free associated table (set status to 'available')
     try {
-      const { rows: orderRows } = await pool.query("SELECT table_id, table_no FROM restaurant_orders WHERE id = $1 LIMIT 1", [id]);
+      const { rows: orderRows } = await pool.query("SELECT table_id, table_no FROM orders WHERE id = $1 LIMIT 1", [id]);
       if (orderRows.length > 0) {
         if (orderRows[0].table_id) {
           await pool.query("UPDATE tables SET status = 'available', updated_at = CURRENT_TIMESTAMP WHERE id = $1", [orderRows[0].table_id]);
@@ -81,11 +81,11 @@ export async function GET(req) {
   try {
     
 
-    const { rows: orders } = await pool.query("SELECT * FROM restaurant_orders WHERE status = 'delivered' ORDER BY created_at DESC");
+    const { rows: orders } = await pool.query("SELECT * FROM orders WHERE status = 'delivered' ORDER BY created_at DESC");
 
     if (orders.length > 0) {
       const orderIds = orders.map(o => o.id);
-      const { rows: itemRows } = await pool.query("SELECT * FROM restaurant_order_items WHERE order_id = ANY($1)", [orderIds]);
+      const { rows: itemRows } = await pool.query("SELECT * FROM order_items WHERE order_id = ANY($1)", [orderIds]);
       
       orders.forEach(order => {
         order.items = itemRows.filter(item => item.order_id === order.id);

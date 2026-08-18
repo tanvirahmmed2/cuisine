@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
     }
 
     // Find category by slug
-    const { rows: catRows } = await pool.query("SELECT id, name, slug FROM restaurant_categories WHERE slug ILIKE $1 LIMIT 1", [slug]);
+    const { rows: catRows } = await pool.query("SELECT id, name, slug FROM categories WHERE slug ILIKE $1 LIMIT 1", [slug]);
 
     if (catRows.length === 0) {
       return NextResponse.json({ success: false, message: "Category not found" }, { status: 404 });
@@ -22,8 +22,8 @@ export async function GET(req, { params }) {
 
     // Fetch products for this category
     const { rows: products } = await pool.query(`SELECT i.*, c.name as category_name, c.slug as category_slug 
-       FROM restaurant_items i
-       JOIN restaurant_categories c ON i.category_id = c.id
+       FROM items i
+       JOIN categories c ON i.category_id = c.id
        WHERE i.category_id = $1
        ORDER BY i.created_at DESC`, [categoryId]);
 
