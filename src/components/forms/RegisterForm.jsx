@@ -25,7 +25,9 @@ const RegisterForm = () => {
         e.preventDefault()
         setLoading(true)
         try {
-            const res = await axios.post('/api/user', formData, { withCredentials: true })
+            const cleanedPhone = formData.phone.replace(/\D/g, '').slice(-11)
+            const payload = { ...formData, phone: cleanedPhone }
+            const res = await axios.post('/api/user', payload, { withCredentials: true })
             toast.success(res.data.message)
             setRegistered(true)
         } catch (error) {

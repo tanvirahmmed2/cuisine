@@ -25,7 +25,9 @@ const UpdateUserForm = () => {
         e.preventDefault()
         setLoading(true)
         try {
-            const res = await axios.patch('/api/user', formData, { withCredentials: true })
+            const cleanedPhone = formData.phone ? formData.phone.replace(/\D/g, '').slice(-11) : '';
+            const payload = { ...formData, phone: cleanedPhone || formData.phone };
+            const res = await axios.patch('/api/user', payload, { withCredentials: true })
             toast.success(res.data.message)
             window.location.replace('/profile')
         } catch (error) {

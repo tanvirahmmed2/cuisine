@@ -58,10 +58,11 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Cart is empty" }, { status: 400 });
     }
 
-    const trimmedPhone = phone ? phone.trim() : "";
-    let customerPhone = trimmedPhone;
+    const rawPhone = phone ? String(phone).trim() : "";
+    const cleanedDigits = rawPhone.replace(/\D/g, "");
+    let customerPhone = cleanedDigits.length >= 11 ? cleanedDigits.slice(-11) : rawPhone;
     let customerName = "guest";
-    const isPhoneEmpty = trimmedPhone === "";
+    const isPhoneEmpty = !customerPhone || customerPhone === "" || customerPhone === "temp_guest";
 
     // Start transaction
     await client.query("BEGIN");
@@ -70,25 +71,25 @@ export async function POST(req) {
       customerPhone = "temp_guest";
       customerName = "guest";
     } else {
-      // 1. Check if user exists with the number in restaurant_users
+      // 1. Check if user exists with the number in restaurant_users (match last 11 digits)
       const { rows: existingUser } = await client.query(
-        "SELECT name FROM restaurant_users WHERE phone = $1 LIMIT 1", [customerPhone]);
+        "SELECT name FROM restaurant_users WHERE RIGHT(phone, 11) = $1 OR phone = $2 LIMIT 1", [customerPhone, rawPhone]);
 
       if (existingUser.length > 0) {
         customerName = existingUser[0].name;
         // Upsert customer record with user's name
-        const { rows: cust } = await client.query("SELECT id FROM restaurant_customers WHERE phone = $1 LIMIT 1", [customerPhone]);
+        const { rows: cust } = await client.query("SELECT id FROM restaurant_customers WHERE RIGHT(phone, 11) = $1 OR phone = $2 LIMIT 1", [customerPhone, rawPhone]);
         if (cust.length > 0) {
-          await client.query("UPDATE restaurant_customers SET name = $1 WHERE phone = $2", [customerName, customerPhone]);
+          await client.query("UPDATE restaurant_customers SET name = $1, phone = $2 WHERE id = $3", [customerName, customerPhone, cust[0].id]);
         } else {
           await client.query("INSERT INTO restaurant_customers (phone, name) VALUES ($1, $2)", [customerPhone, customerName]);
         }
       } else {
         // No registered user. Create or update customer record as guest
         customerName = "guest";
-        const { rows: cust } = await client.query("SELECT id FROM restaurant_customers WHERE phone = $1 LIMIT 1", [customerPhone]);
+        const { rows: cust } = await client.query("SELECT id FROM restaurant_customers WHERE RIGHT(phone, 11) = $1 OR phone = $2 LIMIT 1", [customerPhone, rawPhone]);
         if (cust.length > 0) {
-          await client.query("UPDATE restaurant_customers SET name = $1 WHERE phone = $2", [customerName, customerPhone]);
+          await client.query("UPDATE restaurant_customers SET name = $1, phone = $2 WHERE id = $3", [customerName, customerPhone, cust[0].id]);
         } else {
           await client.query("INSERT INTO restaurant_customers (phone, name) VALUES ($1, $2)", [customerPhone, customerName]);
         }
@@ -108,10 +109,14 @@ export async function POST(req) {
 
     if (table_no && table_no !== 'N/A') {
       try {
-        const { rows: tRows } = await client.query("SELECT id FROM tables WHERE LOWER(table_no) = LOWER($1) LIMIT 1", [table_no.trim()]);
+        const cleanNo = String(table_no).trim();
+        const { rows: tRows } = await client.query(
+          "SELECT id FROM tables WHERE LOWER(table_no) = LOWER($1) OR LOWER(table_no) = LOWER($2) OR LOWER(table_no) = LOWER($3) LIMIT 1",
+          [cleanNo, `table ${cleanNo}`, cleanNo.replace(/^table\s*/i, '')]
+        );
         if (tRows.length > 0) {
           const tableId = tRows[0].id;
-          await client.query("INSERT INTO order_tables (order_id, table_id, table_no) VALUES ($1, $2, $3)", [orderId, tableId, table_no.trim()]);
+          await client.query("INSERT INTO order_tables (order_id, table_id, table_no) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING", [orderId, tableId, cleanNo]);
           await client.query("UPDATE tables SET status = 'occupied', updated_at = CURRENT_TIMESTAMP WHERE id = $1", [tableId]);
         }
       } catch (tableErr) {

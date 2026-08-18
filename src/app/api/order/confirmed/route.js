@@ -12,18 +12,42 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
     }
 
-    const { id } = await req.json();
+    const { id, paid_amount, change_amount, payment_method, payment_status } = await req.json();
     if (!id) {
       return NextResponse.json({ success: false, message: "ID not found" }, { status: 400 });
     }
 
-    const { rowCount } = await pool.query("UPDATE restaurant_orders SET status = 'cooking' WHERE id = $1", [id]);
+    let query = "UPDATE restaurant_orders SET status = 'cooking'";
+    let params = [id];
+
+    if (paid_amount !== undefined && paid_amount !== null) {
+      params.push(paid_amount);
+      query += `, paid_amount = $${params.length}`;
+    }
+    if (change_amount !== undefined && change_amount !== null) {
+      params.push(change_amount);
+      query += `, change_amount = $${params.length}`;
+    }
+    if (payment_method) {
+      params.push(payment_method);
+      query += `, payment_method = $${params.length}`;
+    }
+    if (payment_status) {
+      params.push(payment_status);
+      query += `, payment_status = $${params.length}`;
+    } else {
+      query += `, payment_status = 'paid'`;
+    }
+
+    query += " WHERE id = $1";
+
+    const { rowCount } = await pool.query(query, params);
 
     if (rowCount === 0) {
       return NextResponse.json({ success: false, message: "Order not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: "Successfully confirmed order" }, { status: 200 });
+    return NextResponse.json({ success: true, message: "Successfully confirmed order and saved payment" }, { status: 200 });
 
   } catch (error) {
     return NextResponse.json({

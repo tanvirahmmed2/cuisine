@@ -55,8 +55,10 @@ const UserOrderForm = () => {
         e.preventDefault()
         setLoading(true)
         try {
+            const cleanedPhone = formData.phone ? formData.phone.replace(/\D/g, '').slice(-11) : '';
             const orderPayload = {
                 ...formData,
+                phone: cleanedPhone || formData.phone,
                 items: cart.items,
                 sub_total: subTotal,
                 total_discount: totalDiscount,

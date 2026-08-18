@@ -39,14 +39,14 @@ const DeliveredOrder = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <div className="w-8 h-8 border-2 border-gray-200 border-t-black rounded-full animate-spin"></div>
       </div>
     )
   }
 
   return (
-    <div className='w-full max-w-7xl mx-auto flex flex-col gap-8'>
+    <div className='w-full max-w-7xl mx-auto flex flex-col gap-8 min-h-screen'>
       <div className='flex flex-col gap-1'>
         <h1 className='text-2xl font-semibold text-gray-900 tracking-tight'>Delivered Orders</h1>
         <p className='text-gray-500 text-sm'>History of completed transactions.</p>
@@ -161,17 +161,6 @@ const DeliveredOrder = () => {
                             >
                               <MdPrint size={16} />
                               <span>Print Receipt</span>
-                            </button>
-
-                            <div className='border-t border-gray-100 my-0.5' />
-
-                            <button
-                              type='button'
-                              onClick={() => handleCancel(order.id)}
-                              className='w-full px-3 py-2 text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-2 cursor-pointer'
-                            >
-                              <MdCancel size={16} />
-                              <span>Cancel Order</span>
                             </button>
                           </div>
                         </>

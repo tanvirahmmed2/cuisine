@@ -15,12 +15,18 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: "Please fill all information" }, { status: 400 });
     }
 
-    if (phone.length !== 11) {
-      return NextResponse.json({ success: false, message: "Please enter a valid phone number" }, { status: 400 });
+    const cleanedDigits = String(phone).replace(/\D/g, '');
+    const sanitizedPhone = cleanedDigits.length >= 11 ? cleanedDigits.slice(-11) : cleanedDigits;
+
+    if (sanitizedPhone.length !== 11) {
+      return NextResponse.json({ success: false, message: "Please enter a valid 11-digit phone number" }, { status: 400 });
     }
 
-    // Check if user exists
-    const { rows: existingUser } = await pool.query("SELECT * FROM restaurant_users WHERE (email = $1 OR phone = $2) LIMIT 1", [email, phone]);
+    // Check if user exists using last 11 digits match
+    const { rows: existingUser } = await pool.query(
+      "SELECT * FROM restaurant_users WHERE email = $1 OR RIGHT(phone, 11) = $2 LIMIT 1",
+      [email, sanitizedPhone]
+    );
 
     if (existingUser.length > 0) {
       return NextResponse.json({ success: false, message: "User already exists with this email/phone" }, { status: 400 });
@@ -30,7 +36,10 @@ export async function POST(req) {
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const verificationExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
 
-    const { rows: newUser } = await pool.query("INSERT INTO restaurant_users (name, email, password, phone, is_verified, verification_token, verification_token_expires) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, email, phone, role", [name, email, hashedPass, phone, false, verificationToken, verificationExpires]);
+    const { rows: newUser } = await pool.query(
+      "INSERT INTO restaurant_users (name, email, password, phone, is_verified, verification_token, verification_token_expires) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, email, phone, role",
+      [name, email, hashedPass, sanitizedPhone, false, verificationToken, verificationExpires]
+    );
 
     const baseUrl = await getBaseUrl();
     const verificationLink = `${baseUrl}/verify?token=${verificationToken}`;
@@ -96,7 +105,16 @@ export async function PATCH(req) {
     const currentUser = currentUserRows[0];
     const newName = name || currentUser.name;
     const newEmail = email || currentUser.email;
-    const newPhone = phone || currentUser.phone;
+    let newPhone = currentUser.phone;
+
+    if (phone) {
+      const cleanedDigits = String(phone).replace(/\D/g, '');
+      const sanitizedPhone = cleanedDigits.length >= 11 ? cleanedDigits.slice(-11) : cleanedDigits;
+      if (sanitizedPhone.length !== 11) {
+        return NextResponse.json({ success: false, message: "Please enter a valid 11-digit phone number" }, { status: 400 });
+      }
+      newPhone = sanitizedPhone;
+    }
 
     const isNameChanged = newName !== currentUser.name;
     const isEmailChanged = newEmail !== currentUser.email;

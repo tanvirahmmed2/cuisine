@@ -86,10 +86,7 @@ const Manage = () => {
               <h3 className="font-semibold text-gray-900 tracking-tight">{action.title}</h3>
               <p className="text-xs text-gray-400 font-medium leading-relaxed">{action.desc}</p>
             </div>
-            <div className="mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-gray-300 group-hover:text-pink-600 transition-colors">Launch Module</span>
-              <div className="w-6 h-px bg-gray-100 group-hover:w-10 transition-all group-hover:bg-pink-500" />
-            </div>
+            
           </Link>
         ))}
       </div>

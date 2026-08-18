@@ -13,8 +13,13 @@ export async function GET(req) {
     }
 
     const user = auth.payload;
+    const userPhoneDigits = user.phone ? String(user.phone).replace(/\D/g, "") : "";
+    const userPhoneLast11 = userPhoneDigits.length >= 11 ? userPhoneDigits.slice(-11) : user.phone;
 
-    const { rows: orders } = await pool.query("SELECT * FROM restaurant_orders WHERE phone = $1 ORDER BY created_at DESC", [user.phone]);
+    const { rows: orders } = await pool.query(
+      "SELECT * FROM restaurant_orders WHERE RIGHT(phone, 11) = $1 OR phone = $2 ORDER BY created_at DESC",
+      [userPhoneLast11, user.phone]
+    );
 
     if (orders.length > 0) {
       const orderIds = orders.map(o => o.id);

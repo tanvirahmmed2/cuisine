@@ -19,7 +19,7 @@ const Orderform = () => {
     const [paidAmount, setPaidAmount] = useState('')
 
     const [formData, setFormData] = useState({
-        phone: '+8801',
+        phone: '01',
         payment_method: 'cash',
         delivery_method: 'takein',
         payment_status: 'paid',
@@ -97,10 +97,11 @@ const Orderform = () => {
         }
 
         const actualChange = actualPaid > totalPrice ? actualPaid - totalPrice : 0;
+        const cleanedPhone = formData.phone ? formData.phone.replace(/\D/g, '').slice(-11) : '';
 
         const finalOrderData = {
             ...formData,
-            phone: formData.phone.trim(),
+            phone: cleanedPhone || formData.phone.trim(),
             sub_total: subTotal,
             total_discount: totalDiscount,
             total_price: totalPrice,
