@@ -39,7 +39,7 @@ const Item = ({ item }) => {
       whileInView={{ opacity: 1, y: 0 }} 
       viewport={{ once: true }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} 
-      className='group relative bg-tertiary-light flex flex-col rounded-md overflow-hidden transition-all duration-500 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border border-tertiary-dark/10'
+      className='group relative  flex flex-col rounded-md overflow-hidden transition-all duration-500'
     >
       <Link href={`/menu/${item.slug}`} className='relative aspect-4/5 overflow-hidden bg-tertiary-dark/5'>
         <Image 
@@ -52,7 +52,7 @@ const Item = ({ item }) => {
         
         {hasDiscount && (
           <div className='absolute top-5 left-5 z-10'>
-            <div className='bg-tertiary-light/90 backdrop-blur-md text-primary text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-2xl shadow-sm'>
+            <div className='bg-tertiary-light/90 backdrop-blur-md text-primary text-[10px] font-semibold uppercase tracking-widest px-4 py-2 rounded-2xl shadow-sm'>
               -৳{item.discount}
             </div>
           </div>
@@ -64,15 +64,15 @@ const Item = ({ item }) => {
       <div className='p-3 pt-5 flex flex-col gap-4'>
         <div className='space-y-1.5'>
           <div className='flex items-center justify-between'>
-            <span className='text-[10px] font-bold text-tertiary-dark/60 uppercase tracking-[0.2em]'>{item.category_name}</span>
+            <span className='text-[10px] font-semibold text-tertiary-dark/60 uppercase tracking-[0.2em]'>{item.category_name}</span>
             {item.variants && item.variants.length > 0 && (
                 <div className='flex items-center gap-1'>
                     <div className='w-1 h-1 rounded-full bg-secondary animate-pulse' />
-                    <span className='text-[8px] font-bold text-tertiary-dark/60 uppercase tracking-tighter'>Custom</span>
+                    <span className='text-[8px] font-semibold text-tertiary-dark/60 uppercase tracking-tighter'>Custom</span>
                 </div>
             )}
           </div>
-          <Link href={`/menu/${item.slug}`} className='text-lg font-serif text-tertiary-dark hover:text-primary transition-colors line-clamp-1 leading-tight'>
+          <Link href={`/menu/${item.slug}`} className='text-lg  text-tertiary-dark hover:text-primary transition-colors line-clamp-1 leading-tight'>
             {item.title}
           </Link>
         </div>
@@ -87,7 +87,7 @@ const Item = ({ item }) => {
           
           <button 
             onClick={handleAddToCart}
-            className='w-12 h-12 flex transition ease-in-out duration-700 rounded-2xl items-center justify-center text-tertiary-dark hover:text-primary active:scale-90'
+            className='w-12 h-12 cursor-pointer flex transition ease-in-out duration-700 rounded-2xl items-center justify-center text-tertiary-dark hover:text-primary active:scale-90'
           >
             <BiCartDownload size={22} />
           </button>

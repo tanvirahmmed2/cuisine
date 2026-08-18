@@ -12,9 +12,8 @@ const ManageNavbar = () => {
   const { manageSidebar, setManageSidebar, userData } = useContext(Context)
   
   return (
-    <nav className='fixed top-0 left-0 right-0 h-14 bg-tertiary-light/80 backdrop-blur-xl border-b border-tertiary-dark/10 z-[60] flex items-center justify-between px-6'>
+    <nav className='fixed top-0 left-0 right-0 h-14 bg-tertiary-light/80 backdrop-blur-xl border-b border-tertiary-dark/10 z-60 flex items-center justify-between px-6'>
         
-        {/* Left Side */}
         <div className='flex items-center gap-4 md:gap-6'>
           <button 
             className='p-2 hover:bg-tertiary-dark/5 rounded-xl transition-colors cursor-pointer text-tertiary-dark/60 hover:text-primary' 
@@ -24,17 +23,16 @@ const ManageNavbar = () => {
           </button>
 
           <div className='flex items-center gap-3'>
-            <Link href="/" className='font-serif font-bold text-lg text-primary hover:opacity-80 transition-opacity'>
+            <Link href="/" className='font-serif font-semibold text-lg text-primary hover:opacity-80 transition-opacity'>
               {name}
             </Link>
             <div className='h-4 w-px bg-tertiary-dark/20' />
-            <h1 className='text-xs md:text-sm font-black text-tertiary-dark tracking-tight uppercase'>
+            <h1 className='text-xs md:text-sm font-semibold text-tertiary-dark tracking-tight uppercase'>
               {userData?.role || 'Management'} <span className='text-tertiary-dark/40 font-medium ml-1 hidden sm:inline'>Portal</span>
             </h1>
           </div>
         </div>
 
-        {/* Right Side */}
         <div className='flex items-center gap-6'>
           {/* Notifications Placeholder */}
           <button className='p-2 text-tertiary-dark/40 hover:text-primary transition-colors relative cursor-pointer'>
@@ -42,17 +40,7 @@ const ManageNavbar = () => {
             <span className='absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-tertiary-light' />
           </button>
 
-          <div className='h-6 w-px bg-tertiary-dark/10 mx-2' />
-
-          <div className='flex items-center gap-3'>
-            <div className='text-right hidden sm:block'>
-              <p className='text-xs font-black text-tertiary-dark leading-none'>{userData?.name}</p>
-              <p className='text-[10px] font-bold text-tertiary-dark/60 uppercase tracking-tighter mt-1'>{userData?.email}</p>
-            </div>
-            <div className='w-10 h-10 bg-tertiary-dark/5 rounded-xl flex items-center justify-center text-tertiary-dark/60 border border-tertiary-dark/10'>
-              <MdAccountCircle size={24} />
-            </div>
-          </div>
+          
         </div>
 
     </nav>

@@ -19,7 +19,10 @@ export async function GET(req) {
     let params = [];
     
     if (filterRole === 'management') {
-      query += " AND role IN ('admin', 'manager', 'sales')";
+      query += " WHERE role IN ('admin', 'manager', 'sales')";
+    } else if (filterRole) {
+      query += " WHERE role = $1";
+      params.push(filterRole);
     }
     
     query += " ORDER BY created_at DESC";

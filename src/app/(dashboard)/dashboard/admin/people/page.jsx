@@ -57,7 +57,7 @@ const People = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className='input-style flex-1'
+            className='input-style flex-1 min-w-100'
           />
           <select 
             value={role} 

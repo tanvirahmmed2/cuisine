@@ -74,6 +74,8 @@ CREATE TABLE restaurant_orders (
   sub_total DECIMAL(12,2),
   total_discount DECIMAL(12,2) DEFAULT 0,
   total_price DECIMAL(12,2),
+  paid_amount DECIMAL(12,2) DEFAULT 0,
+  change_amount DECIMAL(12,2) DEFAULT 0,
   payment_method VARCHAR(50) DEFAULT 'cash',
   status VARCHAR(50) DEFAULT 'pending',
   transaction_id TEXT,
@@ -191,4 +193,32 @@ CREATE TABLE restaurant_order_item_variants (
 CREATE INDEX idx_restaurant_items_slug ON restaurant_items(slug);
 CREATE INDEX idx_restaurant_categories_slug ON restaurant_categories(slug);
 CREATE INDEX idx_restaurant_orders_status ON restaurant_orders(status);
+
+CREATE TABLE IF NOT EXISTS tables (
+  id SERIAL PRIMARY KEY,
+  table_no VARCHAR(50) NOT NULL UNIQUE,
+  capacity INT NOT NULL DEFAULT 4,
+  status VARCHAR(50) DEFAULT 'available'
+    CHECK (status IN ('available', 'occupied', 'reserved', 'maintenance')),
+  location VARCHAR(100) DEFAULT 'Main Dining',
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_tables_table_no ON tables(table_no);
+CREATE INDEX idx_tables_status ON tables(status);
+
+CREATE TABLE IF NOT EXISTS order_tables (
+  id SERIAL PRIMARY KEY,
+  order_id INT REFERENCES restaurant_orders(id) ON DELETE CASCADE,
+  table_id INT REFERENCES tables(id) ON DELETE CASCADE,
+  table_no VARCHAR(50),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_order_tables_order_id ON order_tables(order_id);
+CREATE INDEX idx_order_tables_table_id ON order_tables(table_id);
+
+
 

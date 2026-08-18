@@ -46,6 +46,8 @@ export async function POST(req) {
       sub_total,
       total_discount,
       total_price,
+      paid_amount,
+      change_amount,
       payment_method,
       table_no,
       status,
@@ -98,11 +100,24 @@ export async function POST(req) {
 
     // 2. Insert Order
     const { rows: orderRows } = await client.query(`INSERT INTO restaurant_orders 
-      (name, phone, delivery_method, table_no, sub_total, total_discount, total_price, payment_method, status, transaction_id, payment_status) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
-      RETURNING id`, [customerName, customerPhone, delivery_method || "takein", table_no || "N/A", sub_total || 0, total_discount || 0, total_price || 0, payment_method || "cash", orderStatus, transaction_id || "", determinedPaymentStatus, ]);
+      (name, phone, delivery_method, table_no, sub_total, total_discount, total_price, paid_amount, change_amount, payment_method, status, transaction_id, payment_status) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+      RETURNING id`, [customerName, customerPhone, delivery_method || "takein", table_no || "N/A", sub_total || 0, total_discount || 0, total_price || 0, paid_amount || 0, change_amount || 0, payment_method || "cash", orderStatus, transaction_id || "", determinedPaymentStatus, ]);
 
     const orderId = orderRows[0].id;
+
+    if (table_no && table_no !== 'N/A') {
+      try {
+        const { rows: tRows } = await client.query("SELECT id FROM tables WHERE LOWER(table_no) = LOWER($1) LIMIT 1", [table_no.trim()]);
+        if (tRows.length > 0) {
+          const tableId = tRows[0].id;
+          await client.query("INSERT INTO order_tables (order_id, table_id, table_no) VALUES ($1, $2, $3)", [orderId, tableId, table_no.trim()]);
+          await client.query("UPDATE tables SET status = 'occupied', updated_at = CURRENT_TIMESTAMP WHERE id = $1", [tableId]);
+        }
+      } catch (tableErr) {
+        console.error("Order table link error:", tableErr.message);
+      }
+    }
 
     if (isPhoneEmpty) {
       customerPhone = orderId.toString();

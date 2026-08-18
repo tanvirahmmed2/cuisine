@@ -62,9 +62,7 @@ const Manage = () => {
   return (
     <div className="w-full min-h-[90vh] flex flex-col p-8 md:p-12 gap-12 bg-white">
       <div className="flex flex-col gap-2">
-        <div className='inline-block w-fit px-4 py-1 bg-gray-100 text-gray-900 text-[10px] font-semibold uppercase tracking-widest rounded-full'>
-          {role} Dashboard • {name}
-        </div>
+        
         <h1 className="text-4xl md:text-5xl font-semibold text-gray-900 tracking-tight leading-tight">
           Welcome back to <span className="text-primary font-serif">{name}</span>, <br />
           <span className="text-gray-400">{userData?.name || 'Staff'}</span>

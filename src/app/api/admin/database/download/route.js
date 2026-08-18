@@ -27,7 +27,9 @@ export async function GET(req) {
       "restaurant_reservations",
       "restaurant_support_tickets",
       "restaurant_reviews",
-      "restaurant_websites"
+      "restaurant_websites",
+      "tables",
+      "order_tables"
     ];
 
     const databaseExport = {

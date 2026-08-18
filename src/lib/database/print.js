@@ -83,6 +83,9 @@ export const generateReceipt = (order, siteData = {}) => {
             <span class="net-label">Net Total</span>
             <span class="net-value">৳${Number(order.total_price).toFixed(2)}</span>
           </div>
+          <div class="total-row" style="margin-top: 6px; border-top: 1px dashed #d1d5db; padding-top: 4px;"><span>Payment Method</span><span style="text-transform: uppercase;">${order.payment_method || 'CASH'}</span></div>
+          <div class="total-row"><span>Paid Amount</span><span>৳${Number(order.paid_amount || order.total_price).toFixed(2)}</span></div>
+          <div class="total-row" style="font-weight: bold; color: #047857;"><span>Change Return</span><span>৳${Number(order.change_amount || 0).toFixed(2)}</span></div>
         </div>
 
         <div class="barcode-area">

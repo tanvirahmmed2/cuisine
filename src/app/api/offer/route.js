@@ -141,12 +141,14 @@ export async function PUT(req) {
         stream.end(imageBuffer);
       });
 
-      query += `, image = ${paramIndex - 1}, image_id = ${paramIndex}`;
+      paramIndex += 1;
+      query += `, image = $${paramIndex}, image_id = $${paramIndex + 1}`;
       params.push(cloudImage.secure_url, cloudImage.public_id);
-      paramIndex += 2;
+      paramIndex += 1;
     }
 
-    query += ` WHERE id = ${paramIndex} RETURNING *`;
+    paramIndex += 1;
+    query += ` WHERE id = $${paramIndex} RETURNING *`;
     params.push(id);
 
     const { rows: updatedOffer } = await pool.query(query, params);
