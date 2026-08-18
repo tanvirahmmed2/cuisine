@@ -98,7 +98,6 @@ const Navbar = () => {
           </div>
         </div>
         
-        {/* Mobile Toggle Button */}
         <button 
           onClick={() => setMobileSidebar(!mobileSidebar)} 
           className='p-2 text-tertiary-dark block md:hidden cursor-pointer transition-colors'
