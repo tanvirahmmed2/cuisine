@@ -65,9 +65,9 @@ const ManageSidebar = () => {
   const menuItems = useMemo(() => {
     const items = {
       sales: [
-        { name: 'POS Sale', href: '/dashboard/sales/sale', icon: <MdSell /> },
+        { name: 'Sale', href: '/dashboard/sales/sale', icon: <MdSell /> },
         { name: 'Pending', href: '/dashboard/sales/pending', icon: <MdPendingActions /> },
-        { name: 'Deliver', href: '/dashboard/sales/deliver', icon: <MdCheckCircle /> },
+        { name: 'Delivery', href: '/dashboard/sales/delivery', icon: <MdCheckCircle /> },
         { name: 'History', href: '/dashboard/sales/orders', icon: <MdHistory /> },
       ],
       manager: [

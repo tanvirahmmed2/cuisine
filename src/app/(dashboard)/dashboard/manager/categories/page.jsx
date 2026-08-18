@@ -3,7 +3,7 @@ import { Context } from '@/components/context/Context'
 import axios from 'axios'
 import Image from 'next/image'
 import React, { useContext, useState, useRef } from 'react'
-import { MdDeleteOutline, MdEdit, MdClose, MdImage } from 'react-icons/md'
+import { MdDeleteOutline, MdEdit, MdClose, MdImage, MdMoreVert } from 'react-icons/md'
 import toast from 'react-hot-toast'
 import Link from 'next/link'
 import { FaPlus } from 'react-icons/fa'
@@ -14,9 +14,11 @@ const CategorListPage = () => {
   const [isEditing, setIsEditing] = useState(false)
   const [editImageFile, setEditImageFile] = useState(null)
   const [editImagePreview, setEditImagePreview] = useState(null)
+  const [activeMenuId, setActiveMenuId] = useState(null)
   const fileInputRef = useRef(null)
 
   const handleDelete = async (id) => {
+    setActiveMenuId(null)
     const confirm = window.confirm('Are you sure to delete this category?')
     if (!confirm) return
     try {
@@ -79,26 +81,69 @@ const CategorListPage = () => {
       <div className='w-full flex flex-col gap-4'>
         {categories && categories.length > 0 ? (
           <div className='flex flex-col gap-1.5'>
-            <div className='w-full grid grid-cols-12 bg-gray-50/50 p-4 rounded-xl font-semibold text-[10px] uppercase text-gray-400 tracking-widest border border-gray-100'>
-              <p className='col-span-10'>Category Detail</p>
-              <p className='col-span-2 text-right'>Action</p>
+            <div className='w-full grid grid-cols-12 bg-gray-50/50 p-3 sm:p-4 rounded-xl font-semibold text-[10px] uppercase text-gray-400 tracking-widest border border-gray-100 items-center gap-2'>
+              <div className='col-span-9 sm:col-span-10'>Category Detail</div>
+              <div className='col-span-3 sm:col-span-2 text-right sm:text-center'>Action</div>
             </div>
             
             <div className='flex flex-col gap-1.5'>
-              {categories.map((cat) => (
-                <div key={cat.id} className='w-full grid grid-cols-12 p-3 items-center bg-white border border-gray-100 rounded-xl hover:border-pink-500 transition-all group'>
-                  <div className='col-span-10 flex items-center gap-3'>
-                    <div className='w-10 h-10 rounded-lg overflow-hidden border border-gray-50'>
-                      <Image src={cat?.image} alt={cat?.name} width={40} height={40} className='object-cover w-full h-full'/>
+              {categories.map((cat) => {
+                const isMenuOpen = activeMenuId === cat.id;
+
+                return (
+                  <div key={cat.id} className='w-full grid grid-cols-12 p-3 items-center bg-white border border-gray-100 rounded-xl hover:border-pink-500 transition-all gap-2 relative group'>
+                    <div className='col-span-9 sm:col-span-10 flex items-center gap-2 sm:gap-3 min-w-0'>
+                      <div className='w-8 h-8 sm:w-10 sm:h-10 rounded-lg overflow-hidden border border-gray-50 flex-shrink-0'>
+                        <Image src={cat?.image} alt={cat?.name} width={40} height={40} className='object-cover w-full h-full'/>
+                      </div>
+                      <p className='font-semibold text-gray-800 text-xs sm:text-sm truncate'>{cat?.name}</p>
                     </div>
-                    <p className='font-semibold text-gray-800 text-sm'>{cat?.name}</p>
+
+                    {/* Three Dot Action Button & Dropdown Menu */}
+                    <div className='col-span-3 sm:col-span-2 flex flex-row items-center justify-end sm:justify-center relative'>
+                      <button
+                        type='button'
+                        onClick={() => setActiveMenuId(isMenuOpen ? null : cat.id)}
+                        className='p-1.5 rounded-lg hover:bg-gray-100 transition-colors text-gray-600 cursor-pointer'
+                        title='Actions'
+                      >
+                        <MdMoreVert size={20} />
+                      </button>
+
+                      {isMenuOpen && (
+                        <>
+                          <div 
+                            className='fixed inset-0 z-40' 
+                            onClick={() => setActiveMenuId(null)}
+                          />
+
+                          <div className='absolute right-0 top-10 z-50 w-36 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 flex flex-col gap-0.5 text-left text-xs font-semibold animate-in fade-in zoom-in-95 duration-100'>
+                            <button
+                              type='button'
+                              onClick={() => { setActiveMenuId(null); setEditCat(cat); setEditImagePreview(cat.image); setEditImageFile(null); }}
+                              className='w-full px-3 py-2 text-indigo-700 hover:bg-indigo-50 transition-colors flex items-center gap-2 cursor-pointer'
+                            >
+                              <MdEdit size={16} />
+                              <span>Edit Category</span>
+                            </button>
+
+                            <div className='border-t border-gray-100 my-0.5' />
+
+                            <button
+                              type='button'
+                              onClick={() => handleDelete(cat.id)}
+                              className='w-full px-3 py-2 text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-2 cursor-pointer'
+                            >
+                              <MdDeleteOutline size={16} />
+                              <span>Delete</span>
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
                   </div>
-                  <div className='col-span-2 flex flex-row items-center justify-end gap-2'>
-                    <button className='p-2 text-gray-400 hover:text-pink-600 transition-colors' onClick={() => { setEditCat(cat); setEditImagePreview(cat.image); setEditImageFile(null); }}><MdEdit/></button>
-                    <button className='p-2 text-rose-300 hover:text-rose-600 transition-colors' onClick={() => handleDelete(cat.id)}><MdDeleteOutline /></button>
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         ) : (

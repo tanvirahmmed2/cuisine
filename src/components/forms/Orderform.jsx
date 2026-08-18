@@ -348,14 +348,14 @@ const Orderform = () => {
                                 <p className='text-2xl font-black text-white tracking-tight'>৳{totalPrice.toLocaleString()}</p>
                             </div>
 
-                            <div className='flex justify-between items-center border-t border-tertiary-light/20 text-xs font-semibold'>
+                            <div className='flex justify-between items-center text-xs font-semibold'>
                                 <label htmlFor="payment_method" className='uppercase tracking-widest text-tertiary-light/90 shrink-0'>Payment Method</label>
                                 <select
                                     name="payment_method"
                                     id="payment_method"
                                     onChange={handleChange}
                                     value={formData.payment_method}
-                                    className='px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-tertiary-dark appearance-none cursor-pointer border-0 outline-none w-36 text-right'
+                                    className='px-3 py-1 rounded-lg text-xs font-semibold bg-white text-tertiary-dark appearance-none cursor-pointer border-0 outline-none w-36 text-right'
                                 >
                                     {paymentOptions.map((p) => (
                                         <option value={p} key={p}>{p.toUpperCase()}</option>

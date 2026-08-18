@@ -2,31 +2,31 @@
 import { generateReceipt } from '@/lib/database/print'
 import axios from 'axios'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import toast from 'react-hot-toast'
-import { MdMoreVert, MdVisibility, MdCancel, MdPrint } from 'react-icons/md'
+import { Context } from '@/components/context/Context'
+import { MdMoreVert, MdLocalShipping, MdPrint, MdVisibility, MdCancel } from 'react-icons/md'
 
-const DeliveredOrder = () => {
+const DeliverOrder = () => {
+  const { siteData } = useContext(Context)
   const [orders, setOrders] = useState([])
-  const [loading, setLoading] = useState(true)
   const [activeMenuId, setActiveMenuId] = useState(null)
 
   const fethcOrders = async () => {
     try {
-      const res = await axios.get('/api/order/delivery', { withCredentials: true })
+      const res = await axios.get('/api/order/confirmed', { withCredentials: true })
       setOrders(res.data.payload)
     } catch (error) {
       setOrders([])
-    } finally {
-      setLoading(false)
     }
   }
+
 
   useEffect(() => { fethcOrders() }, [])
 
   const handleCancel = async (id) => {
     setActiveMenuId(null)
-    const confirm = window.confirm('Are you sure you want to cancel this order?')
+    const confirm = window.confirm('Are your sure?')
     if (!confirm) return
     try {
       const res = await axios.post('/api/order/cancel', { id }, { withCredentials: true })
@@ -36,38 +36,37 @@ const DeliveredOrder = () => {
       toast.error(error?.response?.data?.message || "Failed to cancel order")
     }
   }
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-8 h-8 border-2 border-gray-200 border-t-black rounded-full animate-spin"></div>
-      </div>
-    )
+  const handleDeliver = async (id) => {
+    setActiveMenuId(null)
+    const confirm = window.confirm('Are your sure?')
+    if (!confirm) return
+    try {
+      const res = await axios.post('/api/order/delivery', { id }, { withCredentials: true })
+      toast.success(res.data.message)
+      fethcOrders()
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to deliver order")
+    }
   }
-
   return (
-    <div className='w-full max-w-7xl mx-auto flex flex-col gap-8'>
-      <div className='flex flex-col gap-1'>
-        <h1 className='text-2xl font-semibold text-gray-900 tracking-tight'>Delivered Orders</h1>
-        <p className='text-gray-500 text-sm'>History of completed transactions.</p>
-      </div>
-
-      <div className='w-full flex flex-col gap-4'>
-        {orders.length > 0 ? (
-          <div className='flex flex-col gap-1.5'>
-            <div className='w-full grid grid-cols-12 bg-gray-50/50 p-3 sm:p-4 rounded-xl font-bold text-[10px] uppercase text-gray-500 tracking-wider items-center gap-2 sm:gap-3 border border-gray-100'>
-              <div className='col-span-3 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1'>Order ID</div>
-              <div className='col-span-4 sm:col-span-3 md:col-span-3 lg:col-span-2 xl:col-span-2'>Customer</div>
-              <div className='hidden md:block md:col-span-3 lg:col-span-3 xl:col-span-3'>Items</div>
-              <div className='hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 text-center'>Table</div>
-              <div className='col-span-3 sm:col-span-3 md:col-span-2 lg:col-span-2 xl:col-span-2 text-right'>Total Price</div>
-              <div className='hidden xl:block xl:col-span-1 text-right'>Discount</div>
-              <div className='hidden lg:block lg:col-span-2 xl:col-span-1 text-right'>Paid</div>
-              <div className='col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1 text-center'>Actions</div>
-            </div>
-            
-            <div className='w-full flex flex-col gap-2'>
-              {orders.map((order) => {
+    <div className='w-full flex flex-col items-center gap-4 min-h-screen'>
+      {
+        orders.length === 0 ? <p className='text-gray-400 text-sm font-medium py-16'>No order to deliver</p> : <div className='w-full flex flex-col gap-4'>
+          <h1 className='w-full text-center text-base md:text-xl font-semibold'>Waiting orders to be served</h1>
+          <div className='w-full grid grid-cols-12 bg-gray-50/50 p-3 sm:p-4 rounded-xl font-bold text-[10px] uppercase text-gray-500 tracking-wider items-center gap-2 sm:gap-3 border border-gray-100'>
+            <div className='col-span-3 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1'>Order ID</div>
+            <div className='col-span-4 sm:col-span-3 md:col-span-3 lg:col-span-2 xl:col-span-2'>Customer</div>
+            <div className='hidden md:block md:col-span-3 lg:col-span-3 xl:col-span-3'>Items</div>
+            <div className='hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 text-center'>Table</div>
+            <div className='col-span-3 sm:col-span-3 md:col-span-2 lg:col-span-2 xl:col-span-2 text-right'>Total Price</div>
+            <div className='hidden xl:block xl:col-span-1 text-right'>Discount</div>
+            <div className='hidden lg:block lg:col-span-2 xl:col-span-1 text-right'>Paid</div>
+            <div className='col-span-2 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1 text-center'>Actions</div>
+          </div>
+          
+          <div className='w-full flex flex-col gap-2'>
+            {
+              orders.map((order) => {
                 const isMenuOpen = activeMenuId === order.id;
 
                 return (
@@ -145,6 +144,24 @@ const DeliveredOrder = () => {
                           />
 
                           <div className='absolute right-0 top-10 z-50 w-44 bg-white rounded-xl shadow-xl border border-gray-100 py-1.5 flex flex-col gap-0.5 text-left text-xs font-semibold animate-in fade-in zoom-in-95 duration-100'>
+                            <button
+                              type='button'
+                              onClick={() => handleDeliver(order.id)}
+                              className='w-full px-3 py-2 text-emerald-700 hover:bg-emerald-50 transition-colors flex items-center gap-2 cursor-pointer'
+                            >
+                              <MdLocalShipping size={16} />
+                              <span>Serve Order</span>
+                            </button>
+
+                            <button
+                              type='button'
+                              onClick={() => { setActiveMenuId(null); generateReceipt(order, siteData); }}
+                              className='w-full px-3 py-2 text-amber-700 hover:bg-amber-50 transition-colors flex items-center gap-2 cursor-pointer'
+                            >
+                              <MdPrint size={16} />
+                              <span>Print Receipt</span>
+                            </button>
+
                             <Link
                               href={`/dashboard/sales/orders/${order.id}`}
                               onClick={() => setActiveMenuId(null)}
@@ -153,15 +170,6 @@ const DeliveredOrder = () => {
                               <MdVisibility size={16} />
                               <span>View Details</span>
                             </Link>
-
-                            <button
-                              type='button'
-                              onClick={() => { setActiveMenuId(null); generateReceipt(order); }}
-                              className='w-full px-3 py-2 text-amber-700 hover:bg-amber-50 transition-colors flex items-center gap-2 cursor-pointer'
-                            >
-                              <MdPrint size={16} />
-                              <span>Print Receipt</span>
-                            </button>
 
                             <div className='border-t border-gray-100 my-0.5' />
 
@@ -179,17 +187,14 @@ const DeliveredOrder = () => {
                     </div>
                   </div>
                 )
-              })}
-            </div>
+              })
+            }
           </div>
-        ) : (
-          <div className='text-center py-24 bg-gray-50/50 rounded-xl border border-dashed border-gray-200'>
-            <p className='text-gray-400 text-sm font-medium'>No delivered orders found.</p>
-          </div>
-        )}
-      </div>
+        </div>
+      }
+
     </div>
   )
 }
 
-export default DeliveredOrder
+export default DeliverOrder
