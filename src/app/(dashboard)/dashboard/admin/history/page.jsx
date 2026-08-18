@@ -59,7 +59,7 @@ const AdminHistory = () => {
           <div className='col-span-3 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1'>Order ID</div>
           <div className='col-span-4 sm:col-span-3 md:col-span-3 lg:col-span-2 xl:col-span-2'>Customer</div>
           <div className='hidden md:block md:col-span-3 lg:col-span-3 xl:col-span-3'>Items</div>
-          <div className='hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 text-center'>Table</div>
+          <div className='hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 text-center'>Note</div>
           <div className='col-span-3 sm:col-span-3 md:col-span-2 lg:col-span-2 xl:col-span-2 text-right'>Total Price</div>
           <div className='hidden xl:block xl:col-span-1 text-right'>Discount</div>
           <div className='hidden lg:block lg:col-span-2 xl:col-span-1 text-right'>Paid</div>
@@ -82,11 +82,6 @@ const AdminHistory = () => {
                   <div className='col-span-4 sm:col-span-3 md:col-span-3 lg:col-span-2 xl:col-span-2 flex flex-col justify-center min-w-0'>
                     <span className='font-bold text-xs text-gray-800 truncate'>{order.name || 'Guest'}</span>
                     <span className='text-[10px] text-gray-400 font-mono truncate'>{order.phone}</span>
-                    {order.table_no && order.table_no !== 'N/A' && (
-                      <span className='sm:hidden text-[9px] font-bold text-amber-800 uppercase tracking-wider mt-0.5 truncate'>
-                        Table {order.table_no}
-                      </span>
-                    )}
                   </div>
 
                   {/* 3. Items */}
@@ -98,14 +93,17 @@ const AdminHistory = () => {
                     ))}
                   </div>
 
-                  {/* 4. Table */}
+                  {/* 4. Note */}
                   <div className='hidden sm:flex sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 items-center justify-center'>
-                    <span className={`inline-block px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[10px] font-bold uppercase tracking-wider truncate ${
-                      order.table_no && order.table_no !== 'N/A' 
-                        ? 'bg-amber-100 text-amber-900 border border-amber-300/50' 
-                        : 'bg-gray-100 text-gray-500'
-                    }`}>
-                      {order.table_no && order.table_no !== 'N/A' ? `Table ${order.table_no}` : 'Takeaway'}
+                    <span 
+                      className={`inline-block px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[10px] font-bold truncate max-w-full ${
+                        order.note 
+                          ? 'bg-amber-100 text-amber-900 border border-amber-300/50' 
+                          : 'bg-gray-100 text-gray-500'
+                      }`}
+                      title={order.note || (order.table_no && order.table_no !== 'N/A' ? `Table ${order.table_no}` : 'None')}
+                    >
+                      {order.note || (order.table_no && order.table_no !== 'N/A' ? `Table ${order.table_no}` : 'None')}
                     </span>
                   </div>
 

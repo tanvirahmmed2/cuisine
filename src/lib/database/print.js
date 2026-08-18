@@ -61,6 +61,7 @@ export const generateReceipt = (order, siteData = {}) => {
           <div class="meta-row"><span>Time</span><span class="meta-value">${formattedTime}</span></div>
           <div class="meta-row"><span>Customer</span><span class="meta-value">${order.name}</span></div>
           <div class="meta-row"><span>Status</span><span class="meta-value" style="text-transform: uppercase; font-weight: bold;">${order.status || 'confirmed'}</span></div>
+          ${order.note ? `<div class="meta-row"><span>Note</span><span class="meta-value" style="font-weight: bold; color: #b45309;">${order.note}</span></div>` : ''}
         </div>
 
         <div class="items-header"><span>Description</span><span style="text-align:center">Qty</span><span style="text-align:right">Total</span></div>

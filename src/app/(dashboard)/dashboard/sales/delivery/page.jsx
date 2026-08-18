@@ -94,7 +94,7 @@ const DeliverOrder = () => {
             <div className='col-span-3 sm:col-span-2 md:col-span-1 lg:col-span-1 xl:col-span-1'>Order ID</div>
             <div className='col-span-4 sm:col-span-3 md:col-span-3 lg:col-span-2 xl:col-span-2'>Customer</div>
             <div className='hidden md:block md:col-span-3 lg:col-span-3 xl:col-span-3'>Items</div>
-            <div className='hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 text-center'>Table</div>
+            <div className='hidden sm:block sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 text-center'>Note</div>
             <div className='col-span-3 sm:col-span-3 md:col-span-2 lg:col-span-2 xl:col-span-2 text-right'>Total Price</div>
             <div className='hidden xl:block xl:col-span-1 text-right'>Discount</div>
             <div className='hidden lg:block lg:col-span-2 xl:col-span-1 text-right'>Paid</div>
@@ -118,31 +118,30 @@ const DeliverOrder = () => {
 
                     {/* 2. Customer */}
                     <div className='col-span-4 sm:col-span-3 md:col-span-3 lg:col-span-2 xl:col-span-2 flex flex-col justify-center min-w-0'>
-                      <span className='font-semibold text-xs text-gray-800 truncate'>{order.name || 'Guest'}</span>
-                      <span className='text-[10px] text-gray-400 font-mono truncate'>{order.phone}</span>
-                      {order.table_no && order.table_no !== 'N/A' && (
-                        <span className='sm:hidden text-[9px] font-semibold text-amber-800 uppercase tracking-wider mt-0.5 truncate'>
-                          Table {order.table_no}
-                        </span>
-                      )}
+                      <span className='font-semibold text-xs text-gray-900 truncate'>{order.name || 'Guest'}</span>
+                      <span className='text-[10px] text-gray-500 font-mono truncate'>{order.phone}</span>
                     </div>
 
                     {/* 3. Items */}
                     <div className='hidden md:flex md:col-span-3 lg:col-span-3 xl:col-span-3 flex-col gap-0.5 min-w-0'>
                       {order?.items?.map((item) => (
-                        <span key={item.id} className='text-xs text-gray-600 truncate' title={`${item.quantity}x ${item.title}`}>
+                        <span key={item.id} className='text-xs text-gray-700 truncate' title={`${item.quantity}x ${item.title}`}>
                           {item.quantity}x {item.title}
                         </span>
                       ))}
                     </div>
 
-                    {/* 4. Table */}
+                    {/* 4. Note */}
                     <div className='hidden sm:flex sm:col-span-2 md:col-span-2 lg:col-span-1 xl:col-span-1 items-center justify-center'>
-                      <span className={`inline-block px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider truncate ${order.table_no && order.table_no !== 'N/A'
-                          ? 'bg-amber-100 text-amber-900 border border-amber-300/50'
-                          : 'bg-gray-100 text-gray-500'
-                        }`}>
-                        {order.table_no && order.table_no !== 'N/A' ? `Table ${order.table_no}` : 'Takeaway'}
+                      <span 
+                        className={`inline-block px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md text-[10px] font-semibold truncate max-w-full ${
+                          order.note 
+                            ? 'bg-amber-100 text-amber-900 border border-amber-300/50' 
+                            : 'bg-gray-100 text-gray-500'
+                        }`}
+                        title={order.note || (order.table_no && order.table_no !== 'N/A' ? `Table ${order.table_no}` : 'None')}
+                      >
+                        {order.note || (order.table_no && order.table_no !== 'N/A' ? `Table ${order.table_no}` : 'None')}
                       </span>
                     </div>
 
@@ -260,9 +259,9 @@ const DeliverOrder = () => {
                   <span className='text-[10px] uppercase font-semibold text-pink-600 tracking-wider'>Total Payable</span>
                   <p className='text-2xl font-black text-pink-600 tracking-tight'>৳{totalPrice.toLocaleString()}</p>
                 </div>
-                {paymentModalOrder.table_no && paymentModalOrder.table_no !== 'N/A' && (
-                  <span className='px-3 py-1 rounded-lg bg-amber-100 text-amber-900 text-xs font-semibold uppercase'>
-                    Table {paymentModalOrder.table_no}
+                {paymentModalOrder.id && (
+                  <span className='px-3 py-1 rounded-lg bg-pink-100 text-pink-700 text-xs font-semibold uppercase font-mono'>
+                    #{String(paymentModalOrder.id).padStart(5, '0')}
                   </span>
                 )}
               </div>

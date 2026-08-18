@@ -25,7 +25,9 @@ const Orderform = () => {
         payment_status: 'paid',
         transaction_id: '',
         status: 'confirmed',
-        table_no: ''
+        table_id: '',
+        table_no: '',
+        note: ''
     })
 
     const [popUp, setPopUp] = useState(false)
@@ -45,7 +47,7 @@ const Orderform = () => {
         fetchTables()
     }, [])
 
-    const availableTables = dbTables.filter(t => t.status === 'available' || t.table_no === formData.table_no)
+    const availableTables = dbTables.filter(t => t.status === 'available' || String(t.id) === String(formData.table_id))
 
     let subTotal = 0
     let tempTotalPrice = 0
@@ -197,11 +199,12 @@ const Orderform = () => {
                             setFormData((prev) => ({
                                 ...prev,
                                 delivery_method: val,
+                                table_id: val === 'takein' ? prev.table_id : '',
                                 table_no: val === 'takein' ? prev.table_no : ''
                             }));
                         }}
                         value={formData.delivery_method}
-                        className='input-style font-semibold appearance-none cursor-pointer bg-white'
+                        className='input-style font-semibold appearance-none cursor-pointer bg-tertiary-light'
                     >
                         {deliveryOptions.map((d) => (
                             <option value={d} key={d}>{d.toUpperCase()}</option>
@@ -211,23 +214,41 @@ const Orderform = () => {
 
                 {formData.delivery_method === 'takein' && (
                     <div className='w-full flex flex-col gap-1.5 sm:col-span-2'>
-                        <label htmlFor="main_table_no" className='text-[10px] font-semibold uppercase tracking-widest text-tertiary-dark/60 ml-1'>Select Table</label>
+                        <label htmlFor="table_id" className='text-[10px] font-semibold uppercase tracking-widest text-tertiary-dark/60 ml-1'>Select Table</label>
                         <select
-                            name="table_no"
-                            id="main_table_no"
-                            onChange={handleChange}
-                            value={formData.table_no}
-                            className='input-style font-semibold appearance-none cursor-pointer bg-white'
+                            name="table_id"
+                            id="table_id"
+                            onChange={(e) => {
+                                const selectedId = e.target.value;
+                                const foundTable = dbTables.find(t => String(t.id) === String(selectedId));
+                                setFormData((prev) => ({
+                                    ...prev,
+                                    table_id: selectedId,
+                                    table_no: foundTable ? foundTable.table_no : ''
+                                }));
+                            }}
+                            value={formData.table_id}
+                            className='input-style font-semibold appearance-none cursor-pointer bg-tertiary-light'
                         >
                             <option value="">Select Table...</option>
                             {availableTables.map((t) => (
-                                <option value={t.table_no} key={t.id}>
+                                <option value={t.id} key={t.id}>
                                     Table {t.table_no} ({t.capacity} Seats - {t.location || 'Main'})
                                 </option>
                             ))}
                         </select>
                     </div>
                 )}
+
+                <div className='w-full flex flex-col gap-1.5 sm:col-span-2'>
+                    <label htmlFor="note" className='text-[10px] font-semibold uppercase tracking-widest text-tertiary-dark/60 ml-1'>Order Note / Instructions</label>
+                    <input
+                        type="text" name='note' id='note'
+                        onChange={handleChange} value={formData.note || ''}
+                        className='input-style font-semibold'
+                        placeholder="e.g. Extra spicy, no onion, less oil"
+                    />
+                </div>
             </div>
 
             {/* Order Items Section */}
@@ -265,22 +286,18 @@ const Orderform = () => {
                                             <Image src={item.image} alt={item.title} width={32} height={32} className='w-full h-full object-cover' />
                                         </div>
 
-                                        {/* 2. Title */}
                                         <div className='flex-1 min-w-0'>
                                             <p className='text-xs font-semibold text-tertiary-dark truncate' title={item.title}>{item.title}</p>
                                         </div>
 
-                                        {/* 3. Variant */}
                                         <div className='w-20 shrink-0 min-w-0'>
                                             <p className='text-[10px] text-tertiary-dark/60 font-medium truncate' title={variantText}>{variantText}</p>
                                         </div>
 
-                                        {/* 4. Price */}
                                         <div className='w-14 shrink-0 text-right font-medium text-tertiary-dark/80 text-[11px]'>
                                             ৳{item.price.toLocaleString()}
                                         </div>
 
-                                        {/* 5. Discount */}
                                         <div className='w-12 shrink-0 text-right font-medium text-secondary-dark text-[10px]'>
                                             {discountText}
                                         </div>
@@ -348,14 +365,14 @@ const Orderform = () => {
                                 <p>৳{subTotal.toLocaleString()}</p>
                             </div>
 
-                            <div className='flex justify-between items-center text-xs font-semibold uppercase tracking-widest text-secondary-light'>
+                            <div className='flex justify-between items-center text-xs font-semibold uppercase tracking-widest text-tertiary-light'>
                                 <p>Discounts</p>
                                 <p>-৳{totalDiscount.toLocaleString()}</p>
                             </div>
 
                             <div className='flex justify-between items-center border-t border-tertiary-light/20 pt-3 text-sm font-semibold uppercase tracking-wider'>
                                 <p>Total Payable</p>
-                                <p className='text-2xl font-black text-white tracking-tight'>৳{totalPrice.toLocaleString()}</p>
+                                <p className='text-2xl font-black text-tertiary-light tracking-tight'>৳{totalPrice.toLocaleString()}</p>
                             </div>
 
                             <div className='flex justify-between items-center text-xs font-semibold'>
@@ -365,7 +382,7 @@ const Orderform = () => {
                                     id="payment_method"
                                     onChange={handleChange}
                                     value={formData.payment_method}
-                                    className='px-3 py-1 rounded-lg text-xs font-semibold bg-white text-tertiary-dark appearance-none cursor-pointer border-0 outline-none w-36 text-right'
+                                    className='px-3 py-1 rounded-lg text-xs font-semibold bg-tertiary-light text-tertiary-dark appearance-none cursor-pointer border-0 outline-none w-36 text-right'
                                 >
                                     {paymentOptions.map((p) => (
                                         <option value={p} key={p}>{p.toUpperCase()}</option>
@@ -383,21 +400,21 @@ const Orderform = () => {
                                     step="any"
                                     value={paidAmount}
                                     onChange={(e) => setPaidAmount(e.target.value)}
-                                    className='px-3 py-1.5 rounded-lg text-xs font-semibold bg-white text-tertiary-dark border-0 outline-none placeholder:text-gray-400 w-36 text-right'
+                                    className='px-3 py-1.5 rounded-lg text-xs font-semibold bg-tertiary-light text-tertiary-dark border-0 outline-none placeholder:text-gray-400 w-36 text-right'
 
                                 />
                             </div>
 
                             <div className='flex justify-between items-center text-xs font-semibold'>
                                 <span className='uppercase tracking-widest text-tertiary-light/90'>Change Return (৳)</span>
-                                <div className='px-3 py-1.5 rounded-lg text-xs font-extrabold bg-tertiary-light/15 text-white border border-tertiary-light/20 min-w-36 text-right'>
+                                <div className='px-3 py-1.5 rounded-lg text-xs font-extrabold bg-tertiary-light/15 text-tertiary-light border border-tertiary-light/20 min-w-36 text-right'>
                                     ৳{changeAmount.toLocaleString()}
                                 </div>
                             </div>
 
                             <div className='pt-2 border-t border-tertiary-light/20'>
                                 <button
-                                    className='w-full py-3 bg-tertiary-light text-tertiary-dark rounded-xl font-semibold text-xs uppercase tracking-widest hover:bg-white transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2'
+                                    className='w-full py-3 bg-tertiary-light text-tertiary-dark rounded-xl font-semibold text-xs uppercase tracking-widest hover:bg-tertiary-light transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2'
                                     type='button'
                                     onClick={handleOpenReview}
                                 >

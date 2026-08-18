@@ -25,7 +25,7 @@ const SaleMenuPage = () => {
   }, [categoryId])
 
   return (
-    <div className="w-full min-h-screen bg-tertiary-light">
+    <div className="w-full flex flex-col items-center gap-6 min-w-100">
       <div className="w-full flex flex-col gap-6">
         <div className="flex flex-col gap-1">
           <h2 className="text-xl font-semibold text-tertiary-dark tracking-tight">Menu Selection</h2>

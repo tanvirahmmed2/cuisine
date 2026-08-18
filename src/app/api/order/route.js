@@ -49,7 +49,9 @@ export async function POST(req) {
       paid_amount,
       change_amount,
       payment_method,
+      table_id,
       table_no,
+      note,
       status,
       transaction_id,
     } = data;
@@ -75,6 +77,9 @@ export async function POST(req) {
 
     // Start transaction
     await client.query("BEGIN");
+    await client.query("ALTER TABLE restaurant_orders ADD COLUMN IF NOT EXISTS note TEXT;");
+    await client.query("ALTER TABLE restaurant_orders ADD COLUMN IF NOT EXISTS table_id INT;");
+    await client.query("ALTER TABLE restaurant_orders ADD COLUMN IF NOT EXISTS table_no VARCHAR(50);");
 
     if (isPhoneEmpty) {
       customerPhone = "temp_guest";
@@ -110,26 +115,34 @@ export async function POST(req) {
 
     // 2. Insert Order
     const { rows: orderRows } = await client.query(`INSERT INTO restaurant_orders 
-      (name, phone, delivery_method, table_no, sub_total, total_discount, total_price, paid_amount, change_amount, payment_method, status, transaction_id, payment_status) 
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
-      RETURNING id`, [customerName, customerPhone, delivery_method || "takein", table_no || "N/A", sub_total || 0, total_discount || 0, total_price || 0, paid_amount || 0, change_amount || 0, payment_method || "cash", orderStatus, transaction_id || "", determinedPaymentStatus, ]);
+      (name, phone, delivery_method, table_id, table_no, note, sub_total, total_discount, total_price, paid_amount, change_amount, payment_method, status, transaction_id, payment_status) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) 
+      RETURNING id`, [
+        customerName, 
+        customerPhone, 
+        delivery_method || "takein", 
+        table_id || null, 
+        table_no || null, 
+        note || "", 
+        sub_total || 0, 
+        total_discount || 0, 
+        total_price || 0, 
+        paid_amount || 0, 
+        change_amount || 0, 
+        payment_method || "cash", 
+        orderStatus, 
+        transaction_id || "", 
+        determinedPaymentStatus
+      ]);
 
     const orderId = orderRows[0].id;
 
-    if (table_no && table_no !== 'N/A') {
+    if (table_id) {
       try {
-        const cleanNo = String(table_no).trim();
-        const { rows: tRows } = await client.query(
-          "SELECT id FROM tables WHERE LOWER(table_no) = LOWER($1) OR LOWER(table_no) = LOWER($2) OR LOWER(table_no) = LOWER($3) LIMIT 1",
-          [cleanNo, `table ${cleanNo}`, cleanNo.replace(/^table\s*/i, '')]
-        );
-        if (tRows.length > 0) {
-          const tableId = tRows[0].id;
-          await client.query("INSERT INTO order_tables (order_id, table_id, table_no) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING", [orderId, tableId, cleanNo]);
-          await client.query("UPDATE tables SET status = 'occupied', updated_at = CURRENT_TIMESTAMP WHERE id = $1", [tableId]);
-        }
-      } catch (tableErr) {
-        console.error("Order table link error:", tableErr.message);
+        await client.query("INSERT INTO order_tables (order_id, table_id, table_no) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING", [orderId, table_id, table_no || '']);
+        await client.query("UPDATE tables SET status = 'occupied', updated_at = CURRENT_TIMESTAMP WHERE id = $1", [table_id]);
+      } catch (tErr) {
+        console.error("Failed to occupy table:", tErr.message);
       }
     }
 

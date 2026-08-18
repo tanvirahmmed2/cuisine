@@ -169,13 +169,15 @@ const OrderDetailsPage = () => {
               <span className="font-bold uppercase">{order.delivery_method || 'TAKEIN'}</span>
             </div>
             <div className="flex justify-between items-center pb-2 border-b border-tertiary-dark/5">
-              <span className="text-tertiary-dark/60 font-medium flex items-center gap-1.5"><MdTableRestaurant className="text-tertiary-dark/40" /> Table Number:</span>
-              <span className="font-bold">{order.table_no && order.table_no !== 'N/A' ? `Table ${order.table_no}` : 'N/A'}</span>
-            </div>
-            <div className="flex justify-between items-center">
               <span className="text-tertiary-dark/60 font-medium flex items-center gap-1.5"><MdPayment className="text-tertiary-dark/40" /> Payment Method:</span>
               <span className="font-bold uppercase">{order.payment_method || 'CASH'}</span>
             </div>
+            {order.note && (
+              <div className="flex justify-between items-center pt-1">
+                <span className="text-tertiary-dark/60 font-medium">Order Note:</span>
+                <span className="font-semibold text-amber-900 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">{order.note}</span>
+              </div>
+            )}
           </div>
         </div>
       </div>

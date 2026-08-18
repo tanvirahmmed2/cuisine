@@ -76,7 +76,9 @@ CREATE TABLE restaurant_orders (
   phone VARCHAR(50),
   delivery_method VARCHAR(50) DEFAULT 'takein'
     CHECK (delivery_method IN ('takeaway','takein')),
+  table_id INT REFERENCES tables(id) ON DELETE SET NULL,
   table_no VARCHAR(50),
+  note TEXT,
   sub_total DECIMAL(12,2),
   total_discount DECIMAL(12,2) DEFAULT 0,
   total_price DECIMAL(12,2),

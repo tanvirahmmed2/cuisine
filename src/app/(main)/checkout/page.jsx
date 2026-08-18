@@ -3,9 +3,8 @@ import React from 'react'
 
 const CheckoutPage = () => {
   return (
-    <div className='w-full flex items-center justify-center min-h-screen'>
-        <UserOrderForm/>
-      
+    <div className='w-full min-h-screen bg-gray-50/50'>
+      <UserOrderForm />
     </div>
   )
 }
