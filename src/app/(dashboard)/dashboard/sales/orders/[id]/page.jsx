@@ -81,6 +81,18 @@ const SingleOrderPage = () => {
                             <span className="text-gray-400 uppercase text-[10px]">Customer</span>
                             <span className="font-medium">{order.name}</span>
                         </div>
+                        {order.coupon && (
+                            <div className="flex justify-between">
+                                <span className="text-emerald-600 font-bold uppercase text-[10px]">Coupon</span>
+                                <span className="font-mono font-bold text-emerald-700">{order.coupon.code}</span>
+                            </div>
+                        )}
+                        {order.table_no && (
+                            <div className="flex justify-between">
+                                <span className="text-gray-400 uppercase text-[10px]">Table</span>
+                                <span className="font-medium">Table {order.table_no}</span>
+                            </div>
+                        )}
                     </div>
 
                     <div className="w-full">
@@ -98,9 +110,9 @@ const SingleOrderPage = () => {
                                         @ ৳{Number(item.price).toFixed(2)} {item.discount > 0 ? `(-৳${item.discount})` : ''}
                                     </span>
                                 </div>
-                                <div className="col-span-2 text-center  self-center">{item.quantity}</div>
-                                <div className="col-span-3 text-right  font-semibold self-center">
-                                    ৳{(Number(item.price - item.discount) * item.quantity).toFixed(2)}
+                                <div className="col-span-2 text-center self-center">{item.quantity}</div>
+                                <div className="col-span-3 text-right font-semibold self-center">
+                                    ৳{(Number(item.price - (item.discount || 0)) * item.quantity).toFixed(2)}
                                 </div>
                             </div>
                         ))}
@@ -111,13 +123,27 @@ const SingleOrderPage = () => {
                             <span>Subtotal</span>
                             <span>৳{Number(order.sub_total).toFixed(2)}</span>
                         </div>
-                        <div className="flex justify-between text-[11px]  text-red-600">
-                            <span>Discount</span>
-                            <span>-৳{Number(order.total_discount).toFixed(2)}</span>
-                        </div>
+                        {order.coupon && (
+                            <div className="flex justify-between text-[11px] text-emerald-700 font-medium">
+                                <span>Coupon ({order.coupon.code})</span>
+                                <span>-৳{Number(order.coupon.discount_amount || 0).toFixed(2)}</span>
+                            </div>
+                        )}
+                        {Number(order.total_discount || 0) > Number(order.coupon?.discount_amount || 0) && (
+                            <div className="flex justify-between text-[11px] text-gray-500">
+                                <span>Item Discounts</span>
+                                <span>-৳{(Number(order.total_discount || 0) - Number(order.coupon?.discount_amount || 0)).toFixed(2)}</span>
+                            </div>
+                        )}
+                        {Number(order.total_discount || 0) > 0 && !order.coupon && (
+                            <div className="flex justify-between text-[11px] text-red-600">
+                                <span>Discount</span>
+                                <span>-৳{Number(order.total_discount).toFixed(2)}</span>
+                            </div>
+                        )}
                         <div className="flex justify-between items-baseline pt-2 border-t border-slate-900 mt-2">
                             <span className="text-[12px] font-bold uppercase">Net Total</span>
-                            <span className="text-xl  font-bold">৳{Number(order.total_price).toFixed(2)}</span>
+                            <span className="text-xl font-bold">৳{Number(order.total_price).toFixed(2)}</span>
                         </div>
                     </div>
 

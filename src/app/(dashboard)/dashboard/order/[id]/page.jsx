@@ -172,6 +172,12 @@ const OrderDetailsPage = () => {
               <span className="text-tertiary-dark/60 font-medium flex items-center gap-1.5"><MdPayment className="text-tertiary-dark/40" /> Payment Method:</span>
               <span className="font-bold uppercase">{order.payment_method || 'CASH'}</span>
             </div>
+            {order.coupon && (
+              <div className="flex justify-between items-center pb-2 border-b border-tertiary-dark/5">
+                <span className="text-tertiary-dark/60 font-medium flex items-center gap-1.5">🎟️ Coupon Applied:</span>
+                <span className="font-mono font-bold text-primary bg-primary/10 px-2 py-0.5 rounded text-xs">{order.coupon.code} (-৳{Number(order.coupon.discount_amount || 0).toLocaleString()})</span>
+              </div>
+            )}
             {order.note && (
               <div className="flex justify-between items-center pt-1">
                 <span className="text-tertiary-dark/60 font-medium">Order Note:</span>
@@ -255,10 +261,26 @@ const OrderDetailsPage = () => {
           <span>৳{Number(order.sub_total || 0).toLocaleString()}</span>
         </div>
 
-        <div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-secondary-light">
-          <span>Total Discount</span>
-          <span>-৳{Number(order.total_discount || 0).toLocaleString()}</span>
-        </div>
+        {order.coupon && (
+          <div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-emerald-200">
+            <span>Coupon ({order.coupon.code})</span>
+            <span>-৳{Number(order.coupon.discount_amount || 0).toLocaleString()}</span>
+          </div>
+        )}
+
+        {Number(order.total_discount || 0) > Number(order.coupon?.discount_amount || 0) && (
+          <div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-tertiary-light/80">
+            <span>Item Discounts</span>
+            <span>-৳{(Number(order.total_discount || 0) - Number(order.coupon?.discount_amount || 0)).toLocaleString()}</span>
+          </div>
+        )}
+
+        {Number(order.total_discount || 0) > 0 && (
+          <div className="flex justify-between items-center text-xs font-semibold uppercase tracking-wider text-secondary-light border-t border-tertiary-light/10 pt-1">
+            <span>Total Savings</span>
+            <span>-৳{Number(order.total_discount || 0).toLocaleString()}</span>
+          </div>
+        )}
 
         <div className="flex justify-between items-center border-t border-tertiary-light/20 pt-3 text-sm font-bold uppercase tracking-wider">
           <span>Total Payable</span>

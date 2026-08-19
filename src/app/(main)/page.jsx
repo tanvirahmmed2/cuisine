@@ -6,27 +6,31 @@ import Review from '@/components/page/Review'
 import OfferPopup from '@/components/page/OfferPopup'
 import React from 'react'
 import { getBaseUrl } from '@/lib/helper';
+import Coupons from '@/components/page/Coupons'
 
 const Main = async () => {
   const baseUrl = await getBaseUrl()
   
   
 
-  const [flashSaleRes, latestRes, reviewRes, offerRes] = await Promise.all([
+  const [flashSaleRes, latestRes, reviewRes, offerRes, couponRes] = await Promise.all([
     fetch(`${baseUrl}/api/product/discount/latest`, { cache: 'no-store' }).catch(() => null),
     fetch(`${baseUrl}/api/product/latest`, { cache: 'no-store' }).catch(() => null),
     fetch(`${baseUrl}/api/review`, { cache: 'no-store' }).catch(() => null),
-    fetch(`${baseUrl}/api/offer?active=true`, { cache: 'no-store' }).catch(() => null)
+    fetch(`${baseUrl}/api/offer?active=true`, { cache: 'no-store' }).catch(() => null),
+    fetch(`${baseUrl}/api/coupon?active=true`, { cache: 'no-store' }).catch(() => null)
   ])
 
   const flashSales = flashSaleRes?.ok ? (await flashSaleRes.json()).payload : []
   const latestItems = latestRes?.ok ? (await latestRes.json()).payload : []
   const reviews = reviewRes?.ok ? (await reviewRes.json()).payload : []
   const activeOffers = offerRes?.ok ? (await offerRes.json()).payload : []
+  const activeCoupons = couponRes?.ok ? (await couponRes.json()).payload : []
 
   return (
     <div className='w-full overflow-hidden min-h-screen flex flex-col items-center justify-center'>
       <Intro />
+      <Coupons initialCoupons={activeCoupons} />
       <FlashSale initialProducts={flashSales} />
       <Latest initialProducts={latestItems} />
       <Review initialReviews={reviews} />

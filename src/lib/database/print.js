@@ -11,6 +11,11 @@ export const generateReceipt = (order, siteData = {}) => {
   const formattedDate = orderDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   const formattedTime = orderDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
 
+  const couponCode = order.coupon?.code || order.coupon_code || '';
+  const couponDiscount = Number(order.coupon?.discount_amount || order.coupon_discount || 0);
+  const totalDiscount = Number(order.total_discount || 0);
+  const otherDiscount = Math.max(0, totalDiscount - couponDiscount);
+
   const receiptContent = `
     <!DOCTYPE html>
     <html>
@@ -61,6 +66,8 @@ export const generateReceipt = (order, siteData = {}) => {
           <div class="meta-row"><span>Time</span><span class="meta-value">${formattedTime}</span></div>
           <div class="meta-row"><span>Customer</span><span class="meta-value">${order.name}</span></div>
           <div class="meta-row"><span>Status</span><span class="meta-value" style="text-transform: uppercase; font-weight: bold;">${order.status || 'confirmed'}</span></div>
+          ${order.table_no ? `<div class="meta-row"><span>Table</span><span class="meta-value">Table ${order.table_no}</span></div>` : ''}
+          ${couponCode ? `<div class="meta-row"><span>Coupon Applied</span><span class="meta-value" style="font-weight: bold; color: #047857;">${couponCode}</span></div>` : ''}
           ${order.note ? `<div class="meta-row"><span>Note</span><span class="meta-value" style="font-weight: bold; color: #b45309;">${order.note}</span></div>` : ''}
         </div>
 
@@ -73,19 +80,33 @@ export const generateReceipt = (order, siteData = {}) => {
               <span class="item-price-line">@ ৳${Number(item.price).toFixed(2)} ${item.discount > 0 ? `(-৳${item.discount})` : ''}</span>
             </div>
             <div style="text-align:center; font-family: 'DM Mono'">${item.quantity}</div>
-            <div style="text-align:right; font-family: 'DM Mono'; font-weight:600">৳${((item.price - item.discount) * item.quantity).toFixed(2)}</div>
+            <div style="text-align:right; font-family: 'DM Mono'; font-weight:600">৳${((item.price - (item.discount || 0)) * item.quantity).toFixed(2)}</div>
           </div>
         `).join('')}
 
         <div style="margin-top: 10px">
-          <div class="total-row"><span>Subtotal</span><span>৳${Number(order.sub_total).toFixed(2)}</span></div>
-          <div class="total-row" style="color: #dc2626"><span>Discount</span><span>-৳${Number(order.total_discount).toFixed(2)}</span></div>
+          <div class="total-row"><span>Subtotal</span><span>৳${Number(order.sub_total || 0).toFixed(2)}</span></div>
+          ${couponDiscount > 0 ? `
+            <div class="total-row" style="color: #047857; font-weight: 600;">
+              <span>Coupon (${couponCode})</span>
+              <span>-৳${couponDiscount.toFixed(2)}</span>
+            </div>
+          ` : ''}
+          ${otherDiscount > 0 ? `
+            <div class="total-row" style="color: #6b7280">
+              <span>Item Discounts</span>
+              <span>-৳${otherDiscount.toFixed(2)}</span>
+            </div>
+          ` : ''}
+          ${totalDiscount > 0 && couponDiscount === 0 && otherDiscount === 0 ? `
+            <div class="total-row" style="color: #dc2626"><span>Discount</span><span>-৳${totalDiscount.toFixed(2)}</span></div>
+          ` : ''}
           <div class="net-total-row">
             <span class="net-label">Net Total</span>
-            <span class="net-value">৳${Number(order.total_price).toFixed(2)}</span>
+            <span class="net-value">৳${Number(order.total_price || 0).toFixed(2)}</span>
           </div>
           <div class="total-row" style="margin-top: 6px; border-top: 1px dashed #d1d5db; padding-top: 4px;"><span>Payment Method</span><span style="text-transform: uppercase;">${order.payment_method || 'CASH'}</span></div>
-          <div class="total-row"><span>Paid Amount</span><span>৳${Number(order.paid_amount || order.total_price).toFixed(2)}</span></div>
+          <div class="total-row"><span>Paid Amount</span><span>৳${Number(order.paid_amount || order.total_price || 0).toFixed(2)}</span></div>
           <div class="total-row" style="font-weight: bold; color: #047857;"><span>Change Return</span><span>৳${Number(order.change_amount || 0).toFixed(2)}</span></div>
         </div>
 

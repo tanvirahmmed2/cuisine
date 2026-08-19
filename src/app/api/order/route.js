@@ -14,9 +14,14 @@ export async function GET(req) {
     if (orders.length > 0) {
       const orderIds = orders.map(o => o.id);
       const { rows: itemRows } = await pool.query("SELECT * FROM order_items WHERE order_id = ANY($1)", [orderIds]);
+      const { rows: couponRows } = await pool.query("SELECT * FROM order_coupons WHERE order_id = ANY($1)", [orderIds]);
       
       orders.forEach(order => {
         order.items = itemRows.filter(item => item.order_id === order.id);
+        const c = couponRows.find(c => c.order_id === order.id);
+        order.coupon = c || null;
+        order.coupon_code = c ? c.code : null;
+        order.coupon_discount = c ? Number(c.discount_amount) : 0;
       });
     }
 
@@ -54,6 +59,9 @@ export async function POST(req) {
       note,
       status,
       transaction_id,
+      coupon_id,
+      coupon_code,
+      coupon_discount,
     } = data;
 
     if (!items || items.length === 0) {
@@ -175,6 +183,28 @@ export async function POST(req) {
           await client.query(`INSERT INTO order_item_variants (order_item_id, variant_id, name, value, price_adjustment) 
             VALUES ($1, $2, $3, $4, $5)`, [orderItemId, variant.id, variant.name, variant.value, variant.price_adjustment || 0]);
         }
+      }
+    }
+
+    // 5. Connect coupon if applied
+    if (coupon_code || coupon_id) {
+      try {
+        let finalCouponId = coupon_id || null;
+        const finalCode = coupon_code ? String(coupon_code).trim().toUpperCase() : '';
+        
+        if (!finalCouponId && finalCode) {
+          const { rows: cRows } = await client.query("SELECT id FROM coupons WHERE UPPER(code) = $1 LIMIT 1", [finalCode]);
+          if (cRows.length > 0) {
+            finalCouponId = cRows[0].id;
+          }
+        }
+
+        await client.query(
+          "INSERT INTO order_coupons (order_id, coupon_id, code, discount_amount) VALUES ($1, $2, $3, $4)",
+          [orderId, finalCouponId, finalCode, Number(coupon_discount) || 0]
+        );
+      } catch (cErr) {
+        console.error("Failed to connect order_coupons:", cErr.message);
       }
     }
 

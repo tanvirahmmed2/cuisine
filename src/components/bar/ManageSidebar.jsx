@@ -23,7 +23,8 @@ import {
   MdDownload,
   MdPerson,
   MdMessage,
-  MdTableRestaurant
+  MdTableRestaurant,
+  MdConfirmationNumber
 } from 'react-icons/md'
 import toast from 'react-hot-toast'
 import axios from 'axios'
@@ -73,6 +74,7 @@ const ManageSidebar = () => {
       manager: [
         { name: 'Items', href: '/dashboard/manager/items', icon: <MdInventory /> },
         { name: 'Categories', href: '/dashboard/manager/categories', icon: <MdCategory /> },
+        { name: 'Coupons', href: '/dashboard/manager/coupons', icon: <MdConfirmationNumber /> },
         { name: 'Expenses', href: '/dashboard/manager/expenses', icon: <MdPayments /> },
         { name: 'History', href: '/dashboard/manager/history', icon: <MdHistory /> },
         { name: 'Reservations', href: '/dashboard/manager/reservation', icon: <MdEvent /> },

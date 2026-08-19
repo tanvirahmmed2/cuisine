@@ -226,3 +226,32 @@ CREATE TABLE order_tables (
 
 CREATE INDEX idx_order_tables_order_id ON order_tables(order_id);
 CREATE INDEX idx_order_tables_table_id ON order_tables(table_id);
+
+CREATE TABLE coupons (
+  id SERIAL PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  code VARCHAR(50) UNIQUE NOT NULL,
+  discount DECIMAL(12,2) NOT NULL DEFAULT 0,
+  is_percentage BOOLEAN DEFAULT TRUE,
+  min_bill DECIMAL(12,2) DEFAULT 0,
+  start_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  expires_at TIMESTAMPTZ,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_coupons_code ON coupons(code);
+
+CREATE TABLE order_coupons (
+  id SERIAL PRIMARY KEY,
+  order_id INT REFERENCES orders(id) ON DELETE CASCADE,
+  coupon_id INT REFERENCES coupons(id) ON DELETE SET NULL,
+  code VARCHAR(50),
+  discount_amount DECIMAL(12,2) NOT NULL DEFAULT 0,
+  created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_order_coupons_order_id ON order_coupons(order_id);
+CREATE INDEX idx_order_coupons_coupon_id ON order_coupons(coupon_id);
+

@@ -178,17 +178,22 @@ const TrackOrder = () => {
                                         </div>
                                     </div>
 
-                                    {/* Summary Calculations */}
-                                    <div className="w-full border-t border-tertiary-dark/10 pt-5 flex justify-between items-center bg-tertiary-dark/5 p-4 rounded-xl">
-                                        <div>
-                                            <p className="text-[9px] font-bold uppercase tracking-widest text-tertiary-dark/60">Payment via</p>
-                                            <p className="text-xs font-bold text-tertiary-dark uppercase tracking-wider">{order.payment_method}</p>
-                                        </div>
-                                        <div className="text-right">
-                                            <p className="text-[9px] font-bold uppercase tracking-widest text-tertiary-dark/60">Total Bill</p>
-                                            <p className="text-xl font-bold text-tertiary-dark font-mono">৳{Number(order.total_price).toLocaleString()}</p>
-                                        </div>
-                                    </div>
+                                     {/* Summary Calculations */}
+                                     <div className="w-full border-t border-tertiary-dark/10 pt-5 flex flex-col sm:flex-row justify-between sm:items-center gap-3 bg-tertiary-dark/5 p-4 rounded-xl">
+                                         <div>
+                                             <p className="text-[9px] font-bold uppercase tracking-widest text-tertiary-dark/60">Payment via</p>
+                                             <p className="text-xs font-bold text-tertiary-dark uppercase tracking-wider">{order.payment_method}</p>
+                                             {order.coupon_code && (
+                                                 <p className="text-[10px] font-bold text-emerald-700 mt-1">
+                                                     🎟️ Coupon ({order.coupon_code}): -৳{Number(order.coupon_discount || 0).toLocaleString()}
+                                                 </p>
+                                             )}
+                                         </div>
+                                         <div className="text-left sm:text-right">
+                                             <p className="text-[9px] font-bold uppercase tracking-widest text-tertiary-dark/60">Total Bill</p>
+                                             <p className="text-xl font-bold text-tertiary-dark font-mono">৳{Number(order.total_price).toLocaleString()}</p>
+                                         </div>
+                                     </div>
 
                                 </div>
                             )

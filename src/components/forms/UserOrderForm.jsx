@@ -55,6 +55,35 @@ const UserOrderForm = () => {
         setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
+    const [couponInput, setCouponInput] = useState('')
+    const [appliedCoupon, setAppliedCoupon] = useState(null)
+    const [checkingCoupon, setCheckingCoupon] = useState(false)
+
+    const couponDiscountAmount = appliedCoupon ? Number(appliedCoupon.discount_amount) : 0
+    const effectiveDiscount = Number(totalDiscount || 0) + couponDiscountAmount
+    const finalPayable = Math.max(0, Number(totalPrice || 0) - couponDiscountAmount)
+
+    const handleApplyCoupon = async () => {
+        if (!couponInput.trim()) return
+        setCheckingCoupon(true)
+        try {
+            const res = await axios.post('/api/coupon/apply', {
+                code: couponInput.trim(),
+                total_price: subTotal,
+                user_id: userData?.id
+            })
+            if (res.data.success) {
+                setAppliedCoupon(res.data.payload)
+                setCouponInput('')
+                toast.success(res.data.message)
+            }
+        } catch (error) {
+            toast.error(error?.response?.data?.message || 'Invalid coupon code')
+        } finally {
+            setCheckingCoupon(false)
+        }
+    }
+
     const handleOrder = async (e) => {
         e.preventDefault()
 
@@ -81,8 +110,11 @@ const UserOrderForm = () => {
                 phone: cleanedPhone || formData.phone,
                 items: cart.items,
                 sub_total: subTotal,
-                total_discount: totalDiscount,
-                total_price: totalPrice,
+                total_discount: effectiveDiscount,
+                total_price: finalPayable,
+                coupon_id: appliedCoupon?.coupon_id || null,
+                coupon_code: appliedCoupon?.code || null,
+                coupon_discount: couponDiscountAmount,
                 status: 'pending'
             }
             const res = await axios.post('/api/order', orderPayload, { withCredentials: true })
@@ -307,21 +339,63 @@ const UserOrderForm = () => {
                                 ))}
                             </div>
 
+                            {/* Coupon Code Section */}
+                            <div className='border-t border-gray-100 pt-3 flex flex-col gap-2'>
+                                {appliedCoupon ? (
+                                    <div className='flex items-center justify-between p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-xs'>
+                                        <div className='flex flex-col'>
+                                            <span className='font-bold text-emerald-800 flex items-center gap-1'>
+                                                🎟️ {appliedCoupon.code}
+                                            </span>
+                                            <span className='text-[10px] text-emerald-600 font-medium'>
+                                                {appliedCoupon.title} (-৳{appliedCoupon.discount_amount.toLocaleString()})
+                                            </span>
+                                        </div>
+                                        <button
+                                            type='button'
+                                            onClick={() => setAppliedCoupon(null)}
+                                            className='text-rose-500 hover:text-rose-700 font-bold text-xs p-1 cursor-pointer'
+                                            title='Remove Coupon'
+                                        >
+                                            ✕ Remove
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className='flex gap-2 items-center'>
+                                        <input
+                                            type='text'
+                                            value={couponInput}
+                                            onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                                            placeholder='Enter Coupon Code'
+                                            className='w-full px-3 py-2 border border-gray-200 rounded-xl outline-none text-xs font-mono font-bold uppercase focus:border-pink-500 transition-all bg-gray-50/50'
+                                        />
+                                        <button
+                                            type='button'
+                                            onClick={handleApplyCoupon}
+                                            disabled={checkingCoupon || !couponInput.trim()}
+                                            className='px-4 py-2 bg-gray-900 hover:bg-pink-500 text-white rounded-xl text-xs font-bold transition-all disabled:opacity-50 shrink-0 cursor-pointer'
+                                        >
+                                            {checkingCoupon ? '...' : 'Apply'}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+
                             {/* Price Breakdown */}
                             <div className='border-t border-gray-100 pt-4 space-y-2.5 text-xs text-gray-600 font-medium'>
                                 <div className='flex justify-between'>
                                     <span>Subtotal</span>
                                     <span className='font-semibold text-gray-900'>৳{subTotal.toLocaleString()}</span>
                                 </div>
-                                {totalDiscount > 0 && (
+                                {effectiveDiscount > 0 && (
                                     <div className='flex justify-between text-emerald-600'>
-                                        <span>Discount Savings</span>
-                                        <span className='font-semibold'>-৳{totalDiscount.toLocaleString()}</span>
+                                        <span>Total Discount Savings</span>
+                                        <span className='font-semibold'>-৳{effectiveDiscount.toLocaleString()}</span>
                                     </div>
                                 )}
                                 <div className='flex justify-between items-center text-base font-semibold text-pink-600 pt-3 border-t border-gray-100'>
                                     <span>Total Payable</span>
-                                    <span className='text-xl'>৳{totalPrice.toLocaleString()}</span>
+                                    <span className='text-xl'>৳{finalPayable.toLocaleString()}</span>
                                 </div>
                             </div>
 

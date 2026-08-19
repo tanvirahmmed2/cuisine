@@ -5,7 +5,7 @@ import { Context } from '../context/Context'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import Image from 'next/image'
-import { MdDeleteOutline, MdChevronRight } from 'react-icons/md'
+import { MdDeleteOutline, MdChevronRight, MdConfirmationNumber, MdClose, MdCheck } from 'react-icons/md'
 import { generateReceipt } from '@/lib/database/print'
 
 const paymentOptions = ['cash', 'bkash', 'card', 'nagad', 'rocket']
@@ -14,8 +14,9 @@ const deliveryOptions = ['takein', 'takeaway']
 const Orderform = () => {
     const { addToCart, removeFromCart, decreaseQuantity, clearCart, cart, siteData } = useContext(Context)
 
-    const [discountType, setDiscountType] = useState('flat')
-    const [discountValue, setDiscountValue] = useState(0)
+    const [couponInput, setCouponInput] = useState('')
+    const [appliedCoupon, setAppliedCoupon] = useState(null)
+    const [checkingCoupon, setCheckingCoupon] = useState(false)
     const [paidAmount, setPaidAmount] = useState('')
 
     const [formData, setFormData] = useState({
@@ -49,27 +50,18 @@ const Orderform = () => {
 
     const availableTables = dbTables.filter(t => t.status === 'available' || String(t.id) === String(formData.table_id))
 
+    // Pure local calculation — not stored in context
     let subTotal = 0
-    let tempTotalPrice = 0
+    let itemDiscountTotal = 0
 
-    cart?.items.forEach((item) => {
+    cart?.items?.forEach((item) => {
         subTotal += item.price * item.quantity
-        tempTotalPrice += item.salePrice
+        itemDiscountTotal += (item.discount || 0) * item.quantity
     })
 
-    let manualDiscount = 0
-    if (discountType === 'percent') {
-        manualDiscount = tempTotalPrice * (discountValue / 100)
-    } else {
-        manualDiscount = discountValue
-    }
-
-    if (manualDiscount > tempTotalPrice) {
-        manualDiscount = tempTotalPrice
-    }
-
-    const totalPrice = tempTotalPrice - manualDiscount
-    const totalDiscount = subTotal - totalPrice
+    const couponDiscount = appliedCoupon ? Number(appliedCoupon.discount_amount || 0) : 0
+    const totalDiscount = itemDiscountTotal + couponDiscount
+    const totalPrice = Math.max(0, subTotal - totalDiscount)
 
     const numericPaid = parseFloat(paidAmount) || 0
     const changeAmount = numericPaid > totalPrice ? numericPaid - totalPrice : 0
@@ -79,7 +71,39 @@ const Orderform = () => {
         setFormData((prev) => ({ ...prev, [name]: value }))
     }
 
-    const isServiceOffline = siteData && siteData.is_service_available === false;
+    const isServiceOffline = siteData && siteData.is_service_available === false
+
+    const handleApplyCoupon = async (e) => {
+        e?.preventDefault()
+        if (!couponInput.trim()) return
+
+        if (!cart?.items || cart.items.length === 0) {
+            return toast.error("Please add items to cart before applying coupon")
+        }
+
+        setCheckingCoupon(true)
+        try {
+            const res = await axios.post('/api/coupon/apply', {
+                code: couponInput.trim(),
+                total_price: subTotal
+            })
+
+            if (res.data.success) {
+                setAppliedCoupon(res.data.payload)
+                setCouponInput('')
+                toast.success(res.data.message || 'Coupon applied successfully')
+            }
+        } catch (error) {
+            toast.error(error?.response?.data?.message || 'Invalid or expired coupon code')
+        } finally {
+            setCheckingCoupon(false)
+        }
+    }
+
+    const handleRemoveCoupon = () => {
+        setAppliedCoupon(null)
+        toast.success('Coupon removed')
+    }
 
     const handleOpenReview = () => {
         if (isServiceOffline) {
@@ -118,6 +142,9 @@ const Orderform = () => {
             total_price: totalPrice,
             paid_amount: actualPaid,
             change_amount: actualChange,
+            coupon_id: appliedCoupon?.coupon_id || null,
+            coupon_code: appliedCoupon?.code || null,
+            coupon_discount: couponDiscount,
             items: cart?.items || []
         };
 
@@ -150,6 +177,8 @@ const Orderform = () => {
                 }),
                 sub_total: subTotal,
                 total_discount: totalDiscount,
+                coupon_code: appliedCoupon?.code || null,
+                coupon_discount: couponDiscount,
                 total_price: totalPrice,
                 paid_amount: actualPaid,
                 change_amount: actualChange,
@@ -167,6 +196,8 @@ const Orderform = () => {
 
             setPopUp(false);
             setPaidAmount('');
+            setAppliedCoupon(null);
+            setCouponInput('');
             clearCart();
         } catch (error) {
             console.error(error);
@@ -255,7 +286,16 @@ const Orderform = () => {
             <div className='w-full flex flex-col gap-3'>
                 <div className='flex items-center justify-between px-2 pb-2 border-b border-tertiary-dark/5'>
                     <p className='text-[10px] font-semibold uppercase tracking-widest text-tertiary-dark/40'>Order Items</p>
-                    <button type='button' className='text-[10px] font-semibold text-primary-dark hover:text-primary uppercase tracking-widest transition-colors cursor-pointer' onClick={() => clearCart()}>Clear Cart</button>
+                    <button
+                        type='button'
+                        className='text-[10px] font-semibold text-primary-dark hover:text-primary uppercase tracking-widest transition-colors cursor-pointer'
+                        onClick={() => {
+                            clearCart()
+                            setAppliedCoupon(null)
+                        }}
+                    >
+                        Clear Cart
+                    </button>
                 </div>
 
                 {cart?.items.length > 0 ? (
@@ -323,41 +363,67 @@ const Orderform = () => {
                             })}
                         </div>
 
-                        {/* Manual Discount Section */}
-                        <div className='w-full p-4 bg-tertiary-dark/5 border border-tertiary-dark/10 rounded-xl flex flex-col gap-3'>
-                            <p className='text-[10px] font-semibold uppercase tracking-widest text-tertiary-dark/60'>Manual Discount</p>
-                            <div className='flex items-center gap-3'>
-                                <div className='flex bg-tertiary-light border border-tertiary-dark/20 rounded-lg p-0.5 shadow-sm'>
+                        {/* Coupon Promo Section (Replacing Manual Discount) */}
+                        <div className='w-full p-3.5 bg-tertiary-dark/5 border border-tertiary-dark/10 rounded-xl flex flex-col gap-2.5'>
+                            <div className='flex items-center justify-between'>
+                                <p className='text-[10px] font-semibold uppercase tracking-widest text-tertiary-dark/60 flex items-center gap-1.5'>
+                                    <MdConfirmationNumber size={14} className='text-primary' /> Promo Coupon
+                                </p>
+                                {appliedCoupon && (
+                                    <span className='text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md'>
+                                        Applied
+                                    </span>
+                                )}
+                            </div>
+
+                            {appliedCoupon ? (
+                                <div className='flex items-center justify-between p-2.5 bg-tertiary-light border border-emerald-300 rounded-lg shadow-2xs'>
+                                    <div className='flex flex-col min-w-0'>
+                                        <div className='flex items-center gap-1.5'>
+                                            <span className='font-mono font-bold text-xs text-primary'>{appliedCoupon.code}</span>
+                                            <span className='text-[10px] text-tertiary-dark/60 truncate'>({appliedCoupon.title})</span>
+                                        </div>
+                                        <p className='text-[10px] font-bold text-emerald-700'>
+                                            -৳{appliedCoupon.discount_amount.toLocaleString()} discount
+                                        </p>
+                                    </div>
                                     <button
                                         type='button'
-                                        onClick={() => { setDiscountType('flat'); setDiscountValue(0); }}
-                                        className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase transition-all cursor-pointer ${discountType === 'flat' ? 'bg-primary text-tertiary-light shadow-xs' : 'text-tertiary-dark/60 hover:text-tertiary-dark'}`}
+                                        onClick={handleRemoveCoupon}
+                                        className='p-1 text-rose-500 hover:text-rose-700 hover:bg-rose-50 rounded-md transition-colors cursor-pointer text-xs font-semibold flex items-center gap-0.5'
+                                        title='Remove coupon'
                                     >
-                                        ৳ Flat
-                                    </button>
-                                    <button
-                                        type='button'
-                                        onClick={() => { setDiscountType('percent'); setDiscountValue(0); }}
-                                        className={`px-3 py-1.5 rounded-md text-xs font-semibold uppercase transition-all cursor-pointer ${discountType === 'percent' ? 'bg-primary text-tertiary-light shadow-xs' : 'text-tertiary-dark/60 hover:text-tertiary-dark'}`}
-                                    >
-                                        % Percent
+                                        <MdClose size={14} /> Remove
                                     </button>
                                 </div>
-                                <input
-                                    type="number"
-                                    min="0"
-                                    max={discountType === 'percent' ? 100 : undefined}
-                                    value={discountValue || ''}
-                                    onChange={(e) => {
-                                        const val = parseFloat(e.target.value) || 0;
-                                        setDiscountValue(val >= 0 ? val : 0);
-                                    }}
-                                    placeholder={discountType === 'percent' ? 'Discount %' : 'Discount ৳'}
-                                    className='input-style flex-1 font-semibold'
-                                />
-                            </div>
+                            ) : (
+                                <div className='flex items-center gap-2'>
+                                    <input
+                                        type="text"
+                                        value={couponInput}
+                                        onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                                        placeholder="Enter coupon code (e.g. SUMMER20)"
+                                        className='input-style flex-1 font-mono font-bold uppercase text-xs'
+                                    />
+                                    <button
+                                        type='button'
+                                        onClick={handleApplyCoupon}
+                                        disabled={checkingCoupon || !couponInput.trim()}
+                                        className='px-4 py-2.5 bg-primary hover:bg-primary-dark text-tertiary-light rounded-xl font-semibold text-xs transition-all disabled:opacity-50 cursor-pointer shadow-xs shrink-0 flex items-center gap-1'
+                                    >
+                                        {checkingCoupon ? (
+                                            <span className='animate-pulse'>Checking...</span>
+                                        ) : (
+                                            <>
+                                                <MdCheck size={16} /> Apply
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
+                        {/* Totals & Payment Section */}
                         <div className='bg-primary text-tertiary-light p-5 rounded-xl w-full flex flex-col gap-2 shadow-sm'>
                             
                             <div className='flex justify-between items-center text-xs font-semibold uppercase tracking-widest opacity-90'>
@@ -365,10 +431,26 @@ const Orderform = () => {
                                 <p>৳{subTotal.toLocaleString()}</p>
                             </div>
 
-                            <div className='flex justify-between items-center text-xs font-semibold uppercase tracking-widest text-tertiary-light'>
-                                <p>Discounts</p>
-                                <p>-৳{totalDiscount.toLocaleString()}</p>
-                            </div>
+                            {itemDiscountTotal > 0 && (
+                                <div className='flex justify-between items-center text-xs font-semibold uppercase tracking-widest text-tertiary-light/80'>
+                                    <p>Item Discounts</p>
+                                    <p>-৳{itemDiscountTotal.toLocaleString()}</p>
+                                </div>
+                            )}
+
+                            {couponDiscount > 0 && (
+                                <div className='flex justify-between items-center text-xs font-semibold uppercase tracking-widest text-emerald-200'>
+                                    <p>Coupon ({appliedCoupon?.code})</p>
+                                    <p>-৳{couponDiscount.toLocaleString()}</p>
+                                </div>
+                            )}
+
+                            {totalDiscount > 0 && (
+                                <div className='flex justify-between items-center text-xs font-semibold uppercase tracking-widest text-tertiary-light border-t border-tertiary-light/10 pt-1'>
+                                    <p>Total Savings</p>
+                                    <p>-৳{totalDiscount.toLocaleString()}</p>
+                                </div>
+                            )}
 
                             <div className='flex justify-between items-center border-t border-tertiary-light/20 pt-3 text-sm font-semibold uppercase tracking-wider'>
                                 <p>Total Payable</p>
@@ -400,8 +482,8 @@ const Orderform = () => {
                                     step="any"
                                     value={paidAmount}
                                     onChange={(e) => setPaidAmount(e.target.value)}
+                                    placeholder={String(totalPrice)}
                                     className='px-3 py-1.5 rounded-lg text-xs font-semibold bg-tertiary-light text-tertiary-dark border-0 outline-none placeholder:text-gray-400 w-36 text-right'
-
                                 />
                             </div>
 
@@ -456,6 +538,12 @@ const Orderform = () => {
                                 <span className='font-medium'>Table:</span>
                                 <span className='font-semibold text-tertiary-dark'>{formData.table_no || 'N/A'}</span>
                             </div>
+                            {appliedCoupon && (
+                                <div className='flex justify-between items-center text-emerald-700 font-semibold'>
+                                    <span>Coupon Applied:</span>
+                                    <span>{appliedCoupon.code} (-৳{couponDiscount.toLocaleString()})</span>
+                                </div>
+                            )}
                             <div className='flex justify-between items-center text-tertiary-dark/70 border-t border-tertiary-dark/10 pt-2'>
                                 <span className='font-medium'>Paid Amount:</span>
                                 <span className='font-semibold text-tertiary-dark'>৳{(numericPaid > 0 ? numericPaid : totalPrice).toLocaleString()}</span>

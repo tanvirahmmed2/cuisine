@@ -36,6 +36,8 @@ const Manage = () => {
     if (role === 'manager') {
       return [
         { title: 'Inventory', desc: 'Items and stock management', href: '/dashboard/manager/items', icon: <MdInventory />, color: 'bg-rose-50 text-rose-600' },
+        { title: 'Categories', desc: 'Menu structure and groups', href: '/dashboard/manager/categories', icon: <MdLocalOffer />, color: 'bg-pink-50 text-pink-600' },
+        { title: 'Coupons', desc: 'Promo codes & discounts', href: '/dashboard/manager/coupons', icon: <MdLocalOffer />, color: 'bg-amber-50 text-amber-600' },
         { title: 'Expenses', desc: 'Track business expenditures', href: '/dashboard/manager/expenses', icon: <MdSell />, color: 'bg-orange-50 text-orange-600' },
         { title: 'History', desc: 'Order fulfillment records', href: '/dashboard/manager/history', icon: <MdHistory />, color: 'bg-gray-50 text-gray-600' },
         { title: 'Reservations', desc: 'Table booking management', href: '/dashboard/manager/reservation', icon: <MdEvent />, color: 'bg-pink-50 text-pink-600' },

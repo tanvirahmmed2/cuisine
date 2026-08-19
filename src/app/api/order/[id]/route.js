@@ -41,6 +41,17 @@ export async function GET(req, { params }) {
       variants: variantsMap[item.id] || []
     }));
 
+    // Fetch applied coupon if any
+    try {
+      const { rows: couponRows } = await pool.query(
+        "SELECT oc.*, c.title as coupon_title, c.is_percentage, c.discount as coupon_rate FROM order_coupons oc LEFT JOIN coupons c ON oc.coupon_id = c.id WHERE oc.order_id = $1 LIMIT 1",
+        [id]
+      );
+      order.coupon = couponRows.length > 0 ? couponRows[0] : null;
+    } catch (cErr) {
+      order.coupon = null;
+    }
+
     return NextResponse.json({
       success: true,
       message: "Successfully fetched order details",
