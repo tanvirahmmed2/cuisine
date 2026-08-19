@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import Link from 'next/link'
 import {
   MdAdd,
   MdDeleteOutline,
@@ -12,10 +13,11 @@ import {
   MdCheck,
   MdCalendarToday,
   MdToggleOn,
-  MdToggleOff
+  MdToggleOff,
+  MdHistory
 } from 'react-icons/md'
 
-const CouponsPage = () => {
+const CouponsPage = ({ role = 'manager' }) => {
   const [coupons, setCoupons] = useState([])
   const [loading, setLoading] = useState(true)
   const [editItem, setEditItem] = useState(null)
@@ -202,6 +204,13 @@ const CouponsPage = () => {
         </div>
 
         <div className='flex items-center gap-3'>
+          <Link
+            href={`/dashboard/${role}/coupons/usage`}
+            className='px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-xl transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs'
+          >
+            <MdHistory size={18} /> View Usages
+          </Link>
+
           <button
             onClick={fetchCoupons}
             className='p-2.5 bg-white border border-gray-200 text-gray-600 rounded-xl hover:bg-gray-50 transition-colors shadow-xs cursor-pointer'
@@ -209,6 +218,7 @@ const CouponsPage = () => {
           >
             <MdRefresh size={20} />
           </button>
+
 
           <button
             onClick={showForm ? handleCancelForm : handleOpenAdd}

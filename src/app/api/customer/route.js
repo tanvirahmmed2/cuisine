@@ -1,15 +1,18 @@
 
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
-import { isSales } from "@/lib/auth/middleware";
+import { isLogin } from "@/lib/auth/middleware";
 
 export async function GET(req) {
   try {
-    
 
-    const auth = await isSales();
+    const auth = await isLogin();
     if (!auth.success) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
+    }
+
+    if (!["admin", "manager", "sales"].includes(auth.payload.role)) {
+      return NextResponse.json({ success: false, message: "Unauthorized access" }, { status: 403 });
     }
 
     const { rows } = await pool.query("SELECT * FROM customers ORDER BY id DESC");

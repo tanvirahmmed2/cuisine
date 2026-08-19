@@ -1,6 +1,15 @@
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
-import { isManager } from "@/lib/auth/middleware";
+import { isLogin } from "@/lib/auth/middleware";
+
+async function isAuthorizedStaff() {
+  const auth = await isLogin();
+  if (!auth.success) return auth;
+  if (!["admin", "manager", "sales"].includes(auth.payload.role)) {
+    return { success: false, message: "Unauthorized access" };
+  }
+  return auth;
+}
 
 export async function GET(req) {
   try {
@@ -46,7 +55,7 @@ export async function GET(req) {
 
 export async function POST(req) {
   try {
-    const auth = await isManager();
+    const auth = await isAuthorizedStaff();
     if (!auth.success) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
     }
@@ -117,7 +126,7 @@ export async function POST(req) {
 
 export async function PUT(req) {
   try {
-    const auth = await isManager();
+    const auth = await isAuthorizedStaff();
     if (!auth.success) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
     }
@@ -203,7 +212,7 @@ export async function PUT(req) {
 
 export async function DELETE(req) {
   try {
-    const auth = await isManager();
+    const auth = await isAuthorizedStaff();
     if (!auth.success) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
     }
@@ -234,3 +243,4 @@ export async function DELETE(req) {
     }, { status: 500 });
   }
 }
+

@@ -24,7 +24,8 @@ import {
   MdPerson,
   MdMessage,
   MdTableRestaurant,
-  MdConfirmationNumber
+  MdConfirmationNumber,
+  MdLoyalty
 } from 'react-icons/md'
 import toast from 'react-hot-toast'
 import axios from 'axios'
@@ -70,11 +71,16 @@ const ManageSidebar = () => {
         { name: 'Pending', href: '/dashboard/sales/pending', icon: <MdPendingActions /> },
         { name: 'Delivery', href: '/dashboard/sales/delivery', icon: <MdCheckCircle /> },
         { name: 'History', href: '/dashboard/sales/orders', icon: <MdHistory /> },
+        { name: 'Payments', href: '/dashboard/sales/payment', icon: <MdPayments /> },
+        { name: 'Coupons', href: '/dashboard/sales/coupons', icon: <MdConfirmationNumber /> },
+        { name: 'Coupon Usages', href: '/dashboard/sales/coupons/usage', icon: <MdLoyalty /> },
       ],
       manager: [
         { name: 'Items', href: '/dashboard/manager/items', icon: <MdInventory /> },
         { name: 'Categories', href: '/dashboard/manager/categories', icon: <MdCategory /> },
         { name: 'Coupons', href: '/dashboard/manager/coupons', icon: <MdConfirmationNumber /> },
+        { name: 'Coupon Usages', href: '/dashboard/manager/coupons/usage', icon: <MdLoyalty /> },
+        { name: 'Payments', href: '/dashboard/manager/payment', icon: <MdPayments /> },
         { name: 'Expenses', href: '/dashboard/manager/expenses', icon: <MdPayments /> },
         { name: 'History', href: '/dashboard/manager/history', icon: <MdHistory /> },
         { name: 'Reservations', href: '/dashboard/manager/reservation', icon: <MdEvent /> },
@@ -86,6 +92,9 @@ const ManageSidebar = () => {
       ],
       admin: [
         { name: 'Overview', href: '/dashboard/admin', icon: <MdDashboard /> },
+        { name: 'Payments', href: '/dashboard/admin/payment', icon: <MdPayments /> },
+        { name: 'Coupons', href: '/dashboard/admin/coupons', icon: <MdConfirmationNumber /> },
+        { name: 'Coupon Usages', href: '/dashboard/admin/coupons/usage', icon: <MdLoyalty /> },
         { name: 'History', href: '/dashboard/admin/history', icon: <MdHistory /> },
         { name: 'Analytics', href: '/dashboard/admin/analytics', icon: <MdAnalytics /> },
         { name: 'People', href: '/dashboard/admin/people', icon: <MdPeople /> },

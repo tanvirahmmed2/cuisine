@@ -1,6 +1,6 @@
 import { pool } from "@/lib/database/pg";
 import { NextResponse } from "next/server";
-import { isSales } from "@/lib/auth/middleware";
+import { isLogin, isSales } from "@/lib/auth/middleware";
 
 export async function POST(req) {
   const client = await pool.connect();
@@ -56,21 +56,40 @@ export async function POST(req) {
 
 export async function GET(req) {
   try {
-    const auth = await isSales();
+    const auth = await isLogin();
     if (!auth.success) {
       return NextResponse.json({ success: false, message: auth.message }, { status: 401 });
     }
 
-    const { rows } = await pool.query(
-      "SELECT p.*, o.name as customer_name FROM payments p LEFT JOIN orders o ON p.order_id = o.id ORDER BY p.created_at DESC"
+    const { rows: orders } = await pool.query(
+      `SELECT 
+        o.id,
+        o.id as order_id,
+        o.name as customer_name,
+        o.phone as customer_phone,
+        o.delivery_method,
+        o.table_no,
+        o.sub_total,
+        o.total_discount,
+        o.total_price,
+        o.paid_amount,
+        o.change_amount,
+        o.payment_method,
+        o.payment_status,
+        o.status as order_status,
+        o.transaction_id,
+        o.created_at
+      FROM orders o
+      ORDER BY o.created_at DESC`
     );
 
     return NextResponse.json({
       success: true,
-      message: "Successfully fetched payments",
-      payload: rows,
+      message: "Successfully fetched order payments",
+      payload: orders,
     }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }
+

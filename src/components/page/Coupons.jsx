@@ -147,6 +147,10 @@ const Coupons = ({ initialCoupons = [] }) => {
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseLeave}
       >
+
+        <p className=' w-auto text-center uppercase font-semibold border-b my-2 text-tertiary-light text-3xl'>
+            Coupons
+        </p>
         <div
           className="flex flex-col sm:flex-row items-center justify-between gap-4 transition-transform duration-200 ease-out"
           style={{
@@ -191,7 +195,7 @@ const Coupons = ({ initialCoupons = [] }) => {
             <button
               type="button"
               onClick={(e) => handleCopyCode(e, currentCoupon.code)}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-tertiary-light/5 hover:bg-primary hover:text-tertiary-light text-tertiary-light transition-all border border-tertiary-light/10 cursor-pointer text-xs font-bold"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xs bg-tertiary-light/5 hover:bg-primary hover:text-tertiary-light text-tertiary-light transition-all border border-tertiary-light/10 cursor-pointer text-xs font-bold"
               title="Click to copy code"
             >
               <span className="font-mono tracking-wider">{currentCoupon.code}</span>
@@ -204,7 +208,6 @@ const Coupons = ({ initialCoupons = [] }) => {
           </div>
         </div>
 
-        {/* Minimalist Indicators (No buttons) */}
         {coupons.length > 1 && (
           <div className="flex items-center justify-center gap-1.5 mt-3 pt-2 border-t border-tertiary-light/5">
             {coupons.map((_, idx) => (
