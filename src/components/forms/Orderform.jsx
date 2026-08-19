@@ -18,6 +18,7 @@ const Orderform = () => {
     const [appliedCoupon, setAppliedCoupon] = useState(null)
     const [checkingCoupon, setCheckingCoupon] = useState(false)
     const [paidAmount, setPaidAmount] = useState('')
+    const appliedCartKeyRef = React.useRef(null)
 
     const [formData, setFormData] = useState({
         phone: '01',
@@ -47,6 +48,18 @@ const Orderform = () => {
         }
         fetchTables()
     }, [])
+
+    // Automatically remove coupon if new items are added or cart changes after applying
+    useEffect(() => {
+        if (appliedCoupon) {
+            const currentKey = (cart?.items || []).map(i => `${i.cartItemId || i.id}:${i.quantity}:${i.price}`).join('|');
+            if (appliedCartKeyRef.current && appliedCartKeyRef.current !== currentKey) {
+                setAppliedCoupon(null);
+                appliedCartKeyRef.current = null;
+                toast.error("Cart updated. Please re-apply your coupon.");
+            }
+        }
+    }, [cart?.items, appliedCoupon])
 
     const availableTables = dbTables.filter(t => t.status === 'available' || String(t.id) === String(formData.table_id))
 
@@ -90,6 +103,7 @@ const Orderform = () => {
 
             if (res.data.success) {
                 setAppliedCoupon(res.data.payload)
+                appliedCartKeyRef.current = (cart?.items || []).map(i => `${i.cartItemId || i.id}:${i.quantity}:${i.price}`).join('|')
                 setCouponInput('')
                 toast.success(res.data.message || 'Coupon applied successfully')
             }
@@ -102,6 +116,7 @@ const Orderform = () => {
 
     const handleRemoveCoupon = () => {
         setAppliedCoupon(null)
+        appliedCartKeyRef.current = null
         toast.success('Coupon removed')
     }
 
